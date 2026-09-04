@@ -1,20 +1,39 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# ExploreX
 
-# Run and deploy your AI Studio app
+ExploreX is a full-stack web application designed for interactive map-based exploration. It allows users to discover offbeat destinations, interact with maps, and explore unique places around the world.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/280a4a5f-d632-4a49-8ed0-948f247923da
+- **Interactive Maps**: Beautifully rendered interactive maps using Leaflet.
+- **AI-Powered Discovery**: Generates personalized recommendations for places and destinations using Gemini AI.
+- **Cloud Syncing**: Seamlessly syncs user data to the cloud via Supabase for multi-device access.
+- **Modern UI**: Clean and responsive user interface built with React.
 
-## Run Locally
+## Getting Started
 
-**Prerequisites:**  Node.js
+### Prerequisites
+- Node.js (v16 or higher)
 
+### Installation
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Arshu168/ExploreX.git
+   cd ExploreX
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables:
+   Create a `.env.local` file in the root directory and add your API keys:
+   ```env
+   VITE_GEMINI_API_KEY=your_gemini_api_key
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
