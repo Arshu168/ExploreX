@@ -1,0 +1,6 @@
+{
+  "name": "ExploreX AI",
+  "description": "Premium AI travel planning platform for discovering off-the-beaten-path destinations, hidden places, and personalized itineraries.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
