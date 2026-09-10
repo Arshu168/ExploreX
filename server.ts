@@ -301,8 +301,9 @@ Interests: ${Array.isArray(interests) ? interests.join(', ') : 'Sightseeing, Hid
 CRITICAL REQUIREMENTS:
 1. ONLY suggest real, existing places, landmarks, restaurants, and attractions in "${dest}". Use accurate estimated costs.
 2. Provide 3 REAL recommended hotels/resorts in "${dest}" with real hotel names, realistic street addresses, price per night in INR, and working phone contact numbers (+country code format).
-3. Provide round-trip estimated flight/train transport expense from "${originLoc}" to "${dest}" (estimatedFlightCost in INR, airlineSuggestions, flightDurationHours).
-4. Provide structured day-by-day itinerary with exact activity locations, time slots, categories, and costs.`;
+3. Provide realistic round-trip estimated flight/train transport expense from "${originLoc}" to "${dest}" (estimatedFlightCost in INR, airlineSuggestions, flightDurationHours, departureAirport, arrivalAirport, hasFlightOption, isWithinBudget, connectingAdvice).
+4. Verify if flight cost is within target budget (${totalBudget} INR). Set isWithinBudget to true if estimatedFlightCost <= ${totalBudget}.
+5. Provide structured day-by-day itinerary with exact activity locations, time slots, categories, and costs.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-3.6-flash",
@@ -324,7 +325,12 @@ CRITICAL REQUIREMENTS:
                 destination: { type: Type.STRING },
                 estimatedFlightCost: { type: Type.NUMBER },
                 airlineSuggestions: { type: Type.ARRAY, items: { type: Type.STRING } },
-                flightDurationHours: { type: Type.NUMBER }
+                flightDurationHours: { type: Type.NUMBER },
+                departureAirport: { type: Type.STRING },
+                arrivalAirport: { type: Type.STRING },
+                hasFlightOption: { type: Type.BOOLEAN },
+                isWithinBudget: { type: Type.BOOLEAN },
+                connectingAdvice: { type: Type.STRING }
               },
               required: ["origin", "destination", "estimatedFlightCost"]
             },

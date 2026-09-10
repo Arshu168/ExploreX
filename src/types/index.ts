@@ -105,6 +105,11 @@ export interface FlightExpenseDetails {
   estimatedFlightCost: number;
   airlineSuggestions: string[];
   flightDurationHours: number;
+  departureAirport?: string;
+  arrivalAirport?: string;
+  hasFlightOption?: boolean;
+  isWithinBudget?: boolean;
+  connectingAdvice?: string;
 }
 
 export interface Trip {

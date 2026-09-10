@@ -199,32 +199,101 @@ export const getDestinationHotels = (dest: string, budget: number = 25000): Hote
   ];
 };
 
-export const getDestinationFlight = (origin: string, dest: string, budget: number = 25000): FlightExpenseDetails => {
+export const getDestinationFlight = (origin: string = 'India', dest: string = 'Germany', budget: number = 25000): FlightExpenseDetails => {
   const destLower = (dest || '').toLowerCase();
-  let cost = Math.round(budget * 0.35) || 45000;
-  let duration = 8;
-  let airlines = ['Emirates', 'Lufthansa', 'Air India'];
+  const originLower = (origin || '').toLowerCase();
 
+  let cost = 48000;
+  let duration = 9.5;
+  let airlines = ['Lufthansa', 'Air India', 'Qatar Airways', 'Emirates'];
+  let depAirport = 'DEL / BOM (India)';
+  let arrAirport = 'FRA / MUC (Germany)';
+  let hasFlight = true;
+  let connectingAdvice = 'Direct & 1-stop flights available daily';
+
+  // 1. Germany / Munich / Berlin / Frankfurt
   if (destLower.includes('germany') || destLower.includes('berlin') || destLower.includes('munich') || destLower.includes('frankfurt')) {
-    cost = 48000;
-    duration = 9.5;
-    airlines = ['Lufthansa', 'Air India', 'Qatar Airways', 'Emirates'];
-  } else if (destLower.includes('france') || destLower.includes('paris')) {
+    if (originLower.includes('usa') || originLower.includes('york')) {
+      cost = 68000;
+      depAirport = 'JFK / EWR (New York, USA)';
+      arrAirport = 'FRA / MUC (Germany)';
+      airlines = ['Lufthansa', 'United Airlines', 'Delta'];
+      duration = 8.0;
+    } else if (originLower.includes('uk') || originLower.includes('london')) {
+      cost = 18000;
+      depAirport = 'LHR / LGW (London, UK)';
+      arrAirport = 'MUC / BER (Germany)';
+      airlines = ['British Airways', 'Lufthansa', 'Eurowings'];
+      duration = 1.8;
+    } else {
+      cost = 48000;
+      depAirport = 'DEL / BOM (India)';
+      arrAirport = 'FRA (Frankfurt) / MUC (Munich)';
+      airlines = ['Lufthansa', 'Air India', 'Qatar Airways', 'Emirates'];
+      duration = 9.5;
+    }
+  } 
+  // 2. France / Paris
+  else if (destLower.includes('france') || destLower.includes('paris')) {
     cost = 52000;
-    duration = 10;
+    depAirport = originLower.includes('usa') ? 'JFK (USA)' : 'DEL / BOM (India)';
+    arrAirport = 'CDG (Charles de Gaulle, Paris)';
     airlines = ['Air France', 'Emirates', 'Etihad Airways'];
-  } else if (destLower.includes('japan') || destLower.includes('tokyo') || destLower.includes('kyoto')) {
-    cost = 62000;
-    duration = 8.5;
-    airlines = ['ANA (All Nippon Airways)', 'Japan Airlines (JAL)', 'Air India'];
+    duration = 10.0;
   }
+  // 3. Japan / Tokyo / Kyoto
+  else if (destLower.includes('japan') || destLower.includes('tokyo') || destLower.includes('kyoto')) {
+    cost = 62000;
+    depAirport = originLower.includes('usa') ? 'LAX / SFO (USA)' : 'DEL (New Delhi)';
+    arrAirport = 'HND (Haneda) / NRT (Narita, Tokyo)';
+    airlines = ['ANA (All Nippon Airways)', 'Japan Airlines (JAL)', 'Air India'];
+    duration = 8.5;
+  }
+  // 4. Domestic India (Goa, Ooty, Munnar, Kodaikanal, Coimbatore)
+  else if (destLower.includes('ooty') || destLower.includes('valparai') || destLower.includes('coimbatore')) {
+    cost = 7500;
+    depAirport = 'BLR / MAA / DEL (India)';
+    arrAirport = 'CJB (Coimbatore International)';
+    airlines = ['IndiGo', 'Air India Express', 'Akasa Air'];
+    duration = 1.5;
+    connectingAdvice = 'Flight to CJB (Coimbatore), then 2-hr scenic mountain taxi to destination';
+  } else if (destLower.includes('munnar') || destLower.includes('kerala')) {
+    cost = 8200;
+    depAirport = 'DEL / BOM (India)';
+    arrAirport = 'COK (Cochin International)';
+    airlines = ['IndiGo', 'Air India', 'Vistara'];
+    duration = 2.5;
+    connectingAdvice = 'Flight to COK (Cochin), then 3.5-hr drive to Munnar hills';
+  } else if (destLower.includes('goa')) {
+    cost = 5800;
+    depAirport = 'DEL / BOM / BLR (India)';
+    arrAirport = 'GOI / GOX (Goa MOPA)';
+    airlines = ['IndiGo', 'Air India Express', 'Akasa Air'];
+    duration = 1.8;
+  }
+  // 5. Generic Worldwide
+  else {
+    cost = Math.round(budget * 0.4) || 35000;
+    depAirport = `${(origin || 'Origin').toUpperCase()} Main Airport`;
+    arrAirport = `${(dest || 'Destination').toUpperCase()} International Airport`;
+    airlines = ['Emirates', 'Qatar Airways', 'Turkish Airlines'];
+    duration = 7.5;
+  }
+
+  // Budget Feasibility Check: Flight Cost vs Total Target Budget
+  const isWithinBudget = budget >= cost;
 
   return {
     origin: origin || 'India',
     destination: dest,
     estimatedFlightCost: cost,
     airlineSuggestions: airlines,
-    flightDurationHours: duration
+    flightDurationHours: duration,
+    departureAirport: depAirport,
+    arrivalAirport: arrAirport,
+    hasFlightOption: hasFlight,
+    isWithinBudget,
+    connectingAdvice
   };
 };
 
@@ -1288,39 +1357,93 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
               </div>
               <div>
                 <h3 className="font-extrabold text-base text-white">Intercity Flight & Travel Expense Breakdown</h3>
-                <p className="text-xs text-blue-200 font-medium">Estimated roundtrip flight/transport cost from origin to destination</p>
+                <p className="text-xs text-blue-200 font-medium">Real-world flight routes, airport codes, and budget verification</p>
               </div>
             </div>
-            <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Real-time Rate Estimate</span>
-            </span>
+
+            {flightExpense.estimatedFlightCost <= tripSummary.budgetTotal ? (
+              <span className="px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-xs font-black flex items-center gap-1.5">
+                <CheckCircle className="w-3.5 h-3.5" />
+                <span>Verified Within Budget</span>
+              </span>
+            ) : (
+              <span className="px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/40 text-xs font-black flex items-center gap-1.5">
+                <Lightbulb className="w-3.5 h-3.5" />
+                <span>Flight Exceeds Target Budget</span>
+              </span>
+            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-semibold">
             <div className="bg-slate-900/80 border border-blue-800/60 p-3.5 rounded-2xl space-y-1">
-              <span className="text-[10px] uppercase tracking-wider text-blue-400 font-extrabold block">Travel Route</span>
-              <p className="font-extrabold text-sm text-white flex items-center gap-1.5">
-                <span>{flightExpense.origin}</span>
-                <ArrowRight className="w-4 h-4 text-blue-400 shrink-0" />
-                <span>{flightExpense.destination}</span>
+              <span className="text-[10px] uppercase tracking-wider text-blue-400 font-extrabold block">Air Route & Airports</span>
+              <p className="font-extrabold text-xs text-white flex items-center gap-1.5">
+                <span>{flightExpense.departureAirport || flightExpense.origin}</span>
+                <ArrowRight className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                <span>{flightExpense.arrivalAirport || flightExpense.destination}</span>
               </p>
+              {flightExpense.connectingAdvice && (
+                <p className="text-[10px] text-slate-300 font-normal pt-0.5">{flightExpense.connectingAdvice}</p>
+              )}
             </div>
 
             <div className="bg-slate-900/80 border border-blue-800/60 p-3.5 rounded-2xl space-y-1">
-              <span className="text-[10px] uppercase tracking-wider text-blue-400 font-extrabold block">Roundtrip Flight / Person</span>
+              <span className="text-[10px] uppercase tracking-wider text-blue-400 font-extrabold block">Roundtrip Fare / Person</span>
               <p className="font-black text-sm text-emerald-400">
                 {formatCurrency(flightExpense.estimatedFlightCost, preferredCurrency)}
               </p>
+              <p className="text-[10px] text-slate-300 font-medium">
+                {flightExpense.estimatedFlightCost <= tripSummary.budgetTotal
+                  ? `Remaining for stay & food: ${formatCurrency(tripSummary.budgetTotal - flightExpense.estimatedFlightCost, preferredCurrency)}`
+                  : `Exceeds budget by ${formatCurrency(flightExpense.estimatedFlightCost - tripSummary.budgetTotal, preferredCurrency)}`}
+              </p>
             </div>
 
             <div className="bg-slate-900/80 border border-blue-800/60 p-3.5 rounded-2xl space-y-1">
-              <span className="text-[10px] uppercase tracking-wider text-blue-400 font-extrabold block">Airlines & Flight Duration</span>
+              <span className="text-[10px] uppercase tracking-wider text-blue-400 font-extrabold block">Operating Airlines & Duration</span>
               <p className="font-bold text-xs text-slate-200">
-                {flightExpense.airlineSuggestions.join(', ')} • ~{flightExpense.flightDurationHours} hrs
+                {flightExpense.airlineSuggestions.join(', ')}
+              </p>
+              <p className="text-[10px] text-blue-300 font-medium pt-0.5">
+                ~{flightExpense.flightDurationHours} hrs flight duration
               </p>
             </div>
           </div>
+
+          {/* Budget Warning Banner & Quick Adjustments */}
+          {flightExpense.estimatedFlightCost > tripSummary.budgetTotal && (
+            <div className="bg-amber-950/60 border border-amber-800/80 rounded-2xl p-4 space-y-2 text-xs">
+              <div className="flex items-center gap-2 text-amber-300 font-extrabold">
+                <Lightbulb className="w-4 h-4 shrink-0" />
+                <span>Budget Optimization Alert for {tripSummary.destination}</span>
+              </div>
+              <p className="text-slate-200 text-[11px] leading-relaxed">
+                The roundtrip flight cost ({formatCurrency(flightExpense.estimatedFlightCost, preferredCurrency)}) alone is higher than your current total budget of {formatCurrency(tripSummary.budgetTotal, preferredCurrency)}. You can automatically adjust your budget or switch to a regional trip!
+              </p>
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <button
+                  onClick={() => {
+                    const newB = flightExpense.estimatedFlightCost + 20000;
+                    setTripSummary(prev => ({ ...prev, budgetTotal: newB }));
+                    showToast(`Updated budget to ${formatCurrency(newB, preferredCurrency)}!`);
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-[11px] cursor-pointer shadow-xs transition"
+                >
+                  ⚡ Auto-Increase Budget to {formatCurrency(flightExpense.estimatedFlightCost + 20000, preferredCurrency)}
+                </button>
+                <button
+                  onClick={() => {
+                    const generated = generateClientItinerary("Goa budget 10000");
+                    setGeneratedDays(generated);
+                    showToast("Switched to budget-friendly domestic trip!");
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] border border-slate-700 cursor-pointer transition"
+                >
+                  🌴 Switch to Budget Destination (e.g. Goa)
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
