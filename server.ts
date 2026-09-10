@@ -6,6 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
 dotenv.config();
+dotenv.config({ path: ".env.local" });
 
 const app = express();
 const PORT = 3000;
@@ -14,8 +15,8 @@ app.use(express.json({ limit: "10mb" }));
 
 // Initialize Supabase Client
 function getSupabaseClient() {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_KEY;
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_KEY;
   if (!supabaseUrl || !supabaseKey) return null;
   return createClient(supabaseUrl, supabaseKey);
 }
@@ -58,9 +59,9 @@ const ragDocumentStore: RagDocument[] = [
 
 // Initialize Gemini Client
 function getGeminiClient(): GoogleGenAI | null {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
-    console.warn("GEMINI_API_KEY environment variable is not set. Real AI responses will use intelligent server backup.");
+    console.warn("GEMINI_API_KEY / VITE_GEMINI_API_KEY environment variable is not set. Real AI responses will use intelligent server backup.");
     return null;
   }
   return new GoogleGenAI({
@@ -79,8 +80,11 @@ function getGeminiClient(): GoogleGenAI | null {
 
 // 1. Health check
 app.get("/api/health", (req, res) => {
-  const apiKeyPresent = Boolean(process.env.GEMINI_API_KEY);
-  const supabasePresent = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_KEY);
+  const apiKeyPresent = Boolean(process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY);
+  const supabasePresent = Boolean(
+    (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL) && 
+    (process.env.SUPABASE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_KEY)
+  );
   res.json({
     status: "online",
     geminiConnected: apiKeyPresent,
