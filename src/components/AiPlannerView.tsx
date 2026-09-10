@@ -43,259 +43,15 @@ import { Trip, Place, ItineraryDay, Activity, HotelOption, FlightExpenseDetails,
 import { getWeatherForDestinationDay, getWeatherTheme } from '../utils/weatherUtils';
 import { formatCurrency } from '../utils/currencyUtils';
 import { generateTripFromBackend } from '../utils/apiClient';
+import {
+  getDestinationHotels,
+  getDestinationFlight,
+  getDestinationReviews,
+  getRealDestinationItinerary
+} from '../utils/travelDataService';
 
-export const getDestinationHotels = (dest: string, budget: number = 25000): HotelOption[] => {
-  const destLower = (dest || '').toLowerCase();
-
-  if (destLower.includes('germany') || destLower.includes('berlin') || destLower.includes('munich') || destLower.includes('frankfurt') || destLower.includes('hamburg')) {
-    return [
-      {
-        id: 'h-de-1',
-        name: 'The Charles Hotel Munich',
-        rating: 4.9,
-        pricePerNight: 185,
-        address: 'Sophienstraße 28, 80333 München, Germany',
-        contactNumber: '+49 89 5445580',
-        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Spa & Indoor Pool', 'Botanical Garden View', 'Fine Dining', 'Free High-Speed WiFi'],
-        distanceFromCenter: '0.6 km from Central Station'
-      },
-      {
-        id: 'h-de-2',
-        name: 'Hotel Adlon Kempinski Berlin',
-        rating: 4.8,
-        pricePerNight: 220,
-        address: 'Unter den Linden 77, 10117 Berlin, Germany',
-        contactNumber: '+49 30 22610',
-        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Brandenburg Gate View', 'Michelin Dining', 'Luxury Spa', 'Concierge Service'],
-        distanceFromCenter: '0.2 km from Brandenburg Gate'
-      },
-      {
-        id: 'h-de-3',
-        name: 'Steigenberger Grandhotel Frankfurt',
-        rating: 4.7,
-        pricePerNight: 145,
-        address: 'Bethmannstraße 33, 60311 Frankfurt am Main, Germany',
-        contactNumber: '+49 69 21502',
-        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Historical Architecture', 'Executive Lounge', 'Sauna & Gym', 'Airport Shuttle'],
-        distanceFromCenter: '0.4 km from City Center'
-      }
-    ];
-  }
-
-  if (destLower.includes('france') || destLower.includes('paris')) {
-    return [
-      {
-        id: 'h-fr-1',
-        name: 'Le Meurice Paris Central',
-        rating: 4.9,
-        pricePerNight: 240,
-        address: '228 Rue de Rivoli, 75001 Paris, France',
-        contactNumber: '+33 1 44 58 10 10',
-        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Eiffel Tower Vistas', 'Alain Ducasse Dining', 'Spa Valmont', 'Valet Parking'],
-        distanceFromCenter: 'Tuileries Garden'
-      },
-      {
-        id: 'h-fr-2',
-        name: 'Hôtel Plaza Athénée',
-        rating: 4.8,
-        pricePerNight: 280,
-        address: '25 Avenue Montaigne, 75008 Paris, France',
-        contactNumber: '+33 1 53 67 66 65',
-        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Haute Couture Shopping', 'Dior Institute Spa', 'Courtyard Garden', '24/7 Room Service'],
-        distanceFromCenter: 'Champs-Élysées'
-      },
-      {
-        id: 'h-fr-3',
-        name: 'Boutique Hotel Montmartre',
-        rating: 4.6,
-        pricePerNight: 125,
-        address: '15 Rue Abbesses, 75018 Paris, France',
-        contactNumber: '+33 1 42 52 01 20',
-        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Artist Studio Vibes', 'Artisanal Bakery', 'Free WiFi', 'Sacré-Cœur Walk'],
-        distanceFromCenter: 'Montmartre Village'
-      }
-    ];
-  }
-
-  if (destLower.includes('japan') || destLower.includes('tokyo') || destLower.includes('kyoto')) {
-    return [
-      {
-        id: 'h-jp-1',
-        name: 'Hoshinoya Kyoto Riverside Ryokan',
-        rating: 4.9,
-        pricePerNight: 350,
-        address: '116 Arashiyama Genroku-cho, Nishikyo-ku, Kyoto, Japan',
-        contactNumber: '+81 50 3786 1144',
-        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Traditional Tatami Suites', 'Private Boat Transfer', 'Kaiseki Dining', 'Bamboo Forest View'],
-        distanceFromCenter: 'Arashiyama River'
-      },
-      {
-        id: 'h-jp-2',
-        name: 'The Capitol Hotel Tokyu Tokyo',
-        rating: 4.8,
-        pricePerNight: 280,
-        address: '2-10-3 Nagata-cho, Chiyoda-ku, Tokyo, Japan',
-        contactNumber: '+81 3 3503 0109',
-        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Imperial Palace View', 'Indoor Swimming Pool', 'Japanese Garden', 'Subway Direct Access'],
-        distanceFromCenter: 'Nagatacho'
-      },
-      {
-        id: 'h-jp-3',
-        name: 'Shibuya Sky Boutique Hotel',
-        rating: 4.7,
-        pricePerNight: 160,
-        address: '1-20-8 Jinnan, Shibuya-ku, Tokyo, Japan',
-        contactNumber: '+81 3 5456 1200',
-        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Rooftop Lounge', 'Shibuya Crossing Walk', 'Free Matcha Bar', 'High Speed WiFi'],
-        distanceFromCenter: '3 mins from Shibuya Station'
-      }
-    ];
-  }
-
-  // Dynamic fallback for any destination requested worldwide!
-  return [
-    {
-      id: `h-gen-1`,
-      name: `${dest} Grand Palace & Spa`,
-      rating: 4.8,
-      pricePerNight: Math.round(budget * 0.12) || 120,
-      address: `12 Central Promenade, ${dest}`,
-      contactNumber: `+1 (800) 555-0199`,
-      imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80',
-      amenities: ['Free High-Speed WiFi', 'Panoramic City View', 'Luxury Spa & Sauna', 'Complimentary Breakfast'],
-      distanceFromCenter: `0.8 km from ${dest} Center`
-    },
-    {
-      id: `h-gen-2`,
-      name: `${dest} Eco Retreat & Villas`,
-      rating: 4.7,
-      pricePerNight: Math.round(budget * 0.08) || 85,
-      address: `45 Scenic Valley Way, ${dest}`,
-      contactNumber: `+1 (800) 555-0244`,
-      imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=500&q=80',
-      amenities: ['Organic Breakfast', 'Firepit Lounge', 'Guided Nature Trails', 'Pet Friendly'],
-      distanceFromCenter: `2.5 km from ${dest}`
-    },
-    {
-      id: `h-gen-3`,
-      name: `${dest} Boutique Skyline Suites`,
-      rating: 4.6,
-      pricePerNight: Math.round(budget * 0.10) || 105,
-      address: `88 Station Boulevard, ${dest}`,
-      contactNumber: `+1 (800) 555-0311`,
-      imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=500&q=80',
-      amenities: ['Rooftop Restaurant', 'Airport Shuttle', 'Gym & Fitness', '24/7 Room Service'],
-      distanceFromCenter: `0.3 km from Main Station`
-    }
-  ];
-};
-
-export const getDestinationFlight = (origin: string = 'India', dest: string = 'Germany', budget: number = 25000): FlightExpenseDetails => {
-  const destLower = (dest || '').toLowerCase();
-  const originLower = (origin || '').toLowerCase();
-
-  let cost = 48000;
-  let duration = 9.5;
-  let airlines = ['Lufthansa', 'Air India', 'Qatar Airways', 'Emirates'];
-  let depAirport = 'DEL / BOM (India)';
-  let arrAirport = 'FRA / MUC (Germany)';
-  let hasFlight = true;
-  let connectingAdvice = 'Direct & 1-stop flights available daily';
-
-  // 1. Germany / Munich / Berlin / Frankfurt
-  if (destLower.includes('germany') || destLower.includes('berlin') || destLower.includes('munich') || destLower.includes('frankfurt')) {
-    if (originLower.includes('usa') || originLower.includes('york')) {
-      cost = 68000;
-      depAirport = 'JFK / EWR (New York, USA)';
-      arrAirport = 'FRA / MUC (Germany)';
-      airlines = ['Lufthansa', 'United Airlines', 'Delta'];
-      duration = 8.0;
-    } else if (originLower.includes('uk') || originLower.includes('london')) {
-      cost = 18000;
-      depAirport = 'LHR / LGW (London, UK)';
-      arrAirport = 'MUC / BER (Germany)';
-      airlines = ['British Airways', 'Lufthansa', 'Eurowings'];
-      duration = 1.8;
-    } else {
-      cost = 48000;
-      depAirport = 'DEL / BOM (India)';
-      arrAirport = 'FRA (Frankfurt) / MUC (Munich)';
-      airlines = ['Lufthansa', 'Air India', 'Qatar Airways', 'Emirates'];
-      duration = 9.5;
-    }
-  } 
-  // 2. France / Paris
-  else if (destLower.includes('france') || destLower.includes('paris')) {
-    cost = 52000;
-    depAirport = originLower.includes('usa') ? 'JFK (USA)' : 'DEL / BOM (India)';
-    arrAirport = 'CDG (Charles de Gaulle, Paris)';
-    airlines = ['Air France', 'Emirates', 'Etihad Airways'];
-    duration = 10.0;
-  }
-  // 3. Japan / Tokyo / Kyoto
-  else if (destLower.includes('japan') || destLower.includes('tokyo') || destLower.includes('kyoto')) {
-    cost = 62000;
-    depAirport = originLower.includes('usa') ? 'LAX / SFO (USA)' : 'DEL (New Delhi)';
-    arrAirport = 'HND (Haneda) / NRT (Narita, Tokyo)';
-    airlines = ['ANA (All Nippon Airways)', 'Japan Airlines (JAL)', 'Air India'];
-    duration = 8.5;
-  }
-  // 4. Domestic India (Goa, Ooty, Munnar, Kodaikanal, Coimbatore)
-  else if (destLower.includes('ooty') || destLower.includes('valparai') || destLower.includes('coimbatore')) {
-    cost = 7500;
-    depAirport = 'BLR / MAA / DEL (India)';
-    arrAirport = 'CJB (Coimbatore International)';
-    airlines = ['IndiGo', 'Air India Express', 'Akasa Air'];
-    duration = 1.5;
-    connectingAdvice = 'Flight to CJB (Coimbatore), then 2-hr scenic mountain taxi to destination';
-  } else if (destLower.includes('munnar') || destLower.includes('kerala')) {
-    cost = 8200;
-    depAirport = 'DEL / BOM (India)';
-    arrAirport = 'COK (Cochin International)';
-    airlines = ['IndiGo', 'Air India', 'Vistara'];
-    duration = 2.5;
-    connectingAdvice = 'Flight to COK (Cochin), then 3.5-hr drive to Munnar hills';
-  } else if (destLower.includes('goa')) {
-    cost = 5800;
-    depAirport = 'DEL / BOM / BLR (India)';
-    arrAirport = 'GOI / GOX (Goa MOPA)';
-    airlines = ['IndiGo', 'Air India Express', 'Akasa Air'];
-    duration = 1.8;
-  }
-  // 5. Generic Worldwide
-  else {
-    cost = Math.round(budget * 0.4) || 35000;
-    depAirport = `${(origin || 'Origin').toUpperCase()} Main Airport`;
-    arrAirport = `${(dest || 'Destination').toUpperCase()} International Airport`;
-    airlines = ['Emirates', 'Qatar Airways', 'Turkish Airlines'];
-    duration = 7.5;
-  }
-
-  // Budget Feasibility Check: Flight Cost vs Total Target Budget
-  const isWithinBudget = budget >= cost;
-
-  return {
-    origin: origin || 'India',
-    destination: dest,
-    estimatedFlightCost: cost,
-    airlineSuggestions: airlines,
-    flightDurationHours: duration,
-    departureAirport: depAirport,
-    arrivalAirport: arrAirport,
-    hasFlightOption: hasFlight,
-    isWithinBudget,
-    connectingAdvice
-  };
-};
+// Re-export for compatibility
+export { getDestinationHotels, getDestinationFlight, getDestinationReviews, getRealDestinationItinerary };
 
 interface AiPlannerViewProps {
   activeTrip?: Trip;
@@ -316,27 +72,31 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
   availablePlaces,
   preferredCurrency = 'INR',
 }) => {
+  const initialDest = activeTrip?.region || activeTrip?.title || 'Chennai';
+  const initialBudget = activeTrip ? (activeTrip.budgetTotal || 25000) : 25000;
+  const initialOrigin = activeTrip?.originLocation || 'India';
+
   const [tripSummary, setTripSummary] = useState({
-    title: activeTrip ? activeTrip.title : 'Custom Offbeat Itinerary',
-    destination: activeTrip ? activeTrip.region : 'Coimbatore & Valparai',
-    region: activeTrip ? activeTrip.region : 'Tamil Nadu, India',
+    title: activeTrip ? activeTrip.title : `${initialDest} Offbeat Expedition`,
+    destination: initialDest,
+    region: initialDest,
     durationDays: activeTrip ? activeTrip.durationDays : 3,
     startDate: activeTrip?.startDate || new Date().toISOString().split('T')[0],
-    originLocation: activeTrip?.originLocation || 'India',
+    originLocation: initialOrigin,
     dates: activeTrip?.startDate ? `${activeTrip.startDate} (${activeTrip.durationDays} Days)` : 'Upcoming Weekend',
     groupSize: activeTrip ? activeTrip.groupSize : 2,
     travelerType: activeTrip ? `${activeTrip.groupSize} Travelers • ${activeTrip.travelStyle}` : '2 Travelers • Offbeat Explorer',
-    budgetTotal: activeTrip ? (activeTrip.budgetTotal || 0) : 0,
+    budgetTotal: initialBudget,
   });
 
   const [flightExpense, setFlightExpense] = useState<FlightExpenseDetails | undefined>(
-    activeTrip?.flightExpense || getDestinationFlight(activeTrip?.originLocation || 'India', activeTrip?.region || 'Coimbatore & Valparai', activeTrip?.budgetTotal || 25000)
+    activeTrip?.flightExpense || getDestinationFlight(initialOrigin, initialDest, initialBudget)
   );
 
   const [recommendedHotels, setRecommendedHotels] = useState<HotelOption[]>(
     activeTrip?.recommendedHotels && activeTrip.recommendedHotels.length > 0
       ? activeTrip.recommendedHotels
-      : getDestinationHotels(activeTrip?.region || 'Coimbatore & Valparai', activeTrip?.budgetTotal || 25000)
+      : getDestinationHotels(initialDest, initialBudget)
   );
 
   const [showEditSummaryModal, setShowEditSummaryModal] = useState(false);
@@ -354,225 +114,49 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
   // Synchronize state when activeTrip prop changes
   useEffect(() => {
     if (activeTrip) {
+      const dest = activeTrip.region || activeTrip.title || 'Chennai';
+      const b = activeTrip.budgetTotal || 25000;
+      const orig = activeTrip.originLocation || 'India';
+      const dur = activeTrip.durationDays || 3;
+
       setTripSummary({
         title: activeTrip.title,
-        destination: activeTrip.region || activeTrip.title,
-        region: activeTrip.region || 'India',
-        durationDays: activeTrip.durationDays,
+        destination: dest,
+        region: dest,
+        durationDays: dur,
         startDate: activeTrip.startDate || new Date().toISOString().split('T')[0],
-        originLocation: activeTrip.originLocation || 'India',
+        originLocation: orig,
         dates: `${activeTrip.startDate || 'Upcoming'} to ${activeTrip.endDate || 'Weekend'}`,
         groupSize: activeTrip.groupSize || 2,
         travelerType: `${activeTrip.groupSize || 2} Travelers • ${activeTrip.travelStyle || 'Explorer'}`,
-        budgetTotal: activeTrip.budgetTotal || 0,
+        budgetTotal: b,
       });
-      if (activeTrip.flightExpense) {
-        setFlightExpense(activeTrip.flightExpense);
-      }
-      if (activeTrip.recommendedHotels && activeTrip.recommendedHotels.length > 0) {
-        setRecommendedHotels(activeTrip.recommendedHotels);
-      }
+
+      // Synchronize hotels - check if existing hotels match the current destination
+      const hasMatchingHotels = activeTrip.recommendedHotels && 
+        activeTrip.recommendedHotels.length > 0 &&
+        activeTrip.recommendedHotels.some(h => 
+          h.address?.toLowerCase().includes(dest.toLowerCase().slice(0, 4)) || 
+          h.name?.toLowerCase().includes(dest.toLowerCase().slice(0, 4))
+        );
+
+      setRecommendedHotels(hasMatchingHotels ? activeTrip.recommendedHotels! : getDestinationHotels(dest, b));
+      setFlightExpense(activeTrip.flightExpense || getDestinationFlight(orig, dest, b));
+      setCommunityReviews(getDestinationReviews(dest));
+
       if (activeTrip.days && activeTrip.days.length > 0) {
         setGeneratedDays(activeTrip.days);
+      } else {
+        setGeneratedDays(getRealDestinationItinerary(dest, dur, b));
       }
     }
   }, [activeTrip]);
 
   // Pre-populated or generated Itinerary Days state
-  const [generatedDays, setGeneratedDays] = useState<ItineraryDay[]>([
-    {
-      dayNumber: 1,
-      title: 'Monkey Falls Trail & Aliyar Dam Sunset',
-      dayCost: 1200,
-      travelTimeMinutes: 65,
-      distanceKm: 42,
-      dayHighlights: ['Secluded Waterfalls', 'Dam Overlook', 'Hidden Cafe'],
-      weather: {
-        condition: 'Pleasant Mist',
-        tempMaxC: 23,
-        tempMinC: 15,
-        rainProbabilityPercent: 20,
-        humidityPercent: 80,
-        windSpeedKmh: 12,
-        uvIndex: 'Low',
-        advice: 'Early morning mountain mist till 9 AM. Crisp weather ideal for waterfall hikes.'
-      },
-      activities: [
-        {
-          id: 'act-1-1',
-          time: '06:30 AM',
-          title: 'Sunrise Ride to Monkey Falls Hidden Trail',
-          description: 'Early morning bike trail through thick forest canopy avoiding main crowds.',
-          category: 'waterfall',
-          cost: 50,
-          durationMinutes: 120,
-          isHiddenGem: true,
-          locationName: 'Monkey Falls Secret Pass'
-        },
-        {
-          id: 'act-1-2',
-          time: '09:30 AM',
-          title: 'Breakfast at The Heritage Tea Stall',
-          description: 'Fresh hot filter coffee, steamed idlis, and homemade tea cake.',
-          category: 'meal',
-          cost: 150,
-          durationMinutes: 45,
-          isHiddenGem: true,
-          locationName: 'Aliyar Foothills'
-        },
-        {
-          id: 'act-1-3',
-          time: '12:30 PM',
-          title: 'Aliyar Dam Viewpoint & Lake Walk',
-          description: 'Serene lakeside promenade with stunning Anamalai mountain reflection.',
-          category: 'viewpoint',
-          cost: 100,
-          durationMinutes: 90,
-          isHiddenGem: false,
-          locationName: 'Aliyar Reservoir'
-        },
-        {
-          id: 'act-1-4',
-          time: '04:30 PM',
-          title: 'Hidden Orchard Cafe & Local Refreshments',
-          description: 'Artisanal organic jackfruit smoothies and outdoor hammock rest.',
-          category: 'cafe',
-          cost: 300,
-          durationMinutes: 60,
-          isHiddenGem: true,
-          locationName: 'Pollachi Outskirts'
-        },
-        {
-          id: 'act-1-5',
-          time: '07:30 PM',
-          title: 'Night Campfire & Stargazing Session',
-          description: 'Cozy campfire dinner at eco-homestay near forestry boundary.',
-          category: 'stay',
-          cost: 600,
-          durationMinutes: 180,
-          isHiddenGem: true,
-          locationName: 'Eco Wilderness Camp'
-        }
-      ]
-    },
-    {
-      dayNumber: 2,
-      title: 'Valparai Hairpin Curves & Tea Estate Trek',
-      dayCost: 1850,
-      travelTimeMinutes: 90,
-      distanceKm: 65,
-      dayHighlights: ['40 Hairpin Bends', 'Sholayar Dam', 'Tea Plantation Walk'],
-      weather: {
-        condition: 'Partly Cloudy',
-        tempMaxC: 24,
-        tempMinC: 16,
-        rainProbabilityPercent: 15,
-        humidityPercent: 72,
-        windSpeedKmh: 14,
-        uvIndex: 'Moderate',
-        advice: 'Great road trip weather with passing clouds. Ideal for hairpin curve viewpoints.'
-      },
-      activities: [
-        {
-          id: 'act-2-1',
-          time: '07:00 AM',
-          title: 'Ascend 40 Scenic Hairpin Bends to Valparai',
-          description: 'Breathtaking high-elevation road trip with frequent mountain mist views.',
-          category: 'forest_route',
-          cost: 200,
-          durationMinutes: 90,
-          isHiddenGem: true,
-          locationName: 'Valparai Highway'
-        },
-        {
-          id: 'act-2-2',
-          time: '10:30 AM',
-          title: 'Private Estate Tea Factory & Tasting',
-          description: 'Guided walk through 100-year-old tea garden with fresh leaf brewing.',
-          category: 'tea_estate',
-          cost: 350,
-          durationMinutes: 90,
-          isHiddenGem: true,
-          locationName: 'Valparai Tea Sanctuary'
-        },
-        {
-          id: 'act-2-3',
-          time: '01:30 PM',
-          title: 'Traditional Village Banana Leaf Feast',
-          description: 'Homestyle organic Tamil Nadu meals prepared by local villagers.',
-          category: 'meal',
-          cost: 300,
-          durationMinutes: 60,
-          isHiddenGem: true,
-          locationName: 'Valparai Village'
-        },
-        {
-          id: 'act-2-4',
-          time: '04:30 PM',
-          title: 'Sholayar Dam Backwaters & Sunset Point',
-          description: 'Second deepest dam in Asia with quiet scenic sunset photography spots.',
-          category: 'sunset',
-          cost: 0,
-          durationMinutes: 120,
-          isHiddenGem: true,
-          locationName: 'Sholayar Reservoir'
-        }
-      ]
-    },
-    {
-      dayNumber: 3,
-      title: 'Top Slip Forest Safari & Kodiveri River Cascade',
-      dayCost: 1400,
-      travelTimeMinutes: 80,
-      distanceKm: 55,
-      dayHighlights: ['Forest Safari', 'Coracle Ride', 'Local Market'],
-      weather: {
-        condition: 'Clear Sky',
-        tempMaxC: 26,
-        tempMinC: 17,
-        rainProbabilityPercent: 5,
-        humidityPercent: 62,
-        windSpeedKmh: 10,
-        uvIndex: 'Moderate',
-        advice: 'Bright clear skies for early forest safari and river bathing.'
-      },
-      activities: [
-        {
-          id: 'act-3-1',
-          time: '06:00 AM',
-          title: 'Top Slip Wildlife Sanctuary Safari',
-          description: 'Guided forest jeep safari spotting wild elephants, deer, and exotic birds.',
-          category: 'nature_trail',
-          cost: 500,
-          durationMinutes: 150,
-          isHiddenGem: false,
-          locationName: 'Anamalai Tiger Reserve'
-        },
-        {
-          id: 'act-3-2',
-          time: '11:00 AM',
-          title: 'Kodiveri Cascade & River Bathing',
-          description: 'Refresh in ancient stone weir cascading water with natural shower pools.',
-          category: 'waterfall',
-          cost: 100,
-          durationMinutes: 120,
-          isHiddenGem: true,
-          locationName: 'Bhavani River Weir'
-        },
-        {
-          id: 'act-3-3',
-          time: '02:00 PM',
-          title: 'Souvenir & Spices Shopping in Pollachi',
-          description: 'Pick up fresh cardamom, eucalyptus oil, and local handloom crafts.',
-          category: 'village',
-          cost: 800,
-          durationMinutes: 90,
-          isHiddenGem: false,
-          locationName: 'Pollachi Town Market'
-        }
-      ]
-    }
-  ]);
+  const [generatedDays, setGeneratedDays] = useState<ItineraryDay[]>(() => {
+    if (activeTrip?.days && activeTrip.days.length > 0) return activeTrip.days;
+    return getRealDestinationItinerary(initialDest, 3, initialBudget);
+  });
 
   const [chatHistory, setChatHistory] = useState([
     {
@@ -608,26 +192,9 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
   ]);
 
   // Community Hidden Gem Reviews State
-  const [communityReviews, setCommunityReviews] = useState<HiddenGemReview[]>([
-    {
-      id: 'rev-1',
-      spotName: 'Germany Sunset Overlook & Ridge',
-      reviewerName: 'Sophie Meyer',
-      rating: 5,
-      reviewText: 'Breathtaking panoramic sunset over the German valley. Highly recommended secluded spot!',
-      date: '2026-09-08',
-      userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
-    },
-    {
-      id: 'rev-2',
-      spotName: 'Monkey Falls Secret Pass',
-      reviewerName: 'Alex Rivera',
-      rating: 5,
-      reviewText: 'Incredible hidden waterfall trail! Visit early at 7 AM to beat the crowd.',
-      date: '2026-09-05',
-      userAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80'
-    }
-  ]);
+  const [communityReviews, setCommunityReviews] = useState<HiddenGemReview[]>(() => {
+    return getDestinationReviews(initialDest);
+  });
 
   const [reviewingSpot, setReviewingSpot] = useState<{ spotName: string; activityId?: string } | null>(null);
   const [newReviewRating, setNewReviewRating] = useState(5);
@@ -675,28 +242,38 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
   const generateClientItinerary = (promptText: string) => {
     const promptLower = promptText.toLowerCase();
 
-    let destName = 'Coimbatore & Valparai';
+    let destName = 'Chennai';
     let duration = tripSummary.durationDays;
     let budget = tripSummary.budgetTotal;
 
-    if (promptLower.includes('germany') || promptLower.includes('berlin') || promptLower.includes('munich') || promptLower.includes('frankfurt')) {
+    if (promptLower.includes('chennai') || promptLower.includes('madras')) {
+      destName = 'Chennai';
+    } else if (promptLower.includes('germany') || promptLower.includes('berlin') || promptLower.includes('munich') || promptLower.includes('frankfurt')) {
       destName = 'Germany';
     } else if (promptLower.includes('france') || promptLower.includes('paris')) {
-      destName = 'France (Paris)';
+      destName = 'Paris, France';
     } else if (promptLower.includes('japan') || promptLower.includes('tokyo') || promptLower.includes('kyoto')) {
-      destName = 'Japan (Tokyo & Kyoto)';
+      destName = 'Tokyo, Japan';
+    } else if (promptLower.includes('bangalore') || promptLower.includes('bengaluru')) {
+      destName = 'Bengaluru';
+    } else if (promptLower.includes('mumbai') || promptLower.includes('bombay')) {
+      destName = 'Mumbai';
+    } else if (promptLower.includes('delhi')) {
+      destName = 'New Delhi';
+    } else if (promptLower.includes('goa')) {
+      destName = 'Goa';
     } else if (promptLower.includes('ooty')) {
-      destName = 'Ooty & Kotagiri';
-    } else if (promptLower.includes('munnar')) {
-      destName = 'Munnar & Gap Road';
+      destName = 'Ooty & Nilgiris';
+    } else if (promptLower.includes('munnar') || promptLower.includes('kerala')) {
+      destName = 'Munnar, Kerala';
     } else if (promptLower.includes('kodai')) {
-      destName = 'Kodaikanal Hidden Trails';
+      destName = 'Kodaikanal';
+    } else if (promptLower.includes('valparai') || promptLower.includes('coimbatore')) {
+      destName = 'Coimbatore & Valparai';
     } else if (promptLower.includes('amalfi')) {
       destName = 'Amalfi Coast, Italy';
-    } else if (promptLower.includes('agumbe')) {
-      destName = 'Agumbe Rainforest';
     } else if (promptText.trim()) {
-      // Extract target location if typed e.g. "Germany", "Goa", "Zurich"
+      // Extract target location if typed e.g. "Chennai", "Germany", "Goa", "Zurich"
       const cleanWord = promptText.replace(/(?:plan|trip|a|\d+|day|days|to|under|for|budget|with|and|in)+/gi, '').trim();
       if (cleanWord.length >= 3) {
         destName = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
@@ -726,12 +303,14 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
       if (parsedD >= 1 && parsedD <= 10) duration = parsedD;
     }
 
-    // Update recommended hotels & flight to match target destination!
+    // Update recommended hotels & flight & reviews to match target destination!
     const targetHotels = getDestinationHotels(destName, budget);
     setRecommendedHotels(targetHotels);
 
     const targetFlight = getDestinationFlight(tripSummary.originLocation, destName, budget);
     setFlightExpense(targetFlight);
+
+    setCommunityReviews(getDestinationReviews(destName));
 
     // Update trip summary parameters
     setTripSummary(prev => ({
@@ -743,81 +322,7 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
       budgetTotal: budget,
     }));
 
-    // Generate Days array dynamically
-    const newDays: ItineraryDay[] = [];
-
-    for (let d = 1; d <= duration; d++) {
-      const isWaterfalls = promptLower.includes('waterfall') || d === 1;
-      const isTea = promptLower.includes('tea') || promptLower.includes('coffee') || d === 2;
-
-      const dayTitle = d === 1 
-        ? `${destName} Arrival & Waterfall Sanctuary` 
-        : d === 2 
-        ? `${destName} Mountain Ridge & Tea Estate Trek` 
-        : `${destName} Forest Safari & Local Heritage Trails`;
-
-      const dayActivities: Activity[] = [
-        {
-          id: `gen-act-${d}-1`,
-          time: '07:00 AM',
-          title: isWaterfalls ? `${destName} Hidden Cascade Walk` : `${destName} Sunrise Overlook Point`,
-          description: 'Early morning quiet trail with minimal crowds and optimal soft sunrise lighting.',
-          category: isWaterfalls ? 'waterfall' : 'viewpoint',
-          cost: Math.round(budget * 0.02),
-          durationMinutes: 120,
-          isHiddenGem: true,
-          locationName: `${destName} North Ridge`
-        },
-        {
-          id: `gen-act-${d}-2`,
-          time: '10:00 AM',
-          title: isTea ? 'Organic Tea Plantation & Estate Tasting' : 'Local Artisan Village Workshop',
-          description: 'Experience authentic regional craftsmanship, brewing, and local traditions.',
-          category: isTea ? 'tea_estate' : 'village',
-          cost: Math.round(budget * 0.04),
-          durationMinutes: 90,
-          isHiddenGem: true,
-          locationName: `${destName} Estate Pass`
-        },
-        {
-          id: `gen-act-${d}-3`,
-          time: '01:00 PM',
-          title: 'Traditional Homestyle Regional Feast',
-          description: 'Locally cooked organic multi-course meal served in serene natural surroundings.',
-          category: 'meal',
-          cost: Math.round(budget * 0.03),
-          durationMinutes: 60,
-          isHiddenGem: false,
-          locationName: `${destName} Valley Dining`
-        },
-        {
-          id: `gen-act-${d}-4`,
-          time: '04:30 PM',
-          title: 'Secret Reservoir & Sunset Hammock Rest',
-          description: 'Unwind at a secluded waterbody with panoramic evening sunset vistas.',
-          category: 'sunset',
-          cost: 0,
-          durationMinutes: 120,
-          isHiddenGem: true,
-          locationName: `${destName} Sunset Point`
-        }
-      ];
-
-      const dayCostSum = dayActivities.reduce((acc, a) => acc + a.cost, 0);
-
-      newDays.push({
-        dayNumber: d,
-        title: dayTitle,
-        dayCost: dayCostSum,
-        travelTimeMinutes: 45 + d * 15,
-        distanceKm: 30 + d * 12,
-        dayHighlights: ['Offbeat Trail', 'Local Cuisine', 'Panoramic Sunset'],
-        weather: getWeatherForDestinationDay(destName, d),
-        activities: dayActivities
-      });
-    }
-
-    return newDays;
+    return getRealDestinationItinerary(destName, duration, budget);
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {

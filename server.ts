@@ -244,6 +244,105 @@ app.post("/api/ai/generate-trip", async (req, res) => {
     const ai = getGeminiClient();
 
     if (!ai) {
+      const destLower = dest.toLowerCase();
+      let fallbackHotels = [
+        {
+          id: "h-1",
+          name: `${dest} Grand Palace & Suites`,
+          rating: 4.8,
+          pricePerNight: Math.round(totalBudget * 0.15) || 5500,
+          address: `12 Central Heritage Avenue, ${dest}`,
+          contactNumber: "+91 1800 200 4567",
+          imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+          amenities: ["Free High-Speed Wi-Fi", "Breakfast Included", "City Center Access"]
+        }
+      ];
+
+      let fallbackFlight = {
+        origin: originLoc,
+        destination: dest,
+        estimatedFlightCost: 5500,
+        airlineSuggestions: ["IndiGo", "Air India", "Akasa Air"],
+        flightDurationHours: 1.5,
+        departureAirport: "DEL / BOM / BLR (India)",
+        arrivalAirport: `${dest.toUpperCase().slice(0, 3)} Airport`,
+        hasFlightOption: true,
+        isWithinBudget: totalBudget >= 5500,
+        connectingAdvice: "Direct daily scheduled flights"
+      };
+
+      if (destLower.includes('chennai') || destLower.includes('madras')) {
+        fallbackHotels = [
+          {
+            id: "h-che-1",
+            name: "ITC Grand Chola, Chennai",
+            rating: 4.9,
+            pricePerNight: 8500,
+            address: "63 Anna Salai, Guindy, Chennai 600032, Tamil Nadu, India",
+            contactNumber: "+91 44 2220 0000",
+            imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+            amenities: ["Royal Chola Architecture", "10 Dining Venues", "Kaya Kalp Spa", "Outdoor Pools"]
+          },
+          {
+            id: "h-che-2",
+            name: "The Leela Palace Chennai",
+            rating: 4.9,
+            pricePerNight: 9200,
+            address: "Adyar Seaface, MRC Nagar, Chennai 600028, Tamil Nadu, India",
+            contactNumber: "+91 44 3366 1234",
+            imageUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
+            amenities: ["Bay of Bengal Sea View", "ESPA Spa", "Infinity Pool", "Butler Service"]
+          },
+          {
+            id: "h-che-3",
+            name: "Taj Connemara, Chennai",
+            rating: 4.8,
+            pricePerNight: 6800,
+            address: "Binny Road, Anna Salai, Chennai 600002, Tamil Nadu, India",
+            contactNumber: "+91 44 6600 0000",
+            imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80",
+            amenities: ["Colonial Heritage", "Verandah Cafe", "Jiva Spa", "Tropical Gardens"]
+          }
+        ];
+        fallbackFlight = {
+          origin: originLoc,
+          destination: "Chennai",
+          estimatedFlightCost: 5200,
+          airlineSuggestions: ["IndiGo", "Air India", "Akasa Air", "SpiceJet"],
+          flightDurationHours: 1.5,
+          departureAirport: "DEL / BOM / BLR (India)",
+          arrivalAirport: "MAA (Chennai International Airport, Meenambakkam)",
+          hasFlightOption: true,
+          isWithinBudget: totalBudget >= 5200,
+          connectingAdvice: "Direct flights to MAA with Airport Metro to city center"
+        };
+      } else if (destLower.includes('germany') || destLower.includes('munich') || destLower.includes('berlin')) {
+        fallbackHotels = [
+          {
+            id: "h-de-1",
+            name: "The Charles Hotel Munich",
+            rating: 4.9,
+            pricePerNight: 16500,
+            address: "Sophienstraße 28, 80333 München, Germany",
+            contactNumber: "+49 89 5445580",
+            imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+            amenities: ["Botanical Garden Views", "Indoor Spa & Pool", "Sophia's Dining"]
+          }
+        ];
+        fallbackFlight = {
+          origin: originLoc,
+          destination: "Germany",
+          estimatedFlightCost: 48000,
+          airlineSuggestions: ["Lufthansa", "Air India", "Emirates", "Qatar Airways"],
+          flightDurationHours: 9.5,
+          departureAirport: "DEL / BOM (India)",
+          arrivalAirport: "FRA / MUC (Germany)",
+          hasFlightOption: true,
+          isWithinBudget: totalBudget >= 48000,
+          connectingAdvice: "Direct & 1-stop flights available daily"
+        };
+      }
+
       return res.json({
         id: `trip-real-${Date.now()}`,
         title: `${days}-Day ${style} Expedition to ${dest}`,
@@ -258,25 +357,8 @@ app.post("/api/ai/generate-trip", async (req, res) => {
         pace: "Balanced",
         transportMode: "Car",
         originLocation: originLoc,
-        flightExpense: {
-          origin: originLoc,
-          destination: dest,
-          estimatedFlightCost: 45000,
-          airlineSuggestions: ["Lufthansa", "Air India", "Emirates"],
-          flightDurationHours: 9
-        },
-        recommendedHotels: [
-          {
-            id: "h-1",
-            name: `Grand Central Hotel ${dest}`,
-            rating: 4.8,
-            pricePerNight: 4500,
-            address: `Main Boulevard 12, ${dest}`,
-            contactNumber: "+49 30 12345678",
-            imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
-            amenities: ["Free Wi-Fi", "Breakfast Included", "City Center"]
-          }
-        ],
+        flightExpense: fallbackFlight,
+        recommendedHotels: fallbackHotels,
         days: Array.from({ length: days }, (_, i) => ({
           dayNumber: i + 1,
           title: `Day ${i + 1}: ${dest} Sightseeing & Local Experience`,
