@@ -39,10 +39,194 @@ import {
   Star,
   Globe
 } from 'lucide-react';
-import { Trip, Place, ItineraryDay, Activity, HotelOption, FlightExpenseDetails } from '../types';
+import { Trip, Place, ItineraryDay, Activity, HotelOption, FlightExpenseDetails, HiddenGemReview } from '../types';
 import { getWeatherForDestinationDay, getWeatherTheme } from '../utils/weatherUtils';
 import { formatCurrency } from '../utils/currencyUtils';
 import { generateTripFromBackend } from '../utils/apiClient';
+
+export const getDestinationHotels = (dest: string, budget: number = 25000): HotelOption[] => {
+  const destLower = (dest || '').toLowerCase();
+
+  if (destLower.includes('germany') || destLower.includes('berlin') || destLower.includes('munich') || destLower.includes('frankfurt') || destLower.includes('hamburg')) {
+    return [
+      {
+        id: 'h-de-1',
+        name: 'The Charles Hotel Munich',
+        rating: 4.9,
+        pricePerNight: 185,
+        address: 'Sophienstraße 28, 80333 München, Germany',
+        contactNumber: '+49 89 5445580',
+        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Spa & Indoor Pool', 'Botanical Garden View', 'Fine Dining', 'Free High-Speed WiFi'],
+        distanceFromCenter: '0.6 km from Central Station'
+      },
+      {
+        id: 'h-de-2',
+        name: 'Hotel Adlon Kempinski Berlin',
+        rating: 4.8,
+        pricePerNight: 220,
+        address: 'Unter den Linden 77, 10117 Berlin, Germany',
+        contactNumber: '+49 30 22610',
+        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Brandenburg Gate View', 'Michelin Dining', 'Luxury Spa', 'Concierge Service'],
+        distanceFromCenter: '0.2 km from Brandenburg Gate'
+      },
+      {
+        id: 'h-de-3',
+        name: 'Steigenberger Grandhotel Frankfurt',
+        rating: 4.7,
+        pricePerNight: 145,
+        address: 'Bethmannstraße 33, 60311 Frankfurt am Main, Germany',
+        contactNumber: '+49 69 21502',
+        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Historical Architecture', 'Executive Lounge', 'Sauna & Gym', 'Airport Shuttle'],
+        distanceFromCenter: '0.4 km from City Center'
+      }
+    ];
+  }
+
+  if (destLower.includes('france') || destLower.includes('paris')) {
+    return [
+      {
+        id: 'h-fr-1',
+        name: 'Le Meurice Paris Central',
+        rating: 4.9,
+        pricePerNight: 240,
+        address: '228 Rue de Rivoli, 75001 Paris, France',
+        contactNumber: '+33 1 44 58 10 10',
+        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Eiffel Tower Vistas', 'Alain Ducasse Dining', 'Spa Valmont', 'Valet Parking'],
+        distanceFromCenter: 'Tuileries Garden'
+      },
+      {
+        id: 'h-fr-2',
+        name: 'Hôtel Plaza Athénée',
+        rating: 4.8,
+        pricePerNight: 280,
+        address: '25 Avenue Montaigne, 75008 Paris, France',
+        contactNumber: '+33 1 53 67 66 65',
+        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Haute Couture Shopping', 'Dior Institute Spa', 'Courtyard Garden', '24/7 Room Service'],
+        distanceFromCenter: 'Champs-Élysées'
+      },
+      {
+        id: 'h-fr-3',
+        name: 'Boutique Hotel Montmartre',
+        rating: 4.6,
+        pricePerNight: 125,
+        address: '15 Rue Abbesses, 75018 Paris, France',
+        contactNumber: '+33 1 42 52 01 20',
+        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Artist Studio Vibes', 'Artisanal Bakery', 'Free WiFi', 'Sacré-Cœur Walk'],
+        distanceFromCenter: 'Montmartre Village'
+      }
+    ];
+  }
+
+  if (destLower.includes('japan') || destLower.includes('tokyo') || destLower.includes('kyoto')) {
+    return [
+      {
+        id: 'h-jp-1',
+        name: 'Hoshinoya Kyoto Riverside Ryokan',
+        rating: 4.9,
+        pricePerNight: 350,
+        address: '116 Arashiyama Genroku-cho, Nishikyo-ku, Kyoto, Japan',
+        contactNumber: '+81 50 3786 1144',
+        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Traditional Tatami Suites', 'Private Boat Transfer', 'Kaiseki Dining', 'Bamboo Forest View'],
+        distanceFromCenter: 'Arashiyama River'
+      },
+      {
+        id: 'h-jp-2',
+        name: 'The Capitol Hotel Tokyu Tokyo',
+        rating: 4.8,
+        pricePerNight: 280,
+        address: '2-10-3 Nagata-cho, Chiyoda-ku, Tokyo, Japan',
+        contactNumber: '+81 3 3503 0109',
+        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Imperial Palace View', 'Indoor Swimming Pool', 'Japanese Garden', 'Subway Direct Access'],
+        distanceFromCenter: 'Nagatacho'
+      },
+      {
+        id: 'h-jp-3',
+        name: 'Shibuya Sky Boutique Hotel',
+        rating: 4.7,
+        pricePerNight: 160,
+        address: '1-20-8 Jinnan, Shibuya-ku, Tokyo, Japan',
+        contactNumber: '+81 3 5456 1200',
+        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Rooftop Lounge', 'Shibuya Crossing Walk', 'Free Matcha Bar', 'High Speed WiFi'],
+        distanceFromCenter: '3 mins from Shibuya Station'
+      }
+    ];
+  }
+
+  // Dynamic fallback for any destination requested worldwide!
+  return [
+    {
+      id: `h-gen-1`,
+      name: `${dest} Grand Palace & Spa`,
+      rating: 4.8,
+      pricePerNight: Math.round(budget * 0.12) || 120,
+      address: `12 Central Promenade, ${dest}`,
+      contactNumber: `+1 (800) 555-0199`,
+      imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80',
+      amenities: ['Free High-Speed WiFi', 'Panoramic City View', 'Luxury Spa & Sauna', 'Complimentary Breakfast'],
+      distanceFromCenter: `0.8 km from ${dest} Center`
+    },
+    {
+      id: `h-gen-2`,
+      name: `${dest} Eco Retreat & Villas`,
+      rating: 4.7,
+      pricePerNight: Math.round(budget * 0.08) || 85,
+      address: `45 Scenic Valley Way, ${dest}`,
+      contactNumber: `+1 (800) 555-0244`,
+      imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=500&q=80',
+      amenities: ['Organic Breakfast', 'Firepit Lounge', 'Guided Nature Trails', 'Pet Friendly'],
+      distanceFromCenter: `2.5 km from ${dest}`
+    },
+    {
+      id: `h-gen-3`,
+      name: `${dest} Boutique Skyline Suites`,
+      rating: 4.6,
+      pricePerNight: Math.round(budget * 0.10) || 105,
+      address: `88 Station Boulevard, ${dest}`,
+      contactNumber: `+1 (800) 555-0311`,
+      imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=500&q=80',
+      amenities: ['Rooftop Restaurant', 'Airport Shuttle', 'Gym & Fitness', '24/7 Room Service'],
+      distanceFromCenter: `0.3 km from Main Station`
+    }
+  ];
+};
+
+export const getDestinationFlight = (origin: string, dest: string, budget: number = 25000): FlightExpenseDetails => {
+  const destLower = (dest || '').toLowerCase();
+  let cost = Math.round(budget * 0.35) || 45000;
+  let duration = 8;
+  let airlines = ['Emirates', 'Lufthansa', 'Air India'];
+
+  if (destLower.includes('germany') || destLower.includes('berlin') || destLower.includes('munich') || destLower.includes('frankfurt')) {
+    cost = 48000;
+    duration = 9.5;
+    airlines = ['Lufthansa', 'Air India', 'Qatar Airways', 'Emirates'];
+  } else if (destLower.includes('france') || destLower.includes('paris')) {
+    cost = 52000;
+    duration = 10;
+    airlines = ['Air France', 'Emirates', 'Etihad Airways'];
+  } else if (destLower.includes('japan') || destLower.includes('tokyo') || destLower.includes('kyoto')) {
+    cost = 62000;
+    duration = 8.5;
+    airlines = ['ANA (All Nippon Airways)', 'Japan Airlines (JAL)', 'Air India'];
+  }
+
+  return {
+    origin: origin || 'India',
+    destination: dest,
+    estimatedFlightCost: cost,
+    airlineSuggestions: airlines,
+    flightDurationHours: duration
+  };
+};
 
 interface AiPlannerViewProps {
   activeTrip?: Trip;
@@ -77,51 +261,13 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
   });
 
   const [flightExpense, setFlightExpense] = useState<FlightExpenseDetails | undefined>(
-    activeTrip?.flightExpense || {
-      origin: 'India',
-      destination: activeTrip?.region || 'Coimbatore',
-      estimatedFlightCost: 12500,
-      airlineSuggestions: ['IndiGo', 'Air India Express', 'Vistara'],
-      flightDurationHours: 2.5
-    }
+    activeTrip?.flightExpense || getDestinationFlight(activeTrip?.originLocation || 'India', activeTrip?.region || 'Coimbatore & Valparai', activeTrip?.budgetTotal || 25000)
   );
 
   const [recommendedHotels, setRecommendedHotels] = useState<HotelOption[]>(
-    activeTrip?.recommendedHotels || [
-      {
-        id: 'hotel-1',
-        name: 'The Heritage Sanctuary Resort',
-        rating: 4.8,
-        pricePerNight: 4500,
-        address: '12 Anamalai Hill Road, Valparai',
-        contactNumber: '+91 98422 12345',
-        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Free WiFi', 'Mountain View', 'Infinity Pool', 'Complimentary Breakfast'],
-        distanceFromCenter: '1.5 km from center'
-      },
-      {
-        id: 'hotel-2',
-        name: 'Eco Mist Homestay & Villas',
-        rating: 4.6,
-        pricePerNight: 2800,
-        address: '45 Tea Estate Lane, Valparai',
-        contactNumber: '+91 94431 87654',
-        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Organic Dining', 'Firepit', 'Guided Plantation Walk', 'Pet Friendly'],
-        distanceFromCenter: '3.2 km from center'
-      },
-      {
-        id: 'hotel-3',
-        name: 'Grand Skyline Suites',
-        rating: 4.7,
-        pricePerNight: 5200,
-        address: '88 Station Road, Coimbatore',
-        contactNumber: '+91 80560 99887',
-        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=500&q=80',
-        amenities: ['Rooftop Restaurant', 'Airport Shuttle', 'Spa & Gym', '24/7 Concierge'],
-        distanceFromCenter: '0.5 km from center'
-      }
-    ]
+    activeTrip?.recommendedHotels && activeTrip.recommendedHotels.length > 0
+      ? activeTrip.recommendedHotels
+      : getDestinationHotels(activeTrip?.region || 'Coimbatore & Valparai', activeTrip?.budgetTotal || 25000)
   );
 
   const [showEditSummaryModal, setShowEditSummaryModal] = useState(false);
@@ -392,6 +538,70 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
     { id: 'spot-3', name: 'Sholayar Backwaters', img: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=300&q=80' }
   ]);
 
+  // Community Hidden Gem Reviews State
+  const [communityReviews, setCommunityReviews] = useState<HiddenGemReview[]>([
+    {
+      id: 'rev-1',
+      spotName: 'Germany Sunset Overlook & Ridge',
+      reviewerName: 'Sophie Meyer',
+      rating: 5,
+      reviewText: 'Breathtaking panoramic sunset over the German valley. Highly recommended secluded spot!',
+      date: '2026-09-08',
+      userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
+    },
+    {
+      id: 'rev-2',
+      spotName: 'Monkey Falls Secret Pass',
+      reviewerName: 'Alex Rivera',
+      rating: 5,
+      reviewText: 'Incredible hidden waterfall trail! Visit early at 7 AM to beat the crowd.',
+      date: '2026-09-05',
+      userAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80'
+    }
+  ]);
+
+  const [reviewingSpot, setReviewingSpot] = useState<{ spotName: string; activityId?: string } | null>(null);
+  const [newReviewRating, setNewReviewRating] = useState(5);
+  const [newReviewerName, setNewReviewerName] = useState('Arshuu');
+  const [newReviewText, setNewReviewText] = useState('');
+
+  const handleSaveHiddenGemReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewingSpot || !newReviewText.trim()) return;
+
+    const newRev: HiddenGemReview = {
+      id: `rev-${Date.now()}`,
+      spotName: reviewingSpot.spotName,
+      activityId: reviewingSpot.activityId,
+      reviewerName: newReviewerName || 'ExploreX Traveler',
+      rating: newReviewRating,
+      reviewText: newReviewText,
+      date: new Date().toISOString().split('T')[0],
+      userAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80'
+    };
+
+    setCommunityReviews(prev => [newRev, ...prev]);
+
+    if (reviewingSpot.activityId) {
+      setGeneratedDays(prev => prev.map(d => ({
+        ...d,
+        activities: d.activities.map(a => {
+          if (a.id === reviewingSpot.activityId) {
+            return {
+              ...a,
+              reviews: [...(a.reviews || []), newRev]
+            };
+          }
+          return a;
+        })
+      })));
+    }
+
+    setReviewingSpot(null);
+    setNewReviewText('');
+    showToast(`Your review for "${reviewingSpot.spotName}" has been published for other travelers!`);
+  };
+
   // Pure Client-Side AI Itinerary Generator Engine
   const generateClientItinerary = (promptText: string) => {
     const promptLower = promptText.toLowerCase();
@@ -400,11 +610,29 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
     let duration = tripSummary.durationDays;
     let budget = tripSummary.budgetTotal;
 
-    if (promptLower.includes('ooty')) destName = 'Ooty & Kotagiri';
-    if (promptLower.includes('munnar')) destName = 'Munnar & Gap Road';
-    if (promptLower.includes('kodai')) destName = 'Kodaikanal Hidden Trails';
-    if (promptLower.includes('amalfi')) destName = 'Amalfi Coast';
-    if (promptLower.includes('agumbe')) destName = 'Agumbe Rainforest';
+    if (promptLower.includes('germany') || promptLower.includes('berlin') || promptLower.includes('munich') || promptLower.includes('frankfurt')) {
+      destName = 'Germany';
+    } else if (promptLower.includes('france') || promptLower.includes('paris')) {
+      destName = 'France (Paris)';
+    } else if (promptLower.includes('japan') || promptLower.includes('tokyo') || promptLower.includes('kyoto')) {
+      destName = 'Japan (Tokyo & Kyoto)';
+    } else if (promptLower.includes('ooty')) {
+      destName = 'Ooty & Kotagiri';
+    } else if (promptLower.includes('munnar')) {
+      destName = 'Munnar & Gap Road';
+    } else if (promptLower.includes('kodai')) {
+      destName = 'Kodaikanal Hidden Trails';
+    } else if (promptLower.includes('amalfi')) {
+      destName = 'Amalfi Coast, Italy';
+    } else if (promptLower.includes('agumbe')) {
+      destName = 'Agumbe Rainforest';
+    } else if (promptText.trim()) {
+      // Extract target location if typed e.g. "Germany", "Goa", "Zurich"
+      const cleanWord = promptText.replace(/(?:plan|trip|a|\d+|day|days|to|under|for|budget|with|and|in)+/gi, '').trim();
+      if (cleanWord.length >= 3) {
+        destName = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
+      }
+    }
 
     // Parse budget from text if user typed e.g. "under 45,000", "budget 8000", "15k", "₹25000"
     const kMatch = promptLower.match(/(?:budget|under|for|cap|₹|\$)?\s*(\d+(?:\.\d+)?)\s*k\b/i);
@@ -429,11 +657,19 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
       if (parsedD >= 1 && parsedD <= 10) duration = parsedD;
     }
 
+    // Update recommended hotels & flight to match target destination!
+    const targetHotels = getDestinationHotels(destName, budget);
+    setRecommendedHotels(targetHotels);
+
+    const targetFlight = getDestinationFlight(tripSummary.originLocation, destName, budget);
+    setFlightExpense(targetFlight);
+
     // Update trip summary parameters
     setTripSummary(prev => ({
       ...prev,
       title: `${destName} Offbeat Expedition`,
       destination: destName,
+      region: destName,
       durationDays: duration,
       budgetTotal: budget,
     }));
@@ -1246,6 +1482,15 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
                         </span>
 
                         <button
+                          onClick={() => setReviewingSpot({ spotName: act.title, activityId: act.id })}
+                          className="px-2 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-extrabold text-[10px] border border-amber-200 dark:border-amber-800 hover:bg-amber-100 flex items-center gap-1 cursor-pointer transition"
+                          title="Review this hidden spot for community"
+                        >
+                          <Star className="w-3 h-3 fill-amber-400 stroke-amber-500" />
+                          <span>Review Spot</span>
+                        </button>
+
+                        <button
                           onClick={() => setEditingActivity({ dayNum: day.dayNumber, act: { ...act } })}
                           className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
                           title="Edit Activity"
@@ -1347,6 +1592,57 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* COMMUNITY HIDDEN GEM REVIEWS & TIPS */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-2xs">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <Star className="w-5 h-5 text-amber-500 fill-amber-400" />
+            <div>
+              <h3 className="font-extrabold text-slate-900 dark:text-white text-base">Community Reviews & Hidden Spot Ratings</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Real traveler reviews and advice for hidden gems so everyone can discover verified spots</p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setReviewingSpot({ spotName: tripSummary.destination })}
+            className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-2xs transition cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>+ Review a Hidden Spot</span>
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {communityReviews.map((rev) => (
+            <div key={rev.id} className="bg-slate-50 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700 rounded-2xl p-4 space-y-2 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <img src={rev.userAvatar} alt={rev.reviewerName} className="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+                  <div>
+                    <h4 className="font-bold text-xs text-slate-900 dark:text-white">{rev.reviewerName}</h4>
+                    <span className="text-[10px] text-slate-400 font-medium">{rev.date}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/60 px-2.5 py-1 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-500" />
+                  <span className="text-xs font-black text-amber-800 dark:text-amber-300">{rev.rating}.0</span>
+                </div>
+              </div>
+
+              <div className="pt-1">
+                <span className="text-[10px] font-extrabold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2.5 py-0.5 rounded-md border border-blue-200 dark:border-blue-800 inline-block mb-1">
+                  📍 {rev.spotName}
+                </span>
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed italic">
+                  "{rev.reviewText}"
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Edit Activity Modal */}
       {editingActivity && (
@@ -1629,6 +1925,88 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Write Community Review Modal */}
+      {reviewingSpot !== null && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-xl text-slate-900 dark:text-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Review Hidden Spot</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Share tips and rating for "{reviewingSpot.spotName}"</p>
+              </div>
+              <button onClick={() => setReviewingSpot(null)} className="p-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveHiddenGemReview} className="space-y-3 text-xs font-medium">
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Your Rating</label>
+                <div className="flex items-center gap-1.5 pt-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setNewReviewRating(star)}
+                      className="p-1 cursor-pointer transition hover:scale-110"
+                    >
+                      <Star
+                        className={`w-6 h-6 ${
+                          star <= newReviewRating
+                            ? 'text-amber-400 fill-amber-400'
+                            : 'text-slate-300 dark:text-slate-700'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                  <span className="text-xs font-black text-amber-500 ml-2">{newReviewRating}.0 Stars</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Your Name</label>
+                <input
+                  type="text"
+                  value={newReviewerName}
+                  onChange={(e) => setNewReviewerName(e.target.value)}
+                  placeholder="Your Name"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-semibold focus:outline-none focus:border-blue-500 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Review & Local Tips for Travelers</label>
+                <textarea
+                  rows={3}
+                  required
+                  placeholder="e.g. Visit early morning for best views, park near the main entrance..."
+                  value={newReviewText}
+                  onChange={(e) => setNewReviewText(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 font-medium focus:outline-none focus:border-blue-500 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setReviewingSpot(null)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold shadow-xs cursor-pointer flex items-center gap-1.5"
+                >
+                  <Star className="w-3.5 h-3.5 fill-white" />
+                  <span>Publish Review</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

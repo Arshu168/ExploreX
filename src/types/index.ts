@@ -39,6 +39,17 @@ export interface Place {
   isBookmarked?: boolean;
 }
 
+export interface HiddenGemReview {
+  id: string;
+  spotName: string;
+  activityId?: string;
+  reviewerName: string;
+  rating: number;
+  reviewText: string;
+  date: string;
+  userAvatar?: string;
+}
+
 export interface Activity {
   id: string;
   time: string;
@@ -50,6 +61,7 @@ export interface Activity {
   durationMinutes: number;
   isHiddenGem: boolean;
   locationName?: string;
+  reviews?: HiddenGemReview[];
 }
 
 export interface WeatherForecast {
