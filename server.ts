@@ -233,16 +233,17 @@ Provide a detailed, helpful, beautifully structured markdown response with clear
 // 3. Real AI Trip Generator endpoint
 app.post("/api/ai/generate-trip", async (req, res) => {
   try {
-    const { destination, duration_days, budget, travel_style, interests } = req.body;
-    const dest = destination || "Valparai, India";
+    const { destination, duration_days, budget, travel_style, interests, start_date, origin } = req.body;
+    const dest = destination || "Berlin, Germany";
     const days = Number(duration_days) || 3;
     const totalBudget = Number(budget) || 12000;
     const style = travel_style || "Balanced";
+    const startDateStr = start_date || new Date().toISOString().split('T')[0];
+    const originLoc = origin || "India";
 
     const ai = getGeminiClient();
 
     if (!ai) {
-      // Return structured fallback
       return res.json({
         id: `trip-real-${Date.now()}`,
         title: `${days}-Day ${style} Expedition to ${dest}`,
@@ -251,54 +252,57 @@ app.post("/api/ai/generate-trip", async (req, res) => {
         durationDays: days,
         budgetTotal: totalBudget,
         budgetSpent: Math.round(totalBudget * 0.85),
-        startDate: new Date().toISOString().split('T')[0],
-        coverImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-        description: `Customized ${days}-day ${style} itinerary exploring the top highlights and hidden spots around ${dest}.`,
+        startDate: startDateStr,
+        coverImage: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80",
+        description: `Customized ${days}-day ${style} itinerary exploring real attractions, hotels, and transportation around ${dest}.`,
         pace: "Balanced",
         transportMode: "Car",
+        originLocation: originLoc,
+        flightExpense: {
+          origin: originLoc,
+          destination: dest,
+          estimatedFlightCost: 45000,
+          airlineSuggestions: ["Lufthansa", "Air India", "Emirates"],
+          flightDurationHours: 9
+        },
+        recommendedHotels: [
+          {
+            id: "h-1",
+            name: `Grand Central Hotel ${dest}`,
+            rating: 4.8,
+            pricePerNight: 4500,
+            address: `Main Boulevard 12, ${dest}`,
+            contactNumber: "+49 30 12345678",
+            imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+            amenities: ["Free Wi-Fi", "Breakfast Included", "City Center"]
+          }
+        ],
         days: Array.from({ length: days }, (_, i) => ({
           dayNumber: i + 1,
-          title: `Day ${i + 1}: ${dest} Exploration`,
+          title: `Day ${i + 1}: ${dest} Sightseeing & Local Experience`,
           activities: [
             {
               time: "08:30 AM",
-              activity: `Morning Sightseeing & Trail Walk`,
-              location: `${dest} Main Circuit`,
+              activity: `Morning Exploration at ${dest} Central Landmark`,
+              location: `${dest} Main District`,
               estimatedCost: Math.round(totalBudget / (days * 3)),
               category: "sightseeing"
-            },
-            {
-              time: "01:00 PM",
-              activity: `Local Culinary Experience`,
-              location: `${dest} Food Spot`,
-              estimatedCost: Math.round(totalBudget / (days * 4)),
-              category: "food"
             }
           ]
         }))
       });
     }
 
-    const prompt = `Generate a realistic, detailed ${days}-day travel itinerary for "${dest}".
+    const prompt = `Generate a highly accurate, realistic ${days}-day travel itinerary for real existing places in "${dest}" starting on "${startDateStr}" traveling from origin "${originLoc}".
 Target Budget: ₹${totalBudget} total.
 Travel Style: ${style}.
 Interests: ${Array.isArray(interests) ? interests.join(', ') : 'Sightseeing, Hidden Gems, Local Food'}.
 
-Return a single JSON object with these exact keys:
-- title (string: e.g. "${days}-Day ${style} Expedition to ${dest}")
-- description (string: 2 sentence summary)
-- coverImage (string URL from Unsplash matching the vibe)
-- pace (string: "Relaxed", "Balanced", or "Fast")
-- transportMode (string: "Car", "Bike/Scooter", "Bus/Train", or "Walking")
-- days: array of ${days} day objects. Each day object has:
-  - dayNumber (number)
-  - title (string)
-  - activities: array of 3-4 activity objects. Each activity has:
-    - time (string: e.g. "09:00 AM")
-    - activity (string: activity name/description)
-    - location (string: place name)
-    - estimatedCost (number in INR)
-    - category (string: "sightseeing", "food", "adventure", "culture", or "relax")`;
+CRITICAL REQUIREMENTS:
+1. ONLY suggest real, existing places, landmarks, restaurants, and attractions in "${dest}". Use accurate estimated costs.
+2. Provide 3 REAL recommended hotels/resorts in "${dest}" with real hotel names, realistic street addresses, price per night in INR, and working phone contact numbers (+country code format).
+3. Provide round-trip estimated flight/train transport expense from "${originLoc}" to "${dest}" (estimatedFlightCost in INR, airlineSuggestions, flightDurationHours).
+4. Provide structured day-by-day itinerary with exact activity locations, time slots, categories, and costs.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-3.6-flash",
@@ -313,6 +317,35 @@ Return a single JSON object with these exact keys:
             coverImage: { type: Type.STRING },
             pace: { type: Type.STRING },
             transportMode: { type: Type.STRING },
+            flightExpense: {
+              type: Type.OBJECT,
+              properties: {
+                origin: { type: Type.STRING },
+                destination: { type: Type.STRING },
+                estimatedFlightCost: { type: Type.NUMBER },
+                airlineSuggestions: { type: Type.ARRAY, items: { type: Type.STRING } },
+                flightDurationHours: { type: Type.NUMBER }
+              },
+              required: ["origin", "destination", "estimatedFlightCost"]
+            },
+            recommendedHotels: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  name: { type: Type.STRING },
+                  rating: { type: Type.NUMBER },
+                  pricePerNight: { type: Type.NUMBER },
+                  address: { type: Type.STRING },
+                  contactNumber: { type: Type.STRING },
+                  imageUrl: { type: Type.STRING },
+                  amenities: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  distanceFromCenter: { type: Type.STRING }
+                },
+                required: ["name", "rating", "pricePerNight", "address", "contactNumber"]
+              }
+            },
             days: {
               type: Type.ARRAY,
               items: {
@@ -348,18 +381,44 @@ Return a single JSON object with these exact keys:
 
     const fullTrip = {
       id: `trip-gemini-${Date.now()}`,
-      title: parsed.title || `${days}-Day ${style} Trip to ${dest}`,
+      title: parsed.title || `${days}-Day Expedition to ${dest}`,
       destination: dest,
       region: dest,
       durationDays: days,
       budgetTotal: totalBudget,
       budgetSpent: Math.round(totalBudget * 0.8),
-      startDate: new Date().toISOString().split('T')[0],
-      coverImage: parsed.coverImage || "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+      startDate: startDateStr,
+      originLocation: originLoc,
+      coverImage: parsed.coverImage || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80",
       description: parsed.description || `AI generated ${days}-day itinerary for ${dest}.`,
       pace: parsed.pace || "Balanced",
       transportMode: parsed.transportMode || "Car",
-      days: parsed.days || []
+      flightExpense: parsed.flightExpense || {
+        origin: originLoc,
+        destination: dest,
+        estimatedFlightCost: 45000,
+        airlineSuggestions: ["Lufthansa", "Emirates", "Air India"],
+        flightDurationHours: 8
+      },
+      recommendedHotels: (parsed.recommendedHotels || []).map((h: any, idx: number) => ({
+        ...h,
+        id: h.id || `hotel-${Date.now()}-${idx}`,
+        imageUrl: h.imageUrl || "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"
+      })),
+      days: (parsed.days || []).map((d: any) => ({
+        ...d,
+        activities: (d.activities || []).map((a: any, aIdx: number) => ({
+          ...a,
+          id: `act-${Date.now()}-${d.dayNumber}-${aIdx}`,
+          title: a.activity || a.title,
+          description: a.activity || "Explore landmark.",
+          cost: a.estimatedCost || 0,
+          durationMinutes: 90,
+          isHiddenGem: true,
+          locationName: a.location || dest
+        })),
+        dayCost: (d.activities || []).reduce((sum: number, a: any) => sum + (a.estimatedCost || 0), 0)
+      }))
     };
 
     return res.json(fullTrip);

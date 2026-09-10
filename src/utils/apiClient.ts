@@ -39,7 +39,14 @@ export async function generatePlacesFromBackend(destination: string) {
   });
 }
 
-export async function generateTripFromBackend(destination: string, durationDays: number, budget: number, travelStyle?: string) {
+export async function generateTripFromBackend(
+  destination: string, 
+  durationDays: number, 
+  budget: number, 
+  travelStyle?: string,
+  startDate?: string,
+  origin?: string
+) {
   return await fetchFromBackend('/ai/generate-trip', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -48,7 +55,9 @@ export async function generateTripFromBackend(destination: string, durationDays:
       duration_days: durationDays,
       budget,
       travel_style: travelStyle || 'Balanced',
-      interests: ['Sightseeing', 'Hidden Gems', 'Local Food']
+      interests: ['Sightseeing', 'Hidden Gems', 'Local Food'],
+      start_date: startDate || new Date().toISOString().split('T')[0],
+      origin: origin || 'India'
     })
   });
 }

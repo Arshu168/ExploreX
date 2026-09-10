@@ -75,6 +75,26 @@ export interface ItineraryDay {
   weather?: WeatherForecast;
 }
 
+export interface HotelOption {
+  id: string;
+  name: string;
+  rating: number;
+  pricePerNight: number;
+  address: string;
+  contactNumber: string;
+  imageUrl: string;
+  amenities: string[];
+  distanceFromCenter?: string;
+}
+
+export interface FlightExpenseDetails {
+  origin: string;
+  destination: string;
+  estimatedFlightCost: number;
+  airlineSuggestions: string[];
+  flightDurationHours: number;
+}
+
 export interface Trip {
   id: string;
   title: string;
@@ -86,7 +106,7 @@ export interface Trip {
   budgetTotal: number;
   budgetSpent: number;
   currency: string;
-  transportMode: 'Bike/Scooter' | 'Car' | 'Bus/Train' | 'Walking';
+  transportMode: 'Bike/Scooter' | 'Car' | 'Bus/Train' | 'Walking' | 'Flight' | 'Flight & Car';
   groupSize: number;
   travelStyle: 'Backpacker' | 'Balanced' | 'Comfort' | 'Photography Focus' | 'Digital Nomad';
   days: ItineraryDay[];
@@ -95,6 +115,9 @@ export interface Trip {
   teamId?: string;
   coverImage: string;
   createdAt: string;
+  originLocation?: string;
+  flightExpense?: FlightExpenseDetails;
+  recommendedHotels?: HotelOption[];
 }
 
 export interface Expense {

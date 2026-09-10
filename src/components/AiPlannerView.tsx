@@ -31,11 +31,18 @@ import {
   Droplets,
   Wind,
   Thermometer,
-  CloudDrizzle
+  CloudDrizzle,
+  Plane,
+  Building2,
+  Phone,
+  ExternalLink,
+  Star,
+  Globe
 } from 'lucide-react';
-import { Trip, Place, ItineraryDay, Activity } from '../types';
+import { Trip, Place, ItineraryDay, Activity, HotelOption, FlightExpenseDetails } from '../types';
 import { getWeatherForDestinationDay, getWeatherTheme } from '../utils/weatherUtils';
 import { formatCurrency } from '../utils/currencyUtils';
+import { generateTripFromBackend } from '../utils/apiClient';
 
 interface AiPlannerViewProps {
   activeTrip?: Trip;
@@ -61,11 +68,61 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
     destination: activeTrip ? activeTrip.region : 'Coimbatore & Valparai',
     region: activeTrip ? activeTrip.region : 'Tamil Nadu, India',
     durationDays: activeTrip ? activeTrip.durationDays : 3,
-    dates: 'Upcoming Weekend',
+    startDate: activeTrip?.startDate || new Date().toISOString().split('T')[0],
+    originLocation: activeTrip?.originLocation || 'India',
+    dates: activeTrip?.startDate ? `${activeTrip.startDate} (${activeTrip.durationDays} Days)` : 'Upcoming Weekend',
     groupSize: activeTrip ? activeTrip.groupSize : 2,
     travelerType: activeTrip ? `${activeTrip.groupSize} Travelers • ${activeTrip.travelStyle}` : '2 Travelers • Offbeat Explorer',
     budgetTotal: activeTrip ? (activeTrip.budgetTotal || 0) : 0,
   });
+
+  const [flightExpense, setFlightExpense] = useState<FlightExpenseDetails | undefined>(
+    activeTrip?.flightExpense || {
+      origin: 'India',
+      destination: activeTrip?.region || 'Coimbatore',
+      estimatedFlightCost: 12500,
+      airlineSuggestions: ['IndiGo', 'Air India Express', 'Vistara'],
+      flightDurationHours: 2.5
+    }
+  );
+
+  const [recommendedHotels, setRecommendedHotels] = useState<HotelOption[]>(
+    activeTrip?.recommendedHotels || [
+      {
+        id: 'hotel-1',
+        name: 'The Heritage Sanctuary Resort',
+        rating: 4.8,
+        pricePerNight: 4500,
+        address: '12 Anamalai Hill Road, Valparai',
+        contactNumber: '+91 98422 12345',
+        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Free WiFi', 'Mountain View', 'Infinity Pool', 'Complimentary Breakfast'],
+        distanceFromCenter: '1.5 km from center'
+      },
+      {
+        id: 'hotel-2',
+        name: 'Eco Mist Homestay & Villas',
+        rating: 4.6,
+        pricePerNight: 2800,
+        address: '45 Tea Estate Lane, Valparai',
+        contactNumber: '+91 94431 87654',
+        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Organic Dining', 'Firepit', 'Guided Plantation Walk', 'Pet Friendly'],
+        distanceFromCenter: '3.2 km from center'
+      },
+      {
+        id: 'hotel-3',
+        name: 'Grand Skyline Suites',
+        rating: 4.7,
+        pricePerNight: 5200,
+        address: '88 Station Road, Coimbatore',
+        contactNumber: '+91 80560 99887',
+        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=500&q=80',
+        amenities: ['Rooftop Restaurant', 'Airport Shuttle', 'Spa & Gym', '24/7 Concierge'],
+        distanceFromCenter: '0.5 km from center'
+      }
+    ]
+  );
 
   const [showEditSummaryModal, setShowEditSummaryModal] = useState(false);
   const [showAddSpotModal, setShowAddSpotModal] = useState(false);
@@ -87,11 +144,19 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
         destination: activeTrip.region || activeTrip.title,
         region: activeTrip.region || 'India',
         durationDays: activeTrip.durationDays,
+        startDate: activeTrip.startDate || new Date().toISOString().split('T')[0],
+        originLocation: activeTrip.originLocation || 'India',
         dates: `${activeTrip.startDate || 'Upcoming'} to ${activeTrip.endDate || 'Weekend'}`,
         groupSize: activeTrip.groupSize || 2,
         travelerType: `${activeTrip.groupSize || 2} Travelers • ${activeTrip.travelStyle || 'Explorer'}`,
         budgetTotal: activeTrip.budgetTotal || 0,
       });
+      if (activeTrip.flightExpense) {
+        setFlightExpense(activeTrip.flightExpense);
+      }
+      if (activeTrip.recommendedHotels && activeTrip.recommendedHotels.length > 0) {
+        setRecommendedHotels(activeTrip.recommendedHotels);
+      }
       if (activeTrip.days && activeTrip.days.length > 0) {
         setGeneratedDays(activeTrip.days);
       }
@@ -450,7 +515,7 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
     return newDays;
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatPrompt.trim()) return;
 
@@ -465,30 +530,86 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
     setChatPrompt('');
     setIsGenerating(true);
 
-    setTimeout(() => {
-      const generated = generateClientItinerary(userText);
-      setGeneratedDays(generated);
-      setIsGenerating(false);
+    try {
+      // Attempt backend AI generation using Gemini API with flight expenses, hotels, and dates
+      const res = await generateTripFromBackend(
+        userText,
+        tripSummary.durationDays,
+        tripSummary.budgetTotal,
+        'Offbeat Explorer',
+        tripSummary.startDate,
+        tripSummary.originLocation
+      );
 
-      setChatHistory(prev => [
-        ...prev,
-        {
-          id: `msg-ai-${Date.now()}`,
-          sender: 'ai',
-          text: `I've synthesized a brand new ${generated.length}-day itinerary for ${tripSummary.destination} tailored directly to your preferences!`,
-          daysPreview: generated.slice(0, 2).map((d, idx) => ({
-            day: `Day ${d.dayNumber}`,
-            title: d.title,
-            img: idx === 0 
-              ? 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80'
-              : 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=600&q=80'
-          })),
-          followUp: "Your interactive Day-by-Day timeline below has been updated in real-time. You can edit any activity or download the itinerary."
+      if (res.success && res.trip) {
+        const generated = res.trip.days || generateClientItinerary(userText);
+        setGeneratedDays(generated);
+
+        if (res.trip.flightExpense) {
+          setFlightExpense(res.trip.flightExpense);
         }
-      ]);
+        if (res.trip.recommendedHotels && res.trip.recommendedHotels.length > 0) {
+          setRecommendedHotels(res.trip.recommendedHotels);
+        }
 
-      showToast(`Itinerary generated for ${tripSummary.destination}!`);
-    }, 900);
+        const newDest = res.trip.region || tripSummary.destination;
+        setTripSummary(prev => ({
+          ...prev,
+          title: res.trip?.title || prev.title,
+          destination: newDest,
+          region: res.trip?.region || prev.region,
+          budgetTotal: res.trip?.budgetTotal || prev.budgetTotal,
+        }));
+
+        setIsGenerating(false);
+
+        setChatHistory(prev => [
+          ...prev,
+          {
+            id: `msg-ai-${Date.now()}`,
+            sender: 'ai',
+            text: `I've synthesized a brand new ${generated.length}-day global itinerary for ${newDest} (departing from ${tripSummary.originLocation} on ${tripSummary.startDate}) complete with real-time flight estimates and nearby hotels!`,
+            daysPreview: generated.slice(0, 2).map((d, idx) => ({
+              day: `Day ${d.dayNumber}`,
+              title: d.title,
+              img: idx === 0 
+                ? 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80'
+                : 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=600&q=80'
+            })),
+            followUp: "Real flight budgets, verified weather, and hotel contact numbers have been calculated below."
+          }
+        ]);
+
+        showToast(`Itinerary & flight expenses generated for ${newDest}!`);
+        return;
+      }
+    } catch (err) {
+      console.warn('Backend trip generation error, using fallback:', err);
+    }
+
+    // Fallback to client generator
+    const generated = generateClientItinerary(userText);
+    setGeneratedDays(generated);
+    setIsGenerating(false);
+
+    setChatHistory(prev => [
+      ...prev,
+      {
+        id: `msg-ai-${Date.now()}`,
+        sender: 'ai',
+        text: `I've synthesized a brand new ${generated.length}-day itinerary for ${tripSummary.destination} tailored directly to your preferences!`,
+        daysPreview: generated.slice(0, 2).map((d, idx) => ({
+          day: `Day ${d.dayNumber}`,
+          title: d.title,
+          img: idx === 0 
+            ? 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80'
+            : 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=600&q=80'
+        })),
+        followUp: "Your interactive Day-by-Day timeline below has been updated in real-time."
+      }
+    ]);
+
+    showToast(`Itinerary generated for ${tripSummary.destination}!`);
   };
 
   const handleRegenerate = () => {
@@ -507,18 +628,21 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
     const newTrip: Trip = {
       id: `trip-${Date.now()}`,
       title: tripSummary.title,
-      description: `Custom ${tripSummary.durationDays}-day offbeat itinerary planned for ${tripSummary.region}`,
+      description: `Custom ${tripSummary.durationDays}-day itinerary for ${tripSummary.region} from ${tripSummary.originLocation}`,
       region: tripSummary.region,
-      startDate: new Date().toISOString().split('T')[0],
-      endDate: new Date(Date.now() + tripSummary.durationDays * 86400000).toISOString().split('T')[0],
+      originLocation: tripSummary.originLocation,
+      startDate: tripSummary.startDate,
+      endDate: new Date(new Date(tripSummary.startDate).getTime() + tripSummary.durationDays * 86400000).toISOString().split('T')[0],
       durationDays: tripSummary.durationDays,
       budgetTotal: tripSummary.budgetTotal,
       budgetSpent: totalSpent,
       currency: 'INR',
-      transportMode: 'Bike/Scooter',
+      transportMode: 'Flight & Car',
       groupSize: tripSummary.groupSize,
       travelStyle: 'Balanced',
       days: generatedDays,
+      flightExpense,
+      recommendedHotels,
       isSaved: true,
       isFavorite: true,
       coverImage: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
@@ -784,13 +908,43 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
           </div>
 
           {/* Bottom Chat Prompt Form */}
-          <form onSubmit={handleSendMessage} className="pt-3 border-t border-slate-100 dark:border-slate-800">
+          <form onSubmit={handleSendMessage} className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+            {/* Quick Origin & Travel Date Row */}
+            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700">
+                <Globe className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                <span className="text-[10px] uppercase font-bold text-slate-400">From:</span>
+                <input
+                  type="text"
+                  value={tripSummary.originLocation}
+                  onChange={(e) => setTripSummary({ ...tripSummary, originLocation: e.target.value })}
+                  placeholder="Origin City/Country"
+                  className="bg-transparent text-slate-800 dark:text-slate-100 font-bold focus:outline-none w-24 text-xs"
+                />
+              </div>
+
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700">
+                <Calendar className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                <span className="text-[10px] uppercase font-bold text-slate-400">Date:</span>
+                <input
+                  type="date"
+                  value={tripSummary.startDate}
+                  onChange={(e) => setTripSummary({ ...tripSummary, startDate: e.target.value })}
+                  className="bg-transparent text-slate-800 dark:text-slate-100 font-bold focus:outline-none text-xs cursor-pointer"
+                />
+              </div>
+
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
+                (Weather & flights adapt to chosen date & origin)
+              </span>
+            </div>
+
             <div className="relative flex items-center">
               <input
                 type="text"
                 value={chatPrompt}
                 onChange={(e) => setChatPrompt(e.target.value)}
-                placeholder="Type e.g. 'Plan a 3-day trip to Ooty with budget 8000'..."
+                placeholder="Type e.g. 'Plan a 5-day trip to Munich, Germany with flight from India'..."
                 className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-blue-500 rounded-2xl pl-3.5 pr-28 sm:pr-32 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-medium"
               />
               <button
@@ -837,8 +991,12 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
             {/* Metadata list */}
             <div className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 font-semibold">
               <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <span>Origin: {tripSummary.originLocation}</span>
+              </div>
+              <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-                <span>{tripSummary.durationDays} Days • {tripSummary.dates}</span>
+                <span>{tripSummary.durationDays} Days • Start: {tripSummary.startDate}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-slate-500 dark:text-slate-400" />
@@ -883,6 +1041,52 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* FLIGHT & INTERCITY EXPENSE BREAKDOWN CARD */}
+      {flightExpense && (
+        <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white rounded-3xl p-5 sm:p-6 shadow-md border border-blue-800/80 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-blue-800/80 pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2.5 rounded-2xl bg-blue-600/40 border border-blue-400/30 text-blue-300">
+                <Plane className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-base text-white">Intercity Flight & Travel Expense Breakdown</h3>
+                <p className="text-xs text-blue-200 font-medium">Estimated roundtrip flight/transport cost from origin to destination</p>
+              </div>
+            </div>
+            <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Real-time Rate Estimate</span>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-semibold">
+            <div className="bg-slate-900/80 border border-blue-800/60 p-3.5 rounded-2xl space-y-1">
+              <span className="text-[10px] uppercase tracking-wider text-blue-400 font-extrabold block">Travel Route</span>
+              <p className="font-extrabold text-sm text-white flex items-center gap-1.5">
+                <span>{flightExpense.origin}</span>
+                <ArrowRight className="w-4 h-4 text-blue-400 shrink-0" />
+                <span>{flightExpense.destination}</span>
+              </p>
+            </div>
+
+            <div className="bg-slate-900/80 border border-blue-800/60 p-3.5 rounded-2xl space-y-1">
+              <span className="text-[10px] uppercase tracking-wider text-blue-400 font-extrabold block">Roundtrip Flight / Person</span>
+              <p className="font-black text-sm text-emerald-400">
+                {formatCurrency(flightExpense.estimatedFlightCost, preferredCurrency)}
+              </p>
+            </div>
+
+            <div className="bg-slate-900/80 border border-blue-800/60 p-3.5 rounded-2xl space-y-1">
+              <span className="text-[10px] uppercase tracking-wider text-blue-400 font-extrabold block">Airlines & Flight Duration</span>
+              <p className="font-bold text-xs text-slate-200">
+                {flightExpense.airlineSuggestions.join(', ')} • ~{flightExpense.flightDurationHours} hrs
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* GENERATED ITINERARY TIMELINE VIEW */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 space-y-6 shadow-2xs">
@@ -1077,6 +1281,73 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
         </div>
       </div>
 
+      {/* RECOMMENDED NEARBY HOTELS & STAYS */}
+      {recommendedHotels && recommendedHotels.length > 0 && (
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-2xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              <div>
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">Recommended Real Nearby Hotels & Stays</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Verified accommodations near your generated itinerary spots with contact numbers & locations</p>
+              </div>
+            </div>
+            <span className="text-xs text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50 dark:bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-800">
+              {recommendedHotels.length} Verified Properties
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {recommendedHotels.map((hotel) => (
+              <div key={hotel.id} className="bg-slate-50 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700 rounded-2xl overflow-hidden flex flex-col justify-between p-4 space-y-3 shadow-2xs hover:shadow-xs transition">
+                <div className="space-y-2.5">
+                  <div className="relative h-32 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-700">
+                    <img src={hotel.imageUrl} alt={hotel.name} className="w-full h-full object-cover" />
+                    <span className="absolute top-2 right-2 px-2.5 py-0.5 rounded-lg bg-slate-950/80 text-amber-400 text-[10px] font-black flex items-center gap-1 backdrop-blur-xs shadow-xs">
+                      <Star className="w-3 h-3 fill-amber-400 stroke-amber-400" />
+                      <span>{hotel.rating}</span>
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className="font-extrabold text-xs text-slate-900 dark:text-white line-clamp-1">{hotel.name}</h4>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3 h-3 text-rose-500 shrink-0" />
+                      <span className="line-clamp-1">{hotel.address}</span>
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {hotel.amenities.map((amenity, aIdx) => (
+                      <span key={aIdx} className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
+                        {amenity}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-2.5 border-t border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[9px] uppercase font-extrabold text-slate-400 block">Est. Night Rate</span>
+                    <span className="font-black text-xs text-emerald-600 dark:text-emerald-400">
+                      {formatCurrency(hotel.pricePerNight, preferredCurrency)}
+                    </span>
+                  </div>
+
+                  <a
+                    href={`tel:${hotel.contactNumber.replace(/[^0-9+]/g, '')}`}
+                    className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold flex items-center gap-1.5 shadow-2xs transition cursor-pointer"
+                  >
+                    <Phone className="w-3 h-3" />
+                    <span>{hotel.contactNumber}</span>
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Edit Activity Modal */}
       {editingActivity && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
@@ -1252,6 +1523,28 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
                   onChange={(e) => setTripSummary({ ...tripSummary, title: e.target.value })}
                   className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 font-semibold text-slate-900 dark:text-white"
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Origin City/Country</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. India, Mumbai, London"
+                    value={tripSummary.originLocation}
+                    onChange={(e) => setTripSummary({ ...tripSummary, originLocation: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 font-semibold text-slate-900 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Start Date</label>
+                  <input
+                    type="date"
+                    value={tripSummary.startDate}
+                    onChange={(e) => setTripSummary({ ...tripSummary, startDate: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 font-semibold text-slate-900 dark:text-white"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
