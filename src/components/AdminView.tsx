@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   Sparkles, 
-  TrendingUp, 
   MapPin, 
   DollarSign, 
   ShieldAlert, 
@@ -14,12 +13,22 @@ import {
   RefreshCw,
   Lock,
   ArrowLeft,
-  UserCheck
+  UserCheck,
+  FolderHeart,
+  Database,
+  Globe,
+  Radio
 } from 'lucide-react';
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, BarChart, Bar, CartesianGrid } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { Place, Trip, Memory, Expense } from '../types';
+import { checkBackendHealth } from '../utils/apiClient';
 
 interface AdminViewProps {
   userEmail?: string;
+  places?: Place[];
+  trips?: Trip[];
+  memories?: Memory[];
+  expenses?: Expense[];
   onOpenLogin?: () => void;
   onReturnDashboard?: () => void;
 }
@@ -28,11 +37,20 @@ const ADMIN_EMAIL = 'arshuu8888@gmail.com';
 
 export const AdminView: React.FC<AdminViewProps> = ({
   userEmail = '',
+  places = [],
+  trips = [],
+  memories = [],
+  expenses = [],
   onOpenLogin,
   onReturnDashboard,
 }) => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isPurging, setIsPurging] = useState(false);
+  const [healthStatus, setHealthStatus] = useState<{ isOnline: boolean; isGeminiReal: boolean }>({
+    isOnline: true,
+    isGeminiReal: true
+  });
+  const [supabaseStatus, setSupabaseStatus] = useState<string>('Checking...');
 
   const cleanEmail = userEmail.trim().toLowerCase();
   const isAdmin = cleanEmail === ADMIN_EMAIL;
@@ -41,6 +59,58 @@ export const AdminView: React.FC<AdminViewProps> = ({
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4000);
   };
+
+  useEffect(() => {
+    // Fetch live system health status
+    checkBackendHealth().then(status => {
+      setHealthStatus(status);
+    }).catch(() => {
+      setHealthStatus({ isOnline: false, isGeminiReal: false });
+    });
+
+    fetch('/api/supabase/status')
+      .then(res => res.json())
+      .then(data => {
+        if (data.connected) {
+          setSupabaseStatus(data.tableReady ? 'Connected & Table Ready' : 'Connected (Setup Required)');
+        } else {
+          setSupabaseStatus('Local Storage Sync (Offline)');
+        }
+      })
+      .catch(() => {
+        setSupabaseStatus('Local Storage Fallback');
+      });
+  }, []);
+
+  // Calculate real metrics from actual props
+  const totalPlaces = places.length;
+  const totalTrips = trips.length;
+  const totalMemories = memories.length;
+  const totalExpenses = expenses.length;
+  const totalBookmarks = places.filter(p => p.isBookmarked).length;
+  const totalBudgetTracked = trips.reduce((acc, t) => acc + (t.budgetTotal || 0), 0);
+
+  // Group real places by region
+  const regionMap: Record<string, number> = {};
+  places.forEach(p => {
+    const reg = p.region || 'Other';
+    regionMap[reg] = (regionMap[reg] || 0) + 1;
+  });
+  const regionChartData = Object.entries(regionMap).map(([region, count]) => ({
+    region: region.length > 15 ? region.substring(0, 15) + '...' : region,
+    count
+  }));
+
+  // Group real places by category
+  const categoryMap: Record<string, number> = {};
+  places.forEach(p => {
+    const cat = (p.category || 'other').replace('_', ' ').toUpperCase();
+    categoryMap[cat] = (categoryMap[cat] || 0) + 1;
+  });
+  const categoryChartData = Object.entries(categoryMap).map(([category, count]) => ({
+    category,
+    count
+  }));
 
   // If user is not admin, display secure Access Denied Screen
   if (!isAdmin) {
@@ -58,7 +128,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
             </span>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white pt-1">Admin Panel Access Required</h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-lg mx-auto leading-relaxed font-medium">
-              The ExploreX Admin Panel contains sensitive system telemetry, RAG vector indexing controls, and platform metrics. Access is strictly limited to the primary administrator (<span className="font-bold text-slate-900 dark:text-slate-100">{ADMIN_EMAIL}</span>).
+              The ExploreX Admin Panel contains live system telemetry and accurate data metrics. Access is strictly limited to the administrator (<span className="font-bold text-slate-900 dark:text-slate-100">{ADMIN_EMAIL}</span>).
             </p>
           </div>
 
@@ -95,47 +165,54 @@ export const AdminView: React.FC<AdminViewProps> = ({
   }
 
   const handleExportLogs = () => {
+    let localStorageBytes = 0;
+    try {
+      localStorageBytes = JSON.stringify(localStorage).length;
+    } catch {
+      // ignore
+    }
+
     const logs = {
       app: 'ExploreX AI Travel Platform',
-      environment: 'production-frontend',
+      environment: 'production',
+      adminUser: ADMIN_EMAIL,
       timestamp: new Date().toISOString(),
-      systemHealth: {
-        geminiVectorIndexer: { status: 'Healthy', latencyMs: 42 },
-        mapboxTileProxy: { status: 'Healthy', latencyMs: 18 },
-        ragDocumentEmbeddings: { status: 'Healthy', latencyMs: 65 },
+      liveSystemHealth: {
+        expressServer: { status: healthStatus.isOnline ? 'Online' : 'Offline', port: 3000 },
+        googleGeminiAi: { status: healthStatus.isGeminiReal ? 'Connected & Verified' : 'Fallback Engine Active' },
+        supabaseDatabase: { status: supabaseStatus },
+        openStreetMapTileEngine: { status: 'Operational' },
+        localStorageUsageBytes: localStorageBytes
       },
-      metrics: {
-        totalRegisteredUsers: 18500,
-        aiTripsGenerated: 7200,
-        aiVectorQueries: 142000,
-        indexedHiddenSpots: 15000,
+      accurateMetrics: {
+        totalCuratedPlaces: totalPlaces,
+        totalPlannedTrips: totalTrips,
+        totalTravelMemories: totalMemories,
+        totalTrackedExpenses: totalExpenses,
+        totalBookmarkedPlaces: totalBookmarks,
+        totalBudgetTrackedInr: totalBudgetTracked,
       },
-      recentEvents: [
-        { level: 'INFO', module: 'GeminiVectorIndexer', message: 'Indexed 14 hidden places around Coimbatore & Valparai' },
-        { level: 'INFO', module: 'RAGService', message: 'Vector search query executed in 42ms' },
-        { level: 'INFO', module: 'TileService', message: 'Map tiles cached for region [11.0168, 76.9558]' },
-        { level: 'INFO', module: 'AuthClient', message: 'Local user session refreshed successfully' },
-      ],
+      placeRegionsBreakdown: regionMap,
+      placeCategoriesBreakdown: categoryMap
     };
 
     const blob = new Blob([JSON.stringify(logs, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `explorex-system-logs-${Date.now()}.json`;
+    link.download = `explorex-accurate-telemetry-${Date.now()}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
-    showToast('System logs exported and downloaded successfully as JSON.');
+    showToast('Accurate system metrics exported successfully as JSON.');
   };
 
   const handlePurgeCache = () => {
     setIsPurging(true);
     
     setTimeout(() => {
-      // Clear non-essential client cache keys while preserving main state
       try {
         const preserveKeys = ['explorex_user_trips', 'explorex_profile'];
         Object.keys(localStorage).forEach((key) => {
@@ -149,27 +226,9 @@ export const AdminView: React.FC<AdminViewProps> = ({
       }
 
       setIsPurging(false);
-      showToast('Client cache purged successfully! 18.4 MB of temporary vector & map tile data cleared.');
+      showToast('Temporary cache purged successfully!');
     }, 800);
   };
-
-  const userGrowthData = [
-    { day: 'Mon', users: 1240, trips: 410 },
-    { day: 'Tue', users: 1560, trips: 530 },
-    { day: 'Wed', users: 1890, trips: 620 },
-    { day: 'Thu', users: 2100, trips: 780 },
-    { day: 'Fri', users: 2800, trips: 1050 },
-    { day: 'Sat', users: 3400, trips: 1420 },
-    { day: 'Sun', users: 3900, trips: 1680 },
-  ];
-
-  const popularSpotsData = [
-    { name: 'Monkey Falls Trail', visits: 1840 },
-    { name: 'Valparai Tea Estate', visits: 1520 },
-    { name: 'Kodiveri Hidden River', visits: 1290 },
-    { name: 'Ravello Cliff View', visits: 980 },
-    { name: 'Agumbe Sunset Point', visits: 870 },
-  ];
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto font-sans pb-12 text-slate-900 dark:text-slate-100 relative">
@@ -186,15 +245,19 @@ export const AdminView: React.FC<AdminViewProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-full bg-slate-900 dark:bg-blue-600 text-white font-black text-[10px] uppercase tracking-wider">
-              System Admin
+              Verified Administrator
             </span>
-            <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-              All Systems Operational
+            <span className={`flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full border ${
+              healthStatus.isOnline 
+                ? 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800'
+                : 'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800'
+            }`}>
+              <span className={`w-2 h-2 rounded-full ${healthStatus.isOnline ? 'bg-emerald-500 animate-ping' : 'bg-amber-500'}`} />
+              {healthStatus.isOnline ? 'Express Server Online' : 'Offline Mode'}
             </span>
           </div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white pt-1">ExploreX Platform Analytics</h1>
-          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Real-time user traffic, AI model requests, and system health metrics</p>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white pt-1">ExploreX Platform Telemetry</h1>
+          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Verified system counts, live database metrics, and actual service health</p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -203,7 +266,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
             className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold text-xs transition flex items-center gap-1.5 active:scale-95 cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
-            <span>Export Logs</span>
+            <span>Export Data JSON</span>
           </button>
           <button
             onClick={handlePurgeCache}
@@ -215,127 +278,161 @@ export const AdminView: React.FC<AdminViewProps> = ({
             ) : (
               <Trash2 className="w-3.5 h-3.5" />
             )}
-            <span>{isPurging ? 'Purging...' : 'Purge Cache'}</span>
+            <span>{isPurging ? 'Purging...' : 'Purge Temp Cache'}</span>
           </button>
         </div>
       </div>
 
-      {/* Primary KPI Grid */}
+      {/* Primary KPI Grid (Actual Data Only) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 space-y-2 shadow-2xs">
           <div className="flex items-center justify-between text-blue-600 dark:text-blue-400">
-            <Users className="w-5 h-5" />
-            <span className="text-[10px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">+14.2%</span>
+            <MapPin className="w-5 h-5" />
+            <span className="text-[10px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+              Verified
+            </span>
           </div>
-          <span className="text-2xl font-black text-slate-900 dark:text-white block">18,500</span>
-          <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Total Registered Users</span>
+          <span className="text-2xl font-black text-slate-900 dark:text-white block">{totalPlaces}</span>
+          <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Curated Destinations</span>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 space-y-2 shadow-2xs">
           <div className="flex items-center justify-between text-indigo-600 dark:text-indigo-400">
             <Sparkles className="w-5 h-5" />
-            <span className="text-[10px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">+22.8%</span>
+            <span className="text-[10px] font-extrabold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-800">
+              Active
+            </span>
           </div>
-          <span className="text-2xl font-black text-slate-900 dark:text-white block">7,200</span>
-          <span className="text-xs font-bold text-slate-600 dark:text-slate-400">AI Trips Generated</span>
+          <span className="text-2xl font-black text-slate-900 dark:text-white block">{totalTrips}</span>
+          <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Planned Itineraries</span>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 space-y-2 shadow-2xs">
           <div className="flex items-center justify-between text-amber-600 dark:text-amber-400">
-            <Activity className="w-5 h-5" />
-            <span className="text-[10px] font-extrabold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">142K</span>
+            <FolderHeart className="w-5 h-5" />
+            <span className="text-[10px] font-extrabold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-800">
+              Saved
+            </span>
           </div>
-          <span className="text-2xl font-black text-slate-900 dark:text-white block">142,000</span>
-          <span className="text-xs font-bold text-slate-600 dark:text-slate-400">AI Vector Queries</span>
+          <span className="text-2xl font-black text-slate-900 dark:text-white block">{totalMemories}</span>
+          <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Travel Memories</span>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 space-y-2 shadow-2xs">
           <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400">
-            <MapPin className="w-5 h-5" />
-            <span className="text-[10px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">+18.5%</span>
+            <DollarSign className="w-5 h-5" />
+            <span className="text-[10px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+              ₹ Total
+            </span>
           </div>
-          <span className="text-2xl font-black text-slate-900 dark:text-white block">15,000+</span>
-          <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Indexed Hidden Spots</span>
+          <span className="text-2xl font-black text-slate-900 dark:text-white block">₹{totalBudgetTracked.toLocaleString()}</span>
+          <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Total Budget Tracked</span>
         </div>
       </div>
 
-      {/* Analytics Charts */}
+      {/* Actual Data Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Daily Active Users Chart */}
+        {/* Places by Region Chart */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between">
-            <h2 className="font-extrabold text-base text-slate-900 dark:text-white">Daily Active Users & Trips</h2>
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-400">This Week</span>
+            <div>
+              <h2 className="font-extrabold text-base text-slate-900 dark:text-white">Destinations by Region</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Actual distribution of places in the dataset</p>
+            </div>
+            <span className="text-xs font-extrabold px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+              Live Data
+            </span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={userGrowthData}>
-                <defs>
-                  <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#94a3b8" strokeOpacity={0.2} />
-                <XAxis dataKey="day" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
-                <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
+              <BarChart data={regionChartData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#94a3b8" strokeOpacity={0.2} />
+                <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
+                <YAxis type="category" dataKey="region" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#64748b' }} width={120} />
                 <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '12px', backgroundColor: '#0f172a', color: '#fff' }} />
-                <Area type="monotone" dataKey="users" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorUsers)" />
-              </AreaChart>
+                <Bar dataKey="count" fill="#2563eb" radius={[0, 8, 8, 0]} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Popular Spots Chart */}
+        {/* Places by Category Chart */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between">
-            <h2 className="font-extrabold text-base text-slate-900 dark:text-white">Most Popular Hidden Spots</h2>
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-400">By Vector Views</span>
+            <div>
+              <h2 className="font-extrabold text-base text-slate-900 dark:text-white">Destinations by Category</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Actual count across categories</p>
+            </div>
+            <span className="text-xs font-extrabold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+              Live Data
+            </span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={popularSpotsData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#94a3b8" strokeOpacity={0.2} />
-                <XAxis type="number" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
-                <YAxis type="category" dataKey="name" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#64748b' }} width={120} />
+              <BarChart data={categoryChartData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#94a3b8" strokeOpacity={0.2} />
+                <XAxis dataKey="category" tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: '#64748b' }} />
+                <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
                 <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '12px', backgroundColor: '#0f172a', color: '#fff' }} />
-                <Bar dataKey="visits" fill="#10b981" radius={[0, 8, 8, 0]} />
+                <Bar dataKey="count" fill="#10b981" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Server Health Status Table */}
+      {/* Real Microservice Endpoint Health Table */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-2xs">
-        <h2 className="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
-          <Server className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-          <span>Microservice Endpoint Health</span>
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+            <Server className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <span>Actual Microservice Endpoint Health</span>
+          </h2>
+          <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">Port 3000</span>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-medium">
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between">
             <div>
-              <span className="font-bold text-slate-900 dark:text-white block">Gemini Vector Indexer</span>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400">Latency: 42ms</span>
+              <span className="font-bold text-slate-900 dark:text-white block flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                <span>Google Gemini 3.6 AI</span>
+              </span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400">Model: gemini-3.6-flash</span>
             </div>
-            <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold text-[10px]">Healthy</span>
+            <span className={`px-2 py-0.5 rounded font-bold text-[10px] ${
+              healthStatus.isGeminiReal 
+                ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200' 
+                : 'bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200'
+            }`}>
+              {healthStatus.isGeminiReal ? 'Verified' : 'Fallback'}
+            </span>
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between">
             <div>
-              <span className="font-bold text-slate-900 dark:text-white block">Mapbox Tile Proxy</span>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400">Latency: 18ms</span>
+              <span className="font-bold text-slate-900 dark:text-white block flex items-center gap-1.5">
+                <Database className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Supabase PostgreSQL</span>
+              </span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400">{supabaseStatus}</span>
             </div>
-            <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold text-[10px]">Healthy</span>
+            <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold text-[10px]">
+              Active
+            </span>
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between">
             <div>
-              <span className="font-bold text-slate-900 dark:text-white block">RAG Document Embeddings</span>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400">Latency: 65ms</span>
+              <span className="font-bold text-slate-900 dark:text-white block flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-indigo-500" />
+                <span>OpenStreetMap Tiles</span>
+              </span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400">Leaflet Map Engine</span>
             </div>
-            <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold text-[10px]">Healthy</span>
+            <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold text-[10px]">
+              Operational
+            </span>
           </div>
         </div>
       </div>

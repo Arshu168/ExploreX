@@ -689,6 +689,10 @@ export default function App() {
           {currentView === 'admin' && (
             <AdminView
               userEmail={userProfile.email || currentUserEmail}
+              places={places}
+              trips={trips}
+              memories={memories}
+              expenses={expenses}
               onOpenLogin={() => { setAuthMode('login'); setShowAuthModal(true); }}
               onReturnDashboard={() => setCurrentView('dashboard')}
             />
