@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { Trip, Place, ItineraryDay, Activity } from '../types';
 import { getWeatherForDestinationDay, getWeatherTheme } from '../utils/weatherUtils';
+import { formatCurrency } from '../utils/currencyUtils';
 
 interface AiPlannerViewProps {
   activeTrip?: Trip;
@@ -43,6 +44,7 @@ interface AiPlannerViewProps {
   onShareToTeam: (trip: Trip) => void;
   onOpenNewTrip?: () => void;
   availablePlaces: Place[];
+  preferredCurrency?: string;
 }
 
 export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
@@ -52,6 +54,7 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
   onShareToTeam,
   onOpenNewTrip,
   availablePlaces,
+  preferredCurrency = 'INR',
 }) => {
   const [tripSummary, setTripSummary] = useState({
     title: activeTrip ? activeTrip.title : 'Custom Offbeat Itinerary',
@@ -843,7 +846,7 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
               </div>
               <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold">
                 <Wallet className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span>Est. Budget: ₹{tripSummary.budgetTotal.toLocaleString()}</span>
+                <span>Est. Budget: {formatCurrency(tripSummary.budgetTotal, preferredCurrency)}</span>
               </div>
             </div>
           </div>
@@ -931,7 +934,7 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
                       <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 font-semibold pt-0.5">
                         <span>Travel: {day.distanceKm} km ({day.travelTimeMinutes} mins)</span>
                         <span>•</span>
-                        <span className="text-emerald-700 dark:text-emerald-400 font-extrabold">Est. Day Cost: ₹{day.dayCost.toLocaleString()}</span>
+                        <span className="text-emerald-700 dark:text-emerald-400 font-extrabold">Est. Day Cost: {formatCurrency(day.dayCost, preferredCurrency)}</span>
                       </div>
                     </div>
                   </div>
@@ -1035,7 +1038,7 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
 
                       <div className="flex items-center gap-2">
                         <span className="font-extrabold text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800">
-                          {act.cost === 0 ? 'Free' : `₹${act.cost}`}
+                          {act.cost === 0 ? 'Free' : formatCurrency(act.cost, preferredCurrency)}
                         </span>
 
                         <button

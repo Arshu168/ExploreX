@@ -10,12 +10,14 @@ import {
   Database
 } from 'lucide-react';
 import { Place } from '../types';
+import { formatCurrency } from '../utils/currencyUtils';
 
 interface PlaceDetailModalProps {
   place: Place | null;
   onClose: () => void;
   onToggleBookmark: (placeId: string) => void;
   onAddToItinerary: (place: Place) => void;
+  preferredCurrency?: string;
 }
 
 export const PlaceDetailModal: React.FC<PlaceDetailModalProps> = ({
@@ -23,6 +25,7 @@ export const PlaceDetailModal: React.FC<PlaceDetailModalProps> = ({
   onClose,
   onToggleBookmark,
   onAddToItinerary,
+  preferredCurrency = 'INR',
 }) => {
   if (!place) return null;
 
@@ -70,7 +73,7 @@ export const PlaceDetailModal: React.FC<PlaceDetailModalProps> = ({
             <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-700/80">
               <span className="text-slate-600 dark:text-slate-400 font-bold block">Est. Cost</span>
               <span className="text-sm font-extrabold text-slate-900 dark:text-white mt-0.5">
-                {place.estimatedCost === 0 ? 'Free' : `₹${place.estimatedCost.toLocaleString()}`}
+                {place.estimatedCost === 0 ? 'Free' : formatCurrency(place.estimatedCost, preferredCurrency)}
               </span>
             </div>
 

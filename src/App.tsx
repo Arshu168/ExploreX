@@ -595,6 +595,7 @@ export default function App() {
               onShareToTeam={(t) => setCurrentView('team')}
               onOpenNewTrip={handleOpenNewTrip}
               availablePlaces={places}
+              preferredCurrency={userProfile.preferredCurrency}
             />
           )}
 
@@ -605,6 +606,7 @@ export default function App() {
               onToggleBookmark={handleToggleBookmark}
               onAddToItinerary={handleAddToItinerary}
               onAddGeneratedPlaces={handleAddGeneratedPlaces}
+              preferredCurrency={userProfile.preferredCurrency}
             />
           )}
 
@@ -633,6 +635,7 @@ export default function App() {
               onAddExpense={handleAddExpense}
               onDeleteExpense={handleDeleteExpense}
               onUpdateTripBudget={handleUpdateTripBudget}
+              preferredCurrency={userProfile.preferredCurrency}
             />
           )}
 
@@ -655,6 +658,7 @@ export default function App() {
               onOpenNewTrip={handleOpenNewTrip}
               onAddToItinerary={handleAddToItinerary}
               onToggleBookmark={handleToggleBookmark}
+              preferredCurrency={userProfile.preferredCurrency}
             />
           )}
 
@@ -706,6 +710,7 @@ export default function App() {
         onClose={() => setSelectedPlaceModal(null)}
         onToggleBookmark={handleToggleBookmark}
         onAddToItinerary={handleAddToItinerary}
+        preferredCurrency={userProfile.preferredCurrency}
       />
 
       {/* Global Settings Modal */}

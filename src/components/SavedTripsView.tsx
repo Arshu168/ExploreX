@@ -13,6 +13,7 @@ import {
   Star
 } from 'lucide-react';
 import { Trip, Place } from '../types';
+import { formatCurrency } from '../utils/currencyUtils';
 
 interface SavedTripsViewProps {
   trips: Trip[];
@@ -24,6 +25,7 @@ interface SavedTripsViewProps {
   onOpenNewTrip?: () => void;
   onAddToItinerary?: (place: Place) => void;
   onToggleBookmark?: (placeId: string) => void;
+  preferredCurrency?: string;
 }
 
 export const SavedTripsView: React.FC<SavedTripsViewProps> = ({
@@ -36,6 +38,7 @@ export const SavedTripsView: React.FC<SavedTripsViewProps> = ({
   onOpenNewTrip,
   onAddToItinerary,
   onToggleBookmark,
+  preferredCurrency = 'INR',
 }) => {
   const [activeTab, setActiveTab] = useState<'itineraries' | 'bookmarks'>('itineraries');
 
@@ -136,7 +139,7 @@ export const SavedTripsView: React.FC<SavedTripsViewProps> = ({
 
                     <div className="flex items-center gap-4 text-xs text-slate-600 dark:text-slate-400 font-semibold pt-1">
                       <span className="flex items-center gap-1">
-                        <Wallet className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" /> ₹{trip.budgetTotal.toLocaleString()}
+                        <Wallet className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" /> {formatCurrency(trip.budgetTotal, preferredCurrency)}
                       </span>
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" /> {trip.startDate}

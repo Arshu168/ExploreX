@@ -19,6 +19,7 @@ import {
   Star
 } from 'lucide-react';
 import { Place, Trip, UserProfile, Memory } from '../types';
+import { formatCurrency } from '../utils/currencyUtils';
 
 interface DashboardViewProps {
   userProfile: UserProfile;
@@ -164,7 +165,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
           <div>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Total Budget</p>
-            <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">₹{totalBudgetAllocated.toLocaleString()}</p>
+            <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">{formatCurrency(totalBudgetAllocated, userProfile.preferredCurrency)}</p>
           </div>
         </div>
 
@@ -174,7 +175,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
           <div>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">AI Savings</p>
-            <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">₹{aiSavingsVal.toLocaleString()}</p>
+            <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">{formatCurrency(aiSavingsVal, userProfile.preferredCurrency)}</p>
           </div>
         </div>
       </div>
@@ -274,7 +275,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </p>
                 </div>
                 <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                  <span className="font-bold text-slate-800 dark:text-slate-200">₹{trip.budgetTotal.toLocaleString()}</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">{formatCurrency(trip.budgetTotal, userProfile.preferredCurrency)}</span>
                   <span className="text-blue-600 dark:text-blue-400 font-bold hover:underline flex items-center gap-1">
                     <span>View Itinerary</span>
                     <ArrowRight className="w-3 h-3" />
@@ -351,7 +352,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               {/* Price & Action */}
               <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
                 <div>
-                  <span className="font-extrabold text-slate-900 dark:text-white">₹{place.estimatedCost > 0 ? place.estimatedCost.toLocaleString() : '12,000'}</span>
+                  <span className="font-extrabold text-slate-900 dark:text-white">{formatCurrency(place.estimatedCost > 0 ? place.estimatedCost : 250, userProfile.preferredCurrency)}</span>
                   <span className="text-[10px] text-slate-400 dark:text-slate-500 ml-1 font-medium">avg. est</span>
                 </div>
                 <button

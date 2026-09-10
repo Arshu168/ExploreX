@@ -127,7 +127,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <option value="INR" className="dark:bg-slate-800">₹ INR (Indian Rupee)</option>
                 <option value="USD" className="dark:bg-slate-800">$ USD (US Dollar)</option>
                 <option value="EUR" className="dark:bg-slate-800">€ EUR (Euro)</option>
-                <option value="GBP" className="dark:bg-slate-800">£ GBP (Pound)</option>
+                <option value="GBP" className="dark:bg-slate-800">£ GBP (British Pound)</option>
+                <option value="JPY" className="dark:bg-slate-800">¥ JPY (Japanese Yen)</option>
+                <option value="CAD" className="dark:bg-slate-800">C$ CAD (Canadian Dollar)</option>
+                <option value="AUD" className="dark:bg-slate-800">A$ AUD (Australian Dollar)</option>
               </select>
             </div>
 

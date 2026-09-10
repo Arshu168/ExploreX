@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Expense, Trip } from '../types';
 import { getBudgetBoundsForDestination } from '../utils/budgetUtils';
+import { formatCurrency, getCurrencyConfig } from '../utils/currencyUtils';
 
 interface BudgetPlannerViewProps {
   activeTrip: Trip;
@@ -22,6 +23,7 @@ interface BudgetPlannerViewProps {
   onAddExpense: (newExp: Expense) => void;
   onDeleteExpense?: (expenseId: string) => void;
   onUpdateTripBudget?: (newBudget: number) => void;
+  preferredCurrency?: string;
 }
 
 export const BudgetPlannerView: React.FC<BudgetPlannerViewProps> = ({
@@ -30,6 +32,7 @@ export const BudgetPlannerView: React.FC<BudgetPlannerViewProps> = ({
   onAddExpense,
   onDeleteExpense,
   onUpdateTripBudget,
+  preferredCurrency = 'INR',
 }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [isEditingBudget, setIsEditingBudget] = useState(false);
@@ -157,7 +160,7 @@ export const BudgetPlannerView: React.FC<BudgetPlannerViewProps> = ({
 
           {isEditingBudget ? (
             <div className="flex items-center gap-2 pt-1">
-              <span className="text-xl font-black text-slate-900 dark:text-white">₹</span>
+              <span className="text-xl font-black text-slate-900 dark:text-white">{getCurrencyConfig(preferredCurrency).symbol}</span>
               <input
                 type="number"
                 min={0}
@@ -170,26 +173,26 @@ export const BudgetPlannerView: React.FC<BudgetPlannerViewProps> = ({
             </div>
           ) : (
             <p className="text-3xl font-extrabold text-slate-900 dark:text-white">
-              ₹{totalBudget.toLocaleString()}
+              {formatCurrency(totalBudget, preferredCurrency)}
             </p>
           )}
 
           <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
             {totalBudget === 0
-              ? 'Starts from ₹0 before trip planning. Set your budget anytime.'
+              ? 'Starts from 0 before trip planning. Set your budget anytime.'
               : `${activeTrip?.durationDays || 3} Days • ${activeTrip?.groupSize || 2} Travelers (Custom User Preference)`}
           </p>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 rounded-3xl shadow-2xs space-y-1">
           <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Total Actual Spent</span>
-          <p className="text-3xl font-extrabold text-blue-600 dark:text-blue-400">₹{totalSpent.toLocaleString()}</p>
+          <p className="text-3xl font-extrabold text-blue-600 dark:text-blue-400">{formatCurrency(totalSpent, preferredCurrency)}</p>
           <p className="text-[11px] text-blue-700 dark:text-blue-400 font-bold">{spentPercent}% of Total Cap Used</p>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 rounded-3xl shadow-2xs space-y-1">
           <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Remaining Cushion</span>
-          <p className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">₹{remaining.toLocaleString()}</p>
+          <p className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{formatCurrency(remaining, preferredCurrency)}</p>
           <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Safe Buffer Remaining</p>
         </div>
       </div>
@@ -230,9 +233,9 @@ export const BudgetPlannerView: React.FC<BudgetPlannerViewProps> = ({
                 Benchmark limit for <strong className="font-bold text-blue-950 dark:text-blue-100">{bounds.destination}</strong> ({duration} Days, {group} Travelers):
               </p>
               <div className="flex justify-between font-extrabold text-slate-900 dark:text-slate-100 pt-1 border-t border-blue-200/60 dark:border-blue-900/60 text-[11px]">
-                <span>Min: ₹{bounds.minBudget.toLocaleString()}</span>
-                <span className="text-blue-700 dark:text-blue-400">Recommended: ₹{bounds.suggestedBudget.toLocaleString()}</span>
-                <span>Max Cap: ₹{bounds.maxSuggestedBudget.toLocaleString()}</span>
+                <span>Min: {formatCurrency(bounds.minBudget, preferredCurrency)}</span>
+                <span className="text-blue-700 dark:text-blue-400">Rec: {formatCurrency(bounds.suggestedBudget, preferredCurrency)}</span>
+                <span>Max: {formatCurrency(bounds.maxSuggestedBudget, preferredCurrency)}</span>
               </div>
             </div>
           </div>
@@ -245,35 +248,35 @@ export const BudgetPlannerView: React.FC<BudgetPlannerViewProps> = ({
           <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold text-xs">
             <Fuel className="w-4 h-4" /> Transport
           </div>
-          <p className="text-lg font-extrabold text-slate-900 dark:text-white">₹{fuelSpent.toLocaleString()}</p>
+          <p className="text-lg font-extrabold text-slate-900 dark:text-white">{formatCurrency(fuelSpent, preferredCurrency)}</p>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 rounded-2xl shadow-2xs space-y-1">
           <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
             <Utensils className="w-4 h-4" /> Dining
           </div>
-          <p className="text-lg font-extrabold text-slate-900 dark:text-white">₹{foodSpent.toLocaleString()}</p>
+          <p className="text-lg font-extrabold text-slate-900 dark:text-white">{formatCurrency(foodSpent, preferredCurrency)}</p>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 rounded-2xl shadow-2xs space-y-1">
           <div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400 font-bold text-xs">
             <Hotel className="w-4 h-4" /> Hotel / Stay
           </div>
-          <p className="text-lg font-extrabold text-slate-900 dark:text-white">₹{staySpent.toLocaleString()}</p>
+          <p className="text-lg font-extrabold text-slate-900 dark:text-white">{formatCurrency(staySpent, preferredCurrency)}</p>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 rounded-2xl shadow-2xs space-y-1">
           <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold text-xs">
             <Compass className="w-4 h-4" /> Activities
           </div>
-          <p className="text-lg font-extrabold text-slate-900 dark:text-white">₹{actSpent.toLocaleString()}</p>
+          <p className="text-lg font-extrabold text-slate-900 dark:text-white">{formatCurrency(actSpent, preferredCurrency)}</p>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 rounded-2xl shadow-2xs space-y-1 col-span-2 md:col-span-1">
           <div className="flex items-center gap-1.5 text-red-600 dark:text-red-400 font-bold text-xs">
             <ShieldAlert className="w-4 h-4" /> Emergency
           </div>
-          <p className="text-lg font-extrabold text-slate-900 dark:text-white">₹{emergencySpent.toLocaleString()}</p>
+          <p className="text-lg font-extrabold text-slate-900 dark:text-white">{formatCurrency(emergencySpent, preferredCurrency)}</p>
         </div>
       </div>
 
@@ -305,7 +308,7 @@ export const BudgetPlannerView: React.FC<BudgetPlannerViewProps> = ({
                   <tr key={exp.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition group">
                     <td className="p-3.5 font-bold text-slate-900 dark:text-white">{exp.title}</td>
                     <td className="p-3.5 capitalize font-semibold text-blue-600 dark:text-blue-400">{exp.category}</td>
-                    <td className="p-3.5 font-extrabold text-slate-900 dark:text-white">₹{exp.amount.toLocaleString()}</td>
+                    <td className="p-3.5 font-extrabold text-slate-900 dark:text-white">{formatCurrency(exp.amount, preferredCurrency)}</td>
                     <td className="p-3.5 text-slate-600 dark:text-slate-400">{exp.paidBy}</td>
                     <td className="p-3.5 text-slate-400 dark:text-slate-500">{exp.date}</td>
                     <td className="p-3.5 text-right">
@@ -353,7 +356,7 @@ export const BudgetPlannerView: React.FC<BudgetPlannerViewProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Amount (₹)</label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Amount ({getCurrencyConfig(preferredCurrency).symbol})</label>
                   <input
                     type="number"
                     required

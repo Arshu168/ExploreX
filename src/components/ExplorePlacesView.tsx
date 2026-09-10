@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Place } from '../types';
 import { generateWorldwidePlacesWithAi } from '../utils/aiTravelEngine';
+import { formatCurrency } from '../utils/currencyUtils';
 
 interface ExplorePlacesViewProps {
   places: Place[];
@@ -23,6 +24,7 @@ interface ExplorePlacesViewProps {
   onToggleBookmark: (placeId: string) => void;
   onAddToItinerary?: (place: Place) => void;
   onAddGeneratedPlaces?: (newPlaces: Place[]) => void;
+  preferredCurrency?: string;
 }
 
 export const ExplorePlacesView: React.FC<ExplorePlacesViewProps> = ({
@@ -31,6 +33,7 @@ export const ExplorePlacesView: React.FC<ExplorePlacesViewProps> = ({
   onToggleBookmark,
   onAddToItinerary,
   onAddGeneratedPlaces,
+  preferredCurrency = 'INR',
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -349,7 +352,7 @@ export const ExplorePlacesView: React.FC<ExplorePlacesViewProps> = ({
 
               <div className="p-4 pt-0 flex items-center justify-between text-xs border-t border-slate-100 dark:border-slate-800 mt-2 pt-3">
                 <span className="text-slate-900 dark:text-white font-extrabold">
-                  {place.estimatedCost === 0 ? 'Free Entry' : `₹${place.estimatedCost.toLocaleString()}`}
+                  {place.estimatedCost === 0 ? 'Free Entry' : formatCurrency(place.estimatedCost, preferredCurrency)}
                 </span>
 
                 <div className="flex items-center gap-2">
