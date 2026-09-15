@@ -371,7 +371,147 @@ export const getDestinationHotels = (dest: string, budget: number = 25000): Hote
     ];
   }
 
-  // 14. OOTY, VALPARAI, MUNNAR, KODAIKANAL
+  // 14. MANALI & HIMACHAL PRADESH
+  if (d.includes('manali') || d.includes('kullu') || d.includes('solang') || d.includes('himachal') || d.includes('spiti') || d.includes('kasol') || d.includes('jibhi')) {
+    return [
+      {
+        id: 'h-mnl-1',
+        name: 'The Himalayan - Castle Resort & Spa Manali',
+        rating: 4.9,
+        pricePerNight: 8500,
+        address: 'Hadimba Road, Kullu Valley, Manali 175131, Himachal Pradesh, India',
+        contactNumber: '+91 1902 250 999',
+        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80',
+        amenities: ['Victorian Gothic Stone Castle', 'Heated Outdoor Pool & Orchard Spa', 'Dungeon Bar & Refectory', 'Himalayan Ridge View'],
+        distanceFromCenter: '1 km from Hadimba Temple'
+      },
+      {
+        id: 'h-mnl-2',
+        name: 'Span Resort & Spa (Kullu-Manali)',
+        rating: 4.8,
+        pricePerNight: 9800,
+        address: 'Baragarh Estate, NH 21, Kullu-Manali Highway 175129, Himachal Pradesh, India',
+        contactNumber: '+91 1902 240 538',
+        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80',
+        amenities: ['Beas Riverfront Lawn', 'Fly Fishing & Helipad Access', 'Pine Forest Suites', 'Heated Luxury Spa'],
+        distanceFromCenter: 'Beas Riverbank / 14 km from Manali Mall Road'
+      },
+      {
+        id: 'h-mnl-3',
+        name: 'Apple Country Resorts Manali',
+        rating: 4.7,
+        pricePerNight: 4800,
+        address: 'Log-Huts Area, Old Manali 175131, Himachal Pradesh, India',
+        contactNumber: '+91 1902 254 007',
+        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80',
+        amenities: ['Apple Orchard Terrace', 'Himalayan Cedar Suites', 'Discotheque & Spa', 'Pure Vegetarian Dining'],
+        distanceFromCenter: 'Log Huts / 1.5 km from Old Manali Village'
+      }
+    ];
+  }
+
+  // 15. KASHMIR (Srinagar, Gulmarg, Pahalgam, Sonamarg, Doodhpathri)
+  if (d.includes('kashmir') || d.includes('srinagar') || d.includes('gulmarg') || d.includes('pahalgam') || d.includes('sonamarg') || d.includes('doodhpathri')) {
+    return [
+      {
+        id: 'h-kas-1',
+        name: 'The Lalit Grand Palace Srinagar',
+        rating: 4.9,
+        pricePerNight: 16500,
+        address: 'Gupkar Road, Dal Lake, Srinagar 190001, Jammu & Kashmir, India',
+        contactNumber: '+91 194 250 1001',
+        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80',
+        amenities: ['1910 Royal Dogra Palace', 'Dal Lake Panoramic Gardens', 'Rejuve The Spa & Indoor Pool', 'Authentic Wazwan Cuisine'],
+        distanceFromCenter: 'Dal Lake Gupkar Ridge'
+      },
+      {
+        id: 'h-kas-2',
+        name: 'The Khyber Himalayan Resort & Spa (Gulmarg)',
+        rating: 4.9,
+        pricePerNight: 19500,
+        address: 'Near Gondola Base, Gulmarg 193403, Jammu & Kashmir, India',
+        contactNumber: '+91 1954 350 666',
+        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80',
+        amenities: ['Gondola Ski-In Ski-Out Access', 'Piramal Heated Indoor Glass Pool', 'L’Occitane Luxury Spa', 'Apharwat Mountain View'],
+        distanceFromCenter: '0.2 km from Gulmarg Gondola'
+      },
+      {
+        id: 'h-kas-3',
+        name: 'Pahalgam Hotel & Pine Suites',
+        rating: 4.8,
+        pricePerNight: 7200,
+        address: 'Main Market, Lidder River Bank, Pahalgam 192126, Jammu & Kashmir, India',
+        contactNumber: '+91 1936 243 252',
+        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80',
+        amenities: ['Lidder Riverfront Deck', 'Trout Fishing Assistance', 'Pine Wood Fireplace', 'Kahwa Tea Lounge'],
+        distanceFromCenter: 'Main Market / Overlooking Lidder River'
+      }
+    ];
+  }
+
+  // 16. RAJASTHAN (Jaipur, Udaipur, Jodhpur, Jaisalmer)
+  if (d.includes('jaipur') || d.includes('udaipur') || d.includes('rajasthan') || d.includes('jodhpur') || d.includes('jaisalmer')) {
+    return [
+      {
+        id: 'h-raj-1',
+        name: 'Rambagh Palace Jaipur (Taj)',
+        rating: 5.0,
+        pricePerNight: 24000,
+        address: 'Bhawani Singh Road, Jaipur 302005, Rajasthan, India',
+        contactNumber: '+91 141 221 1919',
+        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80',
+        amenities: ['1835 Royal Maharaja Palace', 'Suvarna Mahal Fine Dining', 'Peacock Gardens & Vintage Buggy', 'Jiva Grande Spa'],
+        distanceFromCenter: 'Central Jaipur / 2 km from City Palace'
+      },
+      {
+        id: 'h-raj-2',
+        name: 'Taj Lake Palace Udaipur',
+        rating: 5.0,
+        pricePerNight: 26000,
+        address: 'P.O. Box No. 5, Lake Pichola, Udaipur 313001, Rajasthan, India',
+        contactNumber: '+91 294 242 8800',
+        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80',
+        amenities: ['Floating Island Marble Palace in Lake Pichola', 'Jharokha Sunset Dining', 'Royal Spa Boat', 'Private Boat Shuttle'],
+        distanceFromCenter: 'Island in Lake Pichola'
+      }
+    ];
+  }
+
+  // 17. UTTARAKHAND (Rishikesh, Chopta, Landour, Mussoorie)
+  if (d.includes('rishikesh') || d.includes('chopta') || d.includes('landour') || d.includes('mussoorie') || d.includes('uttarakhand') || d.includes('dehradun')) {
+    return [
+      {
+        id: 'h-uk-1',
+        name: 'Aloha On The Ganges (Rishikesh)',
+        rating: 4.8,
+        pricePerNight: 6800,
+        address: 'National Highway 58, Tapovan, Rishikesh 249192, Uttarakhand, India',
+        contactNumber: '+91 135 242 6000',
+        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80',
+        amenities: ['Direct Ganga Riverfront Cliff', 'Infinity Pool overlooking Ganges', 'Yoga & Ayurveda Sessions', 'Latitude Multi-cuisine'],
+        distanceFromCenter: 'Tapovan / 1 km from Laxman Jhula'
+      }
+    ];
+  }
+
+  // 18. MEGHALAYA & NORTHEAST (Shillong, Cherrapunji, Dawki, Gangtok)
+  if (d.includes('meghalaya') || d.includes('shillong') || d.includes('cherrapunji') || d.includes('sikkim') || d.includes('gangtok')) {
+    return [
+      {
+        id: 'h-meg-1',
+        name: 'Ri Kynjai - Serenity by the Lake',
+        rating: 4.9,
+        pricePerNight: 9200,
+        address: 'Umiam Lake, UCC Road, Ri Bhoi District, Meghalaya 793103, India',
+        contactNumber: '+91 98624 20300',
+        imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80',
+        amenities: ['Khasi Thatch Cottage Architecture', 'Umiam Lake View Balconies', 'Traditional Sao Ai Spa', 'Khasi & Naga Cuisine'],
+        distanceFromCenter: 'Umiam Lake Shore / 15 km from Shillong'
+      }
+    ];
+  }
+
+  // 19. VALPARAI
   if (d.includes('valparai')) {
     return [
       {
@@ -387,6 +527,7 @@ export const getDestinationHotels = (dest: string, budget: number = 25000): Hote
       }
     ];
   }
+
 
   // UNIVERSAL DYNAMIC REALISTIC DISTRICT RESOLVER
   const cleanDistrict = dest.replace(/(?:district|city|town|tour|trip|travel)/gi, '').trim();
@@ -443,6 +584,7 @@ export interface AirportInfo {
 }
 
 export const DISTRICT_COORDINATES: Record<string, [number, number]> = {
+  // --- TAMIL NADU DISTRICTS ---
   coimbatore: [11.0168, 76.9558],
   kovai: [11.0168, 76.9558],
   madurai: [9.9252, 78.1198],
@@ -484,23 +626,126 @@ export const DISTRICT_COORDINATES: Record<string, [number, number]> = {
   pollachi: [10.6582, 77.0080],
   ooty: [11.4102, 76.6950],
   nilgiris: [11.4102, 76.6950],
-  munnar: [10.0889, 77.0595],
   kodaikanal: [10.2381, 77.4892],
   kodai: [10.2381, 77.4892],
-  bangalore: [12.9716, 77.5946],
-  bengaluru: [12.9716, 77.5946],
-  mumbai: [19.0760, 72.8777],
-  bombay: [19.0760, 72.8777],
-  delhi: [28.6139, 77.2090],
-  'new delhi': [28.6139, 77.2090],
-  hyderabad: [17.3850, 78.4867],
-  kochi: [9.9312, 76.2673],
-  cochin: [9.9312, 76.2673],
-  wayanad: [11.6854, 76.1320],
-  goa: [15.2993, 74.1240],
+  rameswaram: [9.2876, 79.3129],
+  tiruvannamalai: [12.2253, 79.0747],
+
+  // --- HIMACHAL PRADESH & MANALI ---
+  manali: [32.2432, 77.1892],
+  kullu: [31.9579, 77.1095],
+  solang: [32.3166, 77.1585],
+  kasol: [32.0100, 77.3150],
+  jibhi: [31.6375, 77.4080],
+  tirthan: [31.6420, 77.3520],
+  shimla: [31.1048, 77.1734],
+  spiti: [32.2461, 78.0349],
+  dharamshala: [32.2190, 76.3234],
+  mcleodganj: [32.2426, 76.3213],
+  dalhousie: [32.5387, 75.9710],
+  himachal: [31.1048, 77.1734],
+
+  // --- JAMMU & KASHMIR & LADAKH ---
+  kashmir: [34.0837, 74.7973],
+  srinagar: [34.0837, 74.7973],
+  gulmarg: [34.0484, 74.3805],
+  pahalgam: [34.0163, 75.3150],
+  sonamarg: [34.3106, 75.2933],
+  doodhpathri: [33.8824, 74.5714],
+  yusmarg: [33.8315, 74.6621],
+  leh: [34.1526, 77.5771],
+  ladakh: [34.1526, 77.5771],
+  nubra: [34.6863, 77.5673],
+  pangong: [33.7595, 78.6674],
+
+  // --- UTTARAKHAND ---
+  rishikesh: [30.0869, 78.2676],
+  haridwar: [29.9457, 78.1642],
+  dehradun: [30.3165, 78.0322],
+  mussoorie: [30.4598, 78.0644],
+  chopta: [30.4853, 79.1764],
+  tungnath: [30.4891, 79.2173],
+  nainital: [29.3919, 79.4542],
+  corbett: [29.5300, 78.7747],
+  auli: [30.5295, 79.5694],
+  uttarakhand: [30.0869, 78.2676],
+
+  // --- RAJASTHAN ---
   jaipur: [26.9124, 75.7873],
   udaipur: [24.5854, 73.7125],
+  jodhpur: [26.2389, 73.0243],
+  jaisalmer: [26.9157, 70.9083],
+  pushkar: [26.4897, 74.5511],
+  bikaner: [28.0229, 73.3119],
+  rajasthan: [26.9124, 75.7873],
+
+  // --- NORTHEAST & SIKKIM ---
+  meghalaya: [25.5788, 91.8933],
+  shillong: [25.5788, 91.8933],
+  cherrapunji: [25.2986, 91.7317],
+  sohra: [25.2986, 91.7317],
+  dawki: [25.1884, 92.0196],
+  sikkim: [27.3389, 88.6065],
+  gangtok: [27.3389, 88.6065],
+  darjeeling: [27.0410, 88.2663],
+  guwahati: [26.1445, 91.7362],
+  assam: [26.1445, 91.7362],
+  kaziranga: [26.5775, 93.1711],
+
+  // --- KARNATAKA ---
+  bangalore: [12.9716, 77.5946],
+  bengaluru: [12.9716, 77.5946],
+  coorg: [12.3375, 75.8069],
+  madikeri: [12.4244, 75.7382],
+  hampi: [15.3350, 76.4600],
+  gokarna: [14.5479, 74.3188],
+  mysore: [12.2958, 76.6394],
+  mysuru: [12.2958, 76.6394],
+  chikmagalur: [13.3161, 75.7720],
+  dandeli: [15.2361, 74.6173],
+  karnataka: [12.9716, 77.5946],
+
+  // --- KERALA ---
+  kerala: [9.9312, 76.2673],
+  kochi: [9.9312, 76.2673],
+  cochin: [9.9312, 76.2673],
+  munnar: [10.0889, 77.0595],
+  wayanad: [11.6854, 76.1320],
+  alleppey: [9.4981, 76.3388],
+  alappuzha: [9.4981, 76.3388],
+  thekkady: [9.6031, 77.1615],
+  varkala: [8.7379, 76.7163],
+  athirappilly: [10.2987, 76.5684],
+  kumarakom: [9.6176, 76.4301],
+  calicut: [11.2588, 75.7804],
+  kozhikode: [11.2588, 75.7804],
+
+  // --- GOA & MAHARASHTRA ---
+  goa: [15.2993, 74.1240],
+  mumbai: [19.0760, 72.8777],
+  bombay: [19.0760, 72.8777],
+  pune: [18.5204, 73.8567],
+  lonavala: [18.7557, 73.4091],
+  mahabaleshwar: [17.9237, 73.6586],
+
+  // --- ANDHRA PRADESH & TELANGANA ---
+  hyderabad: [17.3850, 78.4867],
+  visakhapatnam: [17.6868, 83.2185],
+  vizag: [17.6868, 83.2185],
+  tirupati: [13.6288, 79.4192],
+  vijayawada: [16.5062, 80.6480],
+
+  // --- NORTH & EAST INDIA ---
+  delhi: [28.6139, 77.2090],
+  'new delhi': [28.6139, 77.2090],
   varanasi: [25.3176, 82.9739],
+  agra: [27.1767, 78.0081],
+  amritsar: [31.6340, 74.8723],
+  kolkata: [22.5726, 88.3639],
+  puri: [19.8135, 85.8312],
+  bhubaneswar: [20.2961, 85.8245],
+
+  // --- INTERNATIONAL ---
   paris: [48.8566, 2.3522],
   france: [46.2276, 2.2137],
   london: [51.5074, -0.1278],
@@ -561,7 +806,95 @@ export const getLocationCoordinates = (locationName: string): [number, number] =
 export const getNearestAirport = (locationName: string): AirportInfo => {
   const loc = (locationName || '').toLowerCase().trim();
 
-  // 1. COIMBATORE, POLLACHI, TIRUPPUR, VALPARAI, ERODE
+  // 1. MANALI, KULLU, SOLANG, KASOL, JIBHI, HIMACHAL
+  if (loc.includes('manali') || loc.includes('kullu') || loc.includes('solang') || loc.includes('kasol') || loc.includes('jibhi') || loc.includes('tirthan') || loc.includes('himachal')) {
+    return {
+      code: 'KUU',
+      name: 'Kullu-Manali Bhuntar Airport',
+      city: 'Bhuntar / Kullu-Manali',
+      distanceKm: 48,
+      terminalAdvice: '48 km riverside highway drive along Beas River to Manali Mall Road; prepaid cabs available 24/7.'
+    };
+  }
+
+  // 2. KASHMIR, SRINAGAR, GULMARG, PAHALGAM, SONAMARG, DOODHPATHRI
+  if (loc.includes('kashmir') || loc.includes('srinagar') || loc.includes('gulmarg') || loc.includes('pahalgam') || loc.includes('sonamarg') || loc.includes('doodhpathri')) {
+    return {
+      code: 'SXR',
+      name: 'Sheikh ul-Alam International Airport (Srinagar)',
+      city: 'Srinagar',
+      distanceKm: 12,
+      terminalAdvice: '12 km to Dal Lake Boulevard; dedicated taxi union counters for Gulmarg (50 km) and Pahalgam (90 km).'
+    };
+  }
+
+  // 3. RISHIKESH, HARIDWAR, DEHRADUN, MUSSOORIE, CHOPTA, UTTARAKHAND
+  if (loc.includes('rishikesh') || loc.includes('haridwar') || loc.includes('dehradun') || loc.includes('mussoorie') || loc.includes('chopta') || loc.includes('tungnath') || loc.includes('uttarakhand')) {
+    return {
+      code: 'DED',
+      name: 'Jolly Grant Airport (Dehradun)',
+      city: 'Dehradun / Rishikesh',
+      distanceKm: 21,
+      terminalAdvice: '21 km scenic mountain highway to Rishikesh Tapovan & 35 km to Har Ki Pauri Haridwar.'
+    };
+  }
+
+  // 4. JAIPUR, PUSHKAR, RAJASTHAN
+  if (loc.includes('jaipur') || loc.includes('pushkar') || loc.includes('ajmer') || loc.includes('rajasthan')) {
+    return {
+      code: 'JAI',
+      name: 'Jaipur International Airport (Sanganer T2)',
+      city: 'Jaipur',
+      distanceKm: 12,
+      terminalAdvice: '12 km to City Palace & Hawa Mahal via Tonk Road with direct Airport AC buses.'
+    };
+  }
+
+  // 5. UDAIPUR
+  if (loc.includes('udaipur')) {
+    return {
+      code: 'UDR',
+      name: 'Maharana Pratap Airport (Dabok)',
+      city: 'Udaipur',
+      distanceKm: 22,
+      terminalAdvice: '22 km from Lake Pichola and City Palace via NH 76 expressway.'
+    };
+  }
+
+  // 6. MEGHALAYA, SHILLONG, CHERRAPUNJI, DAWKI, ASSAM
+  if (loc.includes('meghalaya') || loc.includes('shillong') || loc.includes('cherrapunji') || loc.includes('sohra') || loc.includes('dawki') || loc.includes('guwahati') || loc.includes('assam')) {
+    return {
+      code: 'SHL / GAU',
+      name: 'Shillong Umroi Airport & Lokpriya Gopinath Bordoloi Guwahati',
+      city: 'Shillong / Guwahati',
+      distanceKm: 30,
+      terminalAdvice: 'Direct flights to Shillong Umroi (30 km) or scenic 3-hr expressway drive from Guwahati (GAU).'
+    };
+  }
+
+  // 7. SIKKIM, GANGTOK, DARJEELING
+  if (loc.includes('sikkim') || loc.includes('gangtok') || loc.includes('darjeeling')) {
+    return {
+      code: 'IXB / PYG',
+      name: 'Bagdogra International Airport & Pakyong Airport',
+      city: 'Bagdogra / Pakyong',
+      distanceKm: 35,
+      terminalAdvice: 'Gateway to Sikkim via Teesta River gorge; Pakyong Airport connects directly to Gangtok.'
+    };
+  }
+
+  // 8. COORG, MYSORE, HAMPI, GOKARNA, KARNATAKA
+  if (loc.includes('coorg') || loc.includes('madikeri') || loc.includes('mysore') || loc.includes('mysuru') || loc.includes('chikmagalur')) {
+    return {
+      code: 'MYQ / IXE',
+      name: 'Mysuru Airport & Mangalore International Airport',
+      city: 'Mysuru / Mangaluru',
+      distanceKm: 110,
+      terminalAdvice: 'Fly to Mysore (MYQ) or Mangalore (IXE) for lush coffee plantation drives into Coorg.'
+    };
+  }
+
+  // 9. COIMBATORE, POLLACHI, TIRUPPUR, VALPARAI, ERODE
   if (loc.includes('coimbatore') || loc.includes('kovai') || loc.includes('pollachi') || loc.includes('valparai') || loc.includes('tiruppur')) {
     return {
       code: 'CJB',
@@ -572,7 +905,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 2. MADURAI, DINDIGUL, THENI, SIVAGANGAI, RAMANATHAPURAM, VIRUDHUNAGAR
+  // 10. MADURAI, DINDIGUL, THENI, SIVAGANGAI, RAMANATHAPURAM, VIRUDHUNAGAR
   if (loc.includes('madurai') || loc.includes('dindigul') || loc.includes('theni') || loc.includes('sivagangai') || loc.includes('ramanathapuram') || loc.includes('virudhunagar')) {
     return {
       code: 'IXM',
@@ -583,7 +916,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 3. TIRUCHIRAPPALLI (TRICHY), THANJAVUR, KARUR, PUDUKKOTTAI, PERAMBALUR, ARIYALUR
+  // 11. TIRUCHIRAPPALLI (TRICHY), THANJAVUR, KARUR, PUDUKKOTTAI, PERAMBALUR, ARIYALUR
   if (loc.includes('trichy') || loc.includes('tiruchirappalli') || loc.includes('thanjavur') || loc.includes('tanjore') || loc.includes('kumbakonam') || loc.includes('karur') || loc.includes('pudukkottai') || loc.includes('perambalur')) {
     return {
       code: 'TRZ',
@@ -594,7 +927,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 4. SALEM, NAMAKKAL, DHARMAPURI, KRISHNAGIRI
+  // 12. SALEM, NAMAKKAL, DHARMAPURI, KRISHNAGIRI
   if (loc.includes('salem') || loc.includes('yercaud') || loc.includes('namakkal') || loc.includes('dharmapuri') || loc.includes('krishnagiri')) {
     return {
       code: 'SXV',
@@ -605,7 +938,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 5. TIRUNELVELI, TENKASI, COURTALLAM, TUTICORIN, THOOTHUKUDI
+  // 13. TIRUNELVELI, TENKASI, COURTALLAM, TUTICORIN, THOOTHUKUDI
   if (loc.includes('tirunelveli') || loc.includes('tenkasi') || loc.includes('courtallam') || loc.includes('tuticorin') || loc.includes('thoothukudi')) {
     return {
       code: 'TCR',
@@ -616,7 +949,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 6. KANYAKUMARI, NAGERCOIL
+  // 14. KANYAKUMARI, NAGERCOIL
   if (loc.includes('kanyakumari') || loc.includes('nagercoil') || loc.includes('cape comorin')) {
     return {
       code: 'TRV',
@@ -627,7 +960,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 7. PONDICHERRY, CUDDALORE, VILLUPURAM
+  // 15. PONDICHERRY, CUDDALORE, VILLUPURAM
   if (loc.includes('pondicherry') || loc.includes('puducherry') || loc.includes('auroville') || loc.includes('cuddalore') || loc.includes('villupuram')) {
     return {
       code: 'PNY',
@@ -638,7 +971,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 8. CHENNAI, KANCHIPURAM, TIRUVALLUR, CHENGALPATTU, VELLORE
+  // 16. CHENNAI, KANCHIPURAM, TIRUVALLUR, CHENGALPATTU, VELLORE
   if (loc.includes('chennai') || loc.includes('madras') || loc.includes('kanchipuram') || loc.includes('tiruvallur') || loc.includes('chengalpattu') || loc.includes('vellore')) {
     return {
       code: 'MAA',
@@ -649,7 +982,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 9. BENGALURU / BANGALORE, HOSUR
+  // 17. BENGALURU / BANGALORE, HOSUR
   if (loc.includes('bangalore') || loc.includes('bengaluru') || loc.includes('hosur')) {
     return {
       code: 'BLR',
@@ -660,7 +993,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 10. MUMBAI, THANE, PUNE
+  // 18. MUMBAI, THANE, PUNE
   if (loc.includes('mumbai') || loc.includes('bombay') || loc.includes('thane') || loc.includes('pune')) {
     return {
       code: 'BOM',
@@ -671,7 +1004,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 11. DELHI, NOIDA, GURGAON
+  // 19. DELHI, NOIDA, GURGAON
   if (loc.includes('delhi') || loc.includes('noida') || loc.includes('gurgaon') || loc.includes('gurugram')) {
     return {
       code: 'DEL',
@@ -682,7 +1015,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 12. KOCHI, MUNNAR, ALLEPPEY
+  // 20. KOCHI, MUNNAR, ALLEPPEY
   if (loc.includes('kochi') || loc.includes('cochin') || loc.includes('munnar') || loc.includes('kerala')) {
     return {
       code: 'COK',
@@ -693,7 +1026,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 13. CALICUT, WAYANAD
+  // 21. CALICUT, WAYANAD
   if (loc.includes('calicut') || loc.includes('kozhikode') || loc.includes('wayanad')) {
     return {
       code: 'CCJ',
@@ -704,7 +1037,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 14. HYDERABAD
+  // 22. HYDERABAD
   if (loc.includes('hyderabad') || loc.includes('secunderabad')) {
     return {
       code: 'HYD',
@@ -715,7 +1048,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 15. GOA
+  // 23. GOA
   if (loc.includes('goa')) {
     return {
       code: 'GOI / GOX',
@@ -726,7 +1059,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 16. GERMANY (Munich, Frankfurt, Berlin)
+  // 24. GERMANY (Munich, Frankfurt, Berlin)
   if (loc.includes('germany') || loc.includes('munich') || loc.includes('berlin') || loc.includes('frankfurt')) {
     return {
       code: loc.includes('munich') ? 'MUC' : loc.includes('berlin') ? 'BER' : 'FRA',
@@ -737,7 +1070,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 17. FRANCE (Paris)
+  // 25. FRANCE (Paris)
   if (loc.includes('france') || loc.includes('paris')) {
     return {
       code: 'CDG',
@@ -748,7 +1081,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 18. UK (London)
+  // 26. UK (London)
   if (loc.includes('uk') || loc.includes('london')) {
     return {
       code: 'LHR',
@@ -759,7 +1092,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 19. JAPAN (Tokyo, Kyoto)
+  // 27. JAPAN (Tokyo, Kyoto)
   if (loc.includes('japan') || loc.includes('tokyo') || loc.includes('kyoto')) {
     return {
       code: 'HND / NRT',
@@ -770,7 +1103,7 @@ export const getNearestAirport = (locationName: string): AirportInfo => {
     };
   }
 
-  // 20. USA (New York)
+  // 28. USA (New York)
   if (loc.includes('usa') || loc.includes('york') || loc.includes('nyc')) {
     return {
       code: 'JFK / EWR',
@@ -1003,7 +1336,115 @@ export const getDestinationReviews = (dest: string): HiddenGemReview[] => {
     ];
   }
 
-  // 5. GERMANY
+  // 5. MANALI & HIMACHAL PRADESH
+  if (d.includes('manali') || d.includes('kullu') || d.includes('solang') || d.includes('kasol') || d.includes('jibhi') || d.includes('himachal')) {
+    return [
+      {
+        id: 'rev-mnl-1',
+        spotName: 'Jogini Waterfall Alpine Pine Forest Hike',
+        reviewerName: 'Aarav Sharma',
+        rating: 5,
+        reviewText: 'Spectacular 1.5-hour pine trail from Vashisht temple leading to the gushing Jogini cascades. The mountain stream breeze and mountain views are unmatched!',
+        date: '2026-09-11',
+        userAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80'
+      },
+      {
+        id: 'rev-mnl-2',
+        spotName: 'Sethan Village Igloo & Hamta Valley Foothills',
+        reviewerName: 'Pooja Kashyap',
+        rating: 5,
+        reviewText: 'Offbeat Buddhist hamlet situated at 9,000 ft overlooking the Dhauladhar range. Breathtaking stargazing and peaceful apple orchard walks away from crowds.',
+        date: '2026-09-08',
+        userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
+      }
+    ];
+  }
+
+  // 6. KASHMIR
+  if (d.includes('kashmir') || d.includes('srinagar') || d.includes('gulmarg') || d.includes('pahalgam') || d.includes('sonamarg') || d.includes('doodhpathri')) {
+    return [
+      {
+        id: 'rev-kas-1',
+        spotName: 'Dal Lake Sunrise Floating Vegetable Market & Shikara',
+        reviewerName: 'Zubair Ahmad Mir',
+        rating: 5,
+        reviewText: 'Take a Shikara at 5:30 AM before sunrise. Witness the 150-year-old barter market between floating wooden boats with hot saffron Kahwa tea!',
+        date: '2026-09-10',
+        userAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80'
+      },
+      {
+        id: 'rev-kas-2',
+        spotName: 'Doodhpathri "Valley of Milk" Meadow & Forest Stream',
+        reviewerName: 'Meherunissa Khan',
+        rating: 5,
+        reviewText: 'Much quieter and more untouched than mainstream spots! Emerald rolling pastures, crystal cold Shaliganga river waters, and wild pine fragrances.',
+        date: '2026-09-07',
+        userAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80'
+      }
+    ];
+  }
+
+  // 7. RAJASTHAN
+  if (d.includes('jaipur') || d.includes('udaipur') || d.includes('rajasthan') || d.includes('jodhpur') || d.includes('jaisalmer')) {
+    return [
+      {
+        id: 'rev-raj-1',
+        spotName: 'Panna Meena Ka Kund Geometric Stepwell & Amber Footpath',
+        reviewerName: 'Vikram Singh Rathore',
+        rating: 5,
+        reviewText: '16th-century architectural masterpiece with criss-cross yellow stone staircases. Beautiful early morning golden hour light before tourists arrive.',
+        date: '2026-09-09',
+        userAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80'
+      }
+    ];
+  }
+
+  // 8. UTTARAKHAND
+  if (d.includes('rishikesh') || d.includes('chopta') || d.includes('tungnath') || d.includes('uttarakhand') || d.includes('haridwar')) {
+    return [
+      {
+        id: 'rev-uk-1',
+        spotName: 'Neer Garh Secluded Upper Waterfalls & Forest Plunge Pool',
+        reviewerName: 'Rohit Negi',
+        rating: 5,
+        reviewText: 'Trek past the first tier up to the 3rd pool. Crystal clear mountain turquoise water with butterflies and lush Himalayan canopy.',
+        date: '2026-09-08',
+        userAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80'
+      }
+    ];
+  }
+
+  // 9. MEGHALAYA & NORTHEAST
+  if (d.includes('meghalaya') || d.includes('shillong') || d.includes('cherrapunji') || d.includes('dawki') || d.includes('sikkim') || d.includes('gangtok')) {
+    return [
+      {
+        id: 'rev-meg-1',
+        spotName: 'Nongriat Double Decker Living Root Bridge & Rainbow Falls',
+        reviewerName: 'Banrida Lyngdoh',
+        rating: 5,
+        reviewText: '3,500 stone step descent through subtropical rainforest to 250-year-old living rubber tree bridges. Truly one of the wonders of the planet!',
+        date: '2026-09-06',
+        userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
+      }
+    ];
+  }
+
+  // 10. KARNATAKA
+  if (d.includes('coorg') || d.includes('hampi') || d.includes('gokarna') || d.includes('karnataka') || d.includes('bangalore') || d.includes('mysore')) {
+    return [
+      {
+        id: 'rev-kar-1',
+        spotName: 'Sanapur Lake Boulder Cliff Coracle Ride & Matanga Hill Sunrise',
+        reviewerName: 'Ananya Hegde',
+        rating: 5,
+        reviewText: 'Riding traditional circular coracle boats amidst Tungabhadra granite boulders and watching the sun rise over Virupaksha temple is mesmerizing.',
+        date: '2026-09-05',
+        userAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80'
+      }
+    ];
+  }
+
+  // 11. GERMANY
   if (d.includes('germany') || d.includes('berlin') || d.includes('munich')) {
     return [
       {
@@ -1018,7 +1459,7 @@ export const getDestinationReviews = (dest: string): HiddenGemReview[] => {
     ];
   }
 
-  // 6. DEFAULT DISTRICT
+  // 12. DEFAULT DISTRICT
   return [
     {
       id: `rev-${d.slice(0, 3)}-1`,
@@ -2111,7 +2552,1903 @@ export const getRealDestinationItinerary = (
   }
 
   // -------------------------------------------------------------
-  // 7. REAL GOA ITINERARY
+  // 7. REAL MANALI & HIMACHAL PRADESH ITINERARY (7 Days Non-Repeating)
+  // -------------------------------------------------------------
+  if (d.includes('manali') || d.includes('kullu') || d.includes('solang') || d.includes('himachal') || d.includes('kasol') || d.includes('jibhi') || d.includes('spiti')) {
+    const manaliTemplates = [
+      {
+        title: 'Old Manali Heritage, Hadimba Ancient Temple & Vashisht Sulphur Springs',
+        highlights: ['Hadimba Wooden Pagoda', 'Old Manali Apple Orchard Cafe', 'Vashisht Hot Sulphur Kund', 'Jogini Waterfall Trail'],
+        activities: [
+          {
+            id: 'act-mnl-1-1',
+            time: '07:00 AM',
+            title: 'Hadimba Devi Ancient Cedar Forest Pagoda & Whispering Pines',
+            description: '1553 AD four-tiered wooden pagoda temple set inside ancient deodar cedar groves with peaceful early morning mountain mist.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Hadimba Temple Road, Old Manali 175131, Himachal Pradesh'
+          },
+          {
+            id: 'act-mnl-1-2',
+            time: '09:30 AM',
+            title: 'Old Manali Village Cafe Siddu & Apple Crumble Breakfast',
+            description: 'Sample authentic Himachali Siddu stuffed with poppy seeds and ghee, followed by warm wood-fired apple crumble.',
+            category: 'cafe' as PlaceCategory,
+            cost: 220,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Club House Road, Old Manali Village 175131, Himachal Pradesh'
+          },
+          {
+            id: 'act-mnl-1-3',
+            time: '11:30 AM',
+            title: 'Jogini Waterfalls Sacred Pine Ridge Trek',
+            description: 'Picturesque 4 km pine forest trek from Vashisht village overlooking the Beas River valley leading to multi-tiered cascades.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Vashisht Village to Jogini Waterfall Trail, Manali 175103'
+          },
+          {
+            id: 'act-mnl-1-4',
+            time: '02:00 PM',
+            title: 'Himachali Dham Traditional Feast at Beas View',
+            description: 'Authentic 7-course ceremonial vegetarian meal featuring Madra (chickpeas in yogurt), Mah ki Dal, Khatta, and Meetha Chawal.',
+            category: 'meal' as const,
+            cost: 320,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Vashisht Temple Lane, Kullu Valley, Manali 175103'
+          },
+          {
+            id: 'act-mnl-1-5',
+            time: '05:00 PM',
+            title: 'Vashisht Natural Hot Sulphur Springs Bath & Temple Sunset',
+            description: 'Rejuvenate tired muscles in 4,000-year-old natural mineral hot springs with therapeutic sulphur water overlooking Pir Panjal peaks.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Vashisht Hot Spring Kund, Manali 175103, Himachal Pradesh'
+          }
+        ]
+      },
+      {
+        title: 'Solang Valley High Alpine Adventures & Anjani Mahadev Snow Glacier',
+        highlights: ['Solang Ropeway', 'Anjani Mahadev Snow Lingam', 'Zorbing & Paragliding', 'Beas River Walk'],
+        activities: [
+          {
+            id: 'act-mnl-2-1',
+            time: '07:30 AM',
+            title: 'Anjani Mahadev Hidden Glacier & 20-foot Natural Snow Waterfall',
+            description: 'Offbeat morning walk through pine woods to witness the sacred natural waterfall freezing into a giant ice column in winter/spring.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 105,
+            isHiddenGem: true,
+            locationName: 'Anjani Mahadev Trail, Solang Valley 175103, Himachal Pradesh'
+          },
+          {
+            id: 'act-mnl-2-2',
+            time: '10:30 AM',
+            title: 'Solang Valley Cable Car Ropeway to Mt. Phatru Ridge',
+            description: 'Glide high over alpine pine forests on the gondola ropeway to reach 10,500 ft elevation with 360-degree snow peaks panoramic views.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 650,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Solang Valley Ropeway Base, Manali 175103'
+          },
+          {
+            id: 'act-mnl-2-3',
+            time: '01:30 PM',
+            title: 'Wood-fired Trout Fish & Himalayan Butter Tea Lunch',
+            description: 'Fresh Himalayan rainbow trout pan-seared with wild mountain herbs, accompanied by salt butter tea and hot garlic naan.',
+            category: 'meal' as const,
+            cost: 450,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Solang Valley Meadow Diner, Manali 175103'
+          },
+          {
+            id: 'act-mnl-2-4',
+            time: '04:30 PM',
+            title: 'Kothi Village Gorge & Sunset Vista Point',
+            description: 'Deep geological rocky chasm where the Beas River rushes through narrow cliffs against the backdrop of snow-dusted peaks.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Kothi Gorge Village, NH 3, Manali 175103'
+          }
+        ]
+      },
+      {
+        title: 'Sethan Buddhist Hamlet, Igloo Plateau & Hamta Pass Foothills',
+        highlights: ['Sethan Valley at 9,000 ft', 'Curved Bouldering Rocks', 'Hamta River Streams', 'Night Sky Stargazing'],
+        activities: [
+          {
+            id: 'act-mnl-3-1',
+            time: '07:00 AM',
+            title: 'Sethan Village 35-Hairpin Curve Mountain Drive & Apple Orchards',
+            description: 'Scenic climb up through 35 hairpin turns into Sethan, a peaceful Buddhist village of Khampa migrants at 9,000 feet elevation.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Sethan Village, Hamta Valley 175140, Himachal Pradesh'
+          },
+          {
+            id: 'act-mnl-3-2',
+            time: '10:30 AM',
+            title: 'Hamta River Foothills Meadow Hike & Glacial Stream Crossing',
+            description: 'Trek along crystal-clear melting glacial streams framed by dramatic granite cliffs and wild rhododendrons.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Hamta Valley Trek Starting Point, Sethan 175140'
+          },
+          {
+            id: 'act-mnl-3-3',
+            time: '01:30 PM',
+            title: 'Authentic Tibetan Thukpa & Steamed Tingmo Lunch',
+            description: 'Hearty hand-rolled noodle soup with mountain herbs, steamed Tibetan flower bread (Tingmo), and chili dip.',
+            category: 'meal' as const,
+            cost: 240,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Sethan Khampa Homestay, Sethan 175140'
+          },
+          {
+            id: 'act-mnl-3-4',
+            time: '04:30 PM',
+            title: 'Pandu Ropa Sacred Meadow Sunset Point',
+            description: 'Legendary high-altitude marshy meadow believed to have been cultivated by the Pandavas, offering dramatic golden sunset views.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Pandu Ropa Ridge, Upper Hamta Valley 175140'
+          }
+        ]
+      },
+      {
+        title: 'Naggar Castle 1460 AD, Nicholas Roerich Estate & Trout Farms',
+        highlights: ['Naggar Timber Castle', 'Roerich Russian Art Gallery', 'Tripura Sundari Wood Temple', 'Trout Farm Fresh Catch'],
+        activities: [
+          {
+            id: 'act-mnl-4-1',
+            time: '08:00 AM',
+            title: 'Naggar Castle 1460 AD Medieval Timber-and-Stone Fortress',
+            description: 'Historic palace of the Kullu Rajas built in earthquake-proof Kath-Kuni architectural style with sweeping Beas valley vistas.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 105,
+            isHiddenGem: false,
+            locationName: 'Naggar Castle Road, Naggar, Kullu Valley 175130'
+          },
+          {
+            id: 'act-mnl-4-2',
+            time: '11:00 AM',
+            title: 'Nicholas Roerich Memorial Estate & Himalayan Art Gallery',
+            description: 'Visit the tranquil mountain residence of the renowned Russian master painter, philosopher, and explorer with preserved vintage cars.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 100,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Roerich Estate Road, Naggar 175130, Himachal Pradesh'
+          },
+          {
+            id: 'act-mnl-4-3',
+            time: '01:30 PM',
+            title: 'Farm-Fresh Himalayan Rainbow Trout & Local Apricot Jam Cake',
+            description: 'Lunch beside mountain trout raceways savoring crispy lemon-butter pan-grilled trout and dessert made with fresh Naggar apricots.',
+            category: 'meal' as const,
+            cost: 420,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Naggar Heritage Trout Corner, Naggar 175130'
+          },
+          {
+            id: 'act-mnl-4-4',
+            time: '04:30 PM',
+            title: 'Tripura Sundari Pagoda Temple & Chanderkhani Pass View Sunset',
+            description: 'Intricately carved three-tiered deodar wood temple surrounded by apple orchards, glowing golden as dusk falls over the valley.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Tripura Sundari Temple Complex, Naggar 175130'
+          }
+        ]
+      },
+      {
+        title: 'Kasol Parvati River Pines, Chalal Riverside & Manikaran Hot Springs',
+        highlights: ['Parvati River Rapids', 'Chalal Hanging Bridge', 'Manikaran Hot Water Kund', 'Gurudwara Langar'],
+        activities: [
+          {
+            id: 'act-mnl-5-1',
+            time: '07:30 AM',
+            title: 'Chalal Riverside Pine Trail & Parvati Suspension Bridge',
+            description: 'Cross the swaying cable suspension bridge over roaring Parvati River rapids into pine woods and offbeat village cafes.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Chalal Trail, Kasol, Parvati Valley 175105'
+          },
+          {
+            id: 'act-mnl-5-2',
+            time: '11:00 AM',
+            title: 'Manikaran Sahib Gurudwara & Natural Boiling Hot Spring Kund',
+            description: 'Sacred riverside shrine where thermal mineral waters boil at 94°C right alongside the icy Parvati River, cooking rice in cloth bags.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Manikaran Sahib, Parvati Valley 175105, Himachal Pradesh'
+          },
+          {
+            id: 'act-mnl-5-3',
+            time: '01:30 PM',
+            title: 'Sacred Community Langar & Fresh Kada Prasad',
+            description: 'Partake in the blessed, steaming hot vegetarian community meal of dal, fresh rotis, and rich ghee semolina prasad.',
+            category: 'meal' as const,
+            cost: 0,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Manikaran Langar Hall, Manikaran 175105'
+          },
+          {
+            id: 'act-mnl-5-4',
+            time: '05:00 PM',
+            title: 'Kasol Confluence Point & Riverside Golden Sunset Chill',
+            description: 'Watch the evening sun illuminate snow peaks over the confluence of the Parvati and Grahan mountain streams.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Parvati Riverbank, Kasol 175105, Himachal Pradesh'
+          }
+        ]
+      },
+      {
+        title: 'Jibhi Valley, Mini Thailand Rock Pool & Jalori Pass / Serolsar Lake',
+        highlights: ['Jibhi Hidden Waterfall', 'Mini Thailand Rock Stream', 'Jalori Pass 10,800 ft', 'Serolsar Lake Trek'],
+        activities: [
+          {
+            id: 'act-mnl-6-1',
+            time: '07:00 AM',
+            title: 'Jibhi Hidden Waterfall Wooden Bridge Walk',
+            description: 'Walk across wooden footbridges over bubbling forest streams to reach a secluded waterfall tucked deep inside pine woods.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 20,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Jibhi Waterfall Trail, Tirthan Valley 175123'
+          },
+          {
+            id: 'act-mnl-6-2',
+            time: '09:30 AM',
+            title: 'Mini Thailand Natural Rock Pool & Tirthan River Gorge',
+            description: 'Secluded crystal emerald rock pool enclosed by towering moss-covered boulders resembling Krabi coves in the Himalayas.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Kulaandi Forest Post, Jibhi-Bahu Road 175123'
+          },
+          {
+            id: 'act-mnl-6-3',
+            time: '12:30 PM',
+            title: 'Jalori Pass (10,800 ft) Mountain Dhaba Rajma Chawal',
+            description: 'High altitude lunch featuring slow-cooked pahadi red kidney beans (Rajma) with desi ghee, spiced pickles, and steamed rice.',
+            category: 'meal' as const,
+            cost: 180,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Jalori Pass Top, Kullu-Shimla Border 175123'
+          },
+          {
+            id: 'act-mnl-6-4',
+            time: '03:00 PM',
+            title: 'Serolsar Sacred Alpine Lake & Buddhi Nagin Temple Trek',
+            description: '5 km oak and rhododendron forest trek to an emerald alpine lake sacred to the mythical Mother of all Nagas.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 150,
+            isHiddenGem: true,
+            locationName: 'Serolsar Lake Trail, Jalori Pass 175123'
+          }
+        ]
+      },
+      {
+        title: 'Atal Tunnel Engineering Marvel, Sissu Waterfall & Lahaul Valley Snow',
+        highlights: ['Atal Tunnel 9.02 km', 'Sissu Glacial Waterfall', 'Lahaul Valley Willow Forest', 'Chandra River Sunset'],
+        activities: [
+          {
+            id: 'act-mnl-7-1',
+            time: '07:30 AM',
+            title: 'Atal Tunnel (9.02 km) Transit into Trans-Himalayan Lahaul',
+            description: 'Drive through the world\'s longest highway single-tube tunnel at 10,000 ft, emerging from green Manali into rugged snow-capped Lahaul.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Atal Tunnel South Portal, Solang 175103'
+          },
+          {
+            id: 'act-mnl-7-2',
+            time: '09:30 AM',
+            title: 'Sissu Glacial Waterfall & Chandra River Bamboo Suspension Walk',
+            description: 'Walk across the Chandra River suspension bridge to stand directly beneath the 165-foot thundering Sissu glacial cascade.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 105,
+            isHiddenGem: true,
+            locationName: 'Sissu Waterfall Viewpoint, Lahaul & Spiti 175140'
+          },
+          {
+            id: 'act-mnl-7-3',
+            time: '01:00 PM',
+            title: 'Lahauli Buckwheat Pancakes & Steamed Mutton Momos',
+            description: 'Sample high-altitude organic buckwheat pancakes (Chillada), mutton momos with hot chili chhang sauce, and butter tea.',
+            category: 'meal' as const,
+            cost: 260,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Sissu Valley Cafe, Lahaul 175140'
+          },
+          {
+            id: 'act-mnl-7-4',
+            time: '04:30 PM',
+            title: 'Khangsar Khar 108-Room Ancient Fortress & Snow Peak Sunset',
+            description: '500-year-old historic stone and wood fortress of the local Thakur chieftains illuminated by golden sunset over the Chandra river.',
+            category: 'sunset' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Khangsar Village, Lahaul Valley 175140, Himachal Pradesh'
+          }
+        ]
+      }
+    ];
+
+    for (let i = 0; i < validDuration; i++) {
+      const template = manaliTemplates[i % manaliTemplates.length];
+      const dayNum = i + 1;
+      const dayCostSum = template.activities.reduce((acc, a) => acc + a.cost, 0);
+
+      days.push({
+        dayNumber: dayNum,
+        title: `Day ${dayNum}: ${template.title}`,
+        dayCost: dayCostSum,
+        travelTimeMinutes: 40 + (i * 10),
+        distanceKm: 25 + (i * 10),
+        dayHighlights: template.highlights,
+        weather: getWeatherForDestinationDay('Manali', dayNum),
+        activities: template.activities.map((act, actIdx) => ({
+          ...act,
+          id: `act-mnl-${dayNum}-${actIdx + 1}`
+        }))
+      });
+    }
+    return days;
+  }
+
+  // -------------------------------------------------------------
+  // 8. REAL KASHMIR & PARADISE VALLEY ITINERARY (7 Days Non-Repeating)
+  // -------------------------------------------------------------
+  if (d.includes('kashmir') || d.includes('srinagar') || d.includes('gulmarg') || d.includes('pahalgam') || d.includes('sonamarg') || d.includes('doodhpathri')) {
+    const kashmirTemplates = [
+      {
+        title: 'Srinagar Dal Lake Sunrise Shikara, Floating Bazaar & Char Chinar Island',
+        highlights: ['Floating Vegetable Market', 'Char Chinar Island', 'Saffron Kahwa on Shikara', 'Old Wood Heritage Bridges'],
+        activities: [
+          {
+            id: 'act-kas-1-1',
+            time: '05:30 AM',
+            title: 'Dal Lake 150-Year-Old Sunrise Floating Vegetable Market',
+            description: 'Glide silently through morning mist in a cedar Shikara boat to observe traditional water barter between local Kashmiri farmers.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 600,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Ghat No. 1, Boulevard Road, Dal Lake, Srinagar 190001'
+          },
+          {
+            id: 'act-kas-1-2',
+            time: '09:00 AM',
+            title: 'Floating Kahwa Tea & Fresh Kashmiri Bakerkhani Bakery',
+            description: 'Sip hot saffron-infused Kahwa with sliced almonds and cinnamon, paired with crispy layered Bakerkhani bread.',
+            category: 'cafe' as PlaceCategory,
+            cost: 160,
+            durationMinutes: 45,
+            isHiddenGem: true,
+            locationName: 'Dal Lake Floating Market Pier, Srinagar 190001'
+          },
+          {
+            id: 'act-kas-1-3',
+            time: '11:00 AM',
+            title: 'Char Chinar (Ropa Lank) Island & Lotus Gardens Navigation',
+            description: 'Visit the historic island marked by four majestic centenary Chinar trees planted by Mughal Prince Murad Baksh in 1632.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Char Chinar Island, Bod Dal, Srinagar 190001'
+          },
+          {
+            id: 'act-kas-1-4',
+            time: '01:30 PM',
+            title: 'Authentic 7-Course Kashmiri Wazwan Lunch at Ahdoos',
+            description: 'Legendary culinary heritage experience: Rista, Rogan Josh, Tabak Maaz, Gushtaba, and fragrant saffron basmati rice.',
+            category: 'meal' as const,
+            cost: 650,
+            durationMinutes: 75,
+            isHiddenGem: false,
+            locationName: 'Ahdoos Restaurant, Residency Road, Srinagar 190001'
+          },
+          {
+            id: 'act-kas-1-5',
+            time: '05:30 PM',
+            title: 'Shankaracharya Temple 242 Stone Steps Sunset Vista',
+            description: 'Ascend the 9th-century hill shrine atop Gopadari Hill for an astonishing panoramic golden sunset over Dal Lake and Pir Panjal peaks.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Durgjan, Shankaracharya Hill, Srinagar 190001'
+          }
+        ]
+      },
+      {
+        title: 'Mughal Terraced Gardens of Nishat & Shalimar, Jamia Masjid Wooden Pillars',
+        highlights: ['Nishat Bagh 12 Terraces', 'Shalimar Bagh Fountains', 'Jamia Masjid 378 Deodar Pillars', 'Pari Mahal Astronomy'],
+        activities: [
+          {
+            id: 'act-kas-2-1',
+            time: '08:00 AM',
+            title: 'Nishat Bagh "Garden of Bliss" 12 Terraces & Cascades',
+            description: '1633 AD Mughal garden designed by Asif Khan featuring 12 grand stone terraces symbolizing the zodiac signs overlooking Dal Lake.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Foreshore Road, Nishat, Srinagar 191121'
+          },
+          {
+            id: 'act-kas-2-2',
+            time: '10:30 AM',
+            title: 'Pari Mahal (Palace of Fairies) 6-Tiered Astronomy Terrace',
+            description: '1600s residential observatory and library built by Prince Dara Shikoh with arched stone windows framing the entire valley below.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Zabarwan Mountain Ridge, Cheshmashahi, Srinagar 190001'
+          },
+          {
+            id: 'act-kas-2-3',
+            time: '01:30 PM',
+            title: 'Traditional Mutton Yakhni & Haak Saag Lunch',
+            description: 'Fragrant mutton slow-simmered in spiced yogurt and fennel gravy paired with authentic Kashmiri collard greens (Haak).',
+            category: 'meal' as const,
+            cost: 420,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Shalimar Road Dining, Srinagar 191121'
+          },
+          {
+            id: 'act-kas-2-4',
+            time: '04:30 PM',
+            title: 'Jamia Masjid 1400 AD & 378 Monolithic Deodar Pillars',
+            description: 'Wander inside one of India’s grandest wooden mosques with 378 towering Himalayan cedar pillars and a peaceful fountain courtyard.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Nowhatta, Old City (Shehr-e-Khaas), Srinagar 190002'
+          }
+        ]
+      },
+      {
+        title: 'Gulmarg High-Altitude Gondola Phase 2 to Apharwat Peak (13,780 ft)',
+        highlights: ['Gondola Phase 2 (13,780 ft)', 'Apharwat Alpine Glaciers', 'St. Mary Church 1902', 'Strawberry Valley Trail'],
+        activities: [
+          {
+            id: 'act-kas-3-1',
+            time: '08:00 AM',
+            title: 'Gulmarg Gondola Phase 1 (Kongdoori) to Phase 2 Apharwat Peak',
+            description: 'Asia’s highest operating cable car rising from 8,500 ft to 13,780 ft onto the snow-capped Apharwat mountain ridge with Line of Control views.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 1650,
+            durationMinutes: 150,
+            isHiddenGem: false,
+            locationName: 'Gulmarg Gondola Base Station, Gulmarg 193403'
+          },
+          {
+            id: 'act-kas-3-2',
+            time: '12:00 PM',
+            title: 'Apharwat High Alpine Ridge Snow Walk & Glacier Vista',
+            description: 'Walk upon pristine high-altitude snowfields and gaze across the Nanga Parbat and Pir Panjal mountain ranges.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Apharwat Peak Top Station (13,780 ft), Gulmarg 193403'
+          },
+          {
+            id: 'act-kas-3-3',
+            time: '02:00 PM',
+            title: 'Khyber Pine View Lunch with Hot Gushtaba',
+            description: 'Velvety mutton meatballs pounded by hand in rich cardamom-yogurt broth, hot saffron rice, and Kashmiri walnuts.',
+            category: 'meal' as const,
+            cost: 550,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Pine Meadow Restaurant, Gulmarg 193403'
+          },
+          {
+            id: 'act-kas-3-4',
+            time: '04:30 PM',
+            title: 'St. Mary’s 1902 Victorian Stone Church & Meadow Sunset',
+            description: 'Historic British-era gray stone church set in the middle of emerald rolling golf meadows with golden alpine light.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Gulmarg Golf Course Meadow, Gulmarg 193403'
+          }
+        ]
+      },
+      {
+        title: 'Pahalgam Lidder Valley, Betaab Valley Meadows & Chandanwari Glacier Point',
+        highlights: ['Betaab Valley River Stream', 'Lidder River Rapids', 'Chandanwari Amarnath Gateway', 'Mamal 12th Century Temple'],
+        activities: [
+          {
+            id: 'act-kas-4-1',
+            time: '08:00 AM',
+            title: 'Betaab Valley Emerald Meadows & Lidder River Bend',
+            description: 'Breathtaking alpine meadow named after the film Betaab, surrounded by dense deodar pine forests and roaring turquoise river waters.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 100,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Betaab Valley Park, Pahalgam 192126, Jammu & Kashmir'
+          },
+          {
+            id: 'act-kas-4-2',
+            time: '11:30 AM',
+            title: 'Chandanwari Glacial Snow Bridge & Sheshnag River Valley',
+            description: 'Historic starting point of the sacred Amarnath Yatra at 9,500 ft featuring natural ice bridges and mountain torrents.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Chandanwari Post, Pahalgam 192126'
+          },
+          {
+            id: 'act-kas-4-3',
+            time: '01:30 PM',
+            title: 'Fresh Lidder Rainbow Trout Grill & Kashmiri Walnut Salad',
+            description: 'Locally caught brown and rainbow trout pan-grilled with fresh river herbs, paired with sweet apple-walnut salad.',
+            category: 'meal' as const,
+            cost: 480,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Lidder Riverside Cafe, Main Market, Pahalgam 192126'
+          },
+          {
+            id: 'act-kas-4-4',
+            time: '04:30 PM',
+            title: 'Mamaleshwar 12th Century Monolithic Shiva Stone Temple',
+            description: 'Ancient monolithic stone temple dating back to 1165 AD with an inscribed stone tank fed by pure mountain springs.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Mamal Village, Across Lidder River, Pahalgam 192126'
+          }
+        ]
+      },
+      {
+        title: 'Aru Valley Pine Forest Hike & Baisaran Valley (Mini Switzerland) Ponytrail',
+        highlights: ['Aru Valley Village', 'Baisaran Mini Switzerland', 'Pahalgam Pine Ridge', 'Dabian Forest Meadow'],
+        activities: [
+          {
+            id: 'act-kas-5-1',
+            time: '07:30 AM',
+            title: 'Aru Valley Eco-Village & Kolohoi Glacier Foothills Walk',
+            description: 'Tranquil village 12 km from Pahalgam known for scenic wooden houses, meadow streams, and peaceful Himalayan trekking trails.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Aru Valley Village, Pahalgam 192126'
+          },
+          {
+            id: 'act-kas-5-2',
+            time: '11:00 AM',
+            title: 'Baisaran Valley "Mini Switzerland" High Alpine Meadow',
+            description: 'Expansive rolling hilltop grassland surrounded by dense pine forests offering panoramic vistas of the Pahalgam town and Lidder river.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Baisaran Ridge Trail, Pahalgam 192126'
+          },
+          {
+            id: 'act-kas-5-3',
+            time: '01:30 PM',
+            title: 'Mountain Homestyle Rajma Curry & Dum Aloo Lunch',
+            description: 'Spiced Kashmiri Dum Aloo cooked in fennel and dried ginger gravy with hot steaming basmati rice and fresh mint chutney.',
+            category: 'meal' as const,
+            cost: 260,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Baisaran Pine Clearing Eatery, Pahalgam 192126'
+          },
+          {
+            id: 'act-kas-5-4',
+            time: '05:00 PM',
+            title: 'Overa-Aru Wildlife Sanctuary Forest Edge Sunset',
+            description: 'Spot endangered Kashmir Stags (Hangul) and colorful Monal pheasants feeding peacefully at dusk along the forest perimeter.',
+            category: 'sunset' as PlaceCategory,
+            cost: 30,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Overa-Aru Sanctuary Boundary, Pahalgam 192126'
+          }
+        ]
+      },
+      {
+        title: 'Doodhpathri "Valley of Milk" Meadow Streams & Nilnag Alpine Lake',
+        highlights: ['Shaliganga Foaming River', 'Untouched Rolling Pastures', 'Nilnag Pine Lake', 'Local Gujjar Milk Tea'],
+        activities: [
+          {
+            id: 'act-kas-6-1',
+            time: '08:00 AM',
+            title: 'Doodhpathri Shaliganga River "Milk Foam" Cascade Walk',
+            description: 'Walk beside the foaming Shaliganga river whose waters crash so fast against pebbles that they appear white like milk.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Shaliganga Riverbank, Doodhpathri, Budgam 191111'
+          },
+          {
+            id: 'act-kas-6-2',
+            time: '11:30 AM',
+            title: 'Nilnag Deep Blue Pine Lake Hidden Trail',
+            description: 'Secluded natural blue-tinted mountain lake surrounded by dense pine forests and wild alpine meadows.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Nilnag Forest Track, Doodhpathri 191111'
+          },
+          {
+            id: 'act-kas-6-3',
+            time: '01:30 PM',
+            title: 'Fresh Gujjar Churn Butter, Makki ki Roti & Hot Noon Chai',
+            description: 'Authentic shepherd tiffin: freshly churned salted butter on hot cornflour rotis paired with traditional pink Kashmiri salt tea.',
+            category: 'meal' as const,
+            cost: 180,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Doodhpathri Meadow Kiosk, Budgam 191111'
+          },
+          {
+            id: 'act-kas-6-4',
+            time: '04:30 PM',
+            title: 'Dikshal Meadow Sunset & Shepherds Flute Melodies',
+            description: 'Watch nomadic pastoralists lead sheep herds across glowing amber meadows as evening shadows stretch over Pir Panjal peaks.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Dikshal Ridge, Doodhpathri 191111, Jammu & Kashmir'
+          }
+        ]
+      },
+      {
+        title: 'Sonamarg "Meadow of Gold", Sindh River Valley & Thajiwas Glacier Ice Trek',
+        highlights: ['Thajiwas Glacier Ice Sledging', 'Sindh River Gorges', 'Baltal Valley Border', 'Zero Point Panorama'],
+        activities: [
+          {
+            id: 'act-kas-7-1',
+            time: '07:30 AM',
+            title: 'Sindh River Gorge Valley Drive to Sonamarg (8,950 ft)',
+            description: 'Spectacular alpine drive alongside roaring Sindh river rapids past towering golden sycamore and pine covered cliffs.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'NH 1D Srinagar-Leh Highway, Sonamarg 191203'
+          },
+          {
+            id: 'act-kas-7-2',
+            time: '10:30 AM',
+            title: 'Thajiwas Glacier Perennial Ice Sheet & Glacial Stream Trek',
+            description: '3 km trek or pony ride to the base of the Thajiwas glacier, featuring natural mini-waterfalls and snow sledging year-round.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 200,
+            durationMinutes: 135,
+            isHiddenGem: true,
+            locationName: 'Thajiwas Glacier Base, Sonamarg 191203'
+          },
+          {
+            id: 'act-kas-7-3',
+            time: '01:30 PM',
+            title: 'High Altitude Mutton Kanti & Hot Lavasa Bread Lunch',
+            description: 'Succulent boneless mutton pan-roasted with green chilies, onions, and tomatoes served with soft Kashmiri Lavasa flatbread.',
+            category: 'meal' as const,
+            cost: 380,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Sonamarg Glacier View Diner, Sonamarg 191203'
+          },
+          {
+            id: 'act-kas-7-4',
+            time: '04:30 PM',
+            title: 'Baltal Valley Viewpoint & Zojila Pass Sunset Vista',
+            description: 'Look out towards the gateway to Ladakh with dramatic towering rock faces glowing fiery orange in the setting Himalayan sun.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Baltal Overlook, NH 1D, Sonamarg 191203'
+          }
+        ]
+      }
+    ];
+
+    for (let i = 0; i < validDuration; i++) {
+      const template = kashmirTemplates[i % kashmirTemplates.length];
+      const dayNum = i + 1;
+      const dayCostSum = template.activities.reduce((acc, a) => acc + a.cost, 0);
+
+      days.push({
+        dayNumber: dayNum,
+        title: `Day ${dayNum}: ${template.title}`,
+        dayCost: dayCostSum,
+        travelTimeMinutes: 45 + (i * 10),
+        distanceKm: 30 + (i * 12),
+        dayHighlights: template.highlights,
+        weather: getWeatherForDestinationDay('Kashmir', dayNum),
+        activities: template.activities.map((act, actIdx) => ({
+          ...act,
+          id: `act-kas-${dayNum}-${actIdx + 1}`
+        }))
+      });
+    }
+    return days;
+  }
+
+  // -------------------------------------------------------------
+  // 9. REAL RAJASTHAN (JAIPUR & UDAIPUR) ITINERARY (7 Days Non-Repeating)
+  // -------------------------------------------------------------
+  if (d.includes('jaipur') || d.includes('udaipur') || d.includes('rajasthan') || d.includes('jodhpur') || d.includes('jaisalmer')) {
+    const rajasthanTemplates = [
+      {
+        title: 'Jaipur Amber Fort, Panna Meena Stepwell & Jal Mahal Water Palace',
+        highlights: ['Amber Fort Mirror Palace (Sheesh Mahal)', 'Panna Meena Stepwell', 'Jal Mahal Lake View', 'Laxmi Misthan Bhandar Ghewar'],
+        activities: [
+          {
+            id: 'act-raj-1-1',
+            time: '07:30 AM',
+            title: 'Panna Meena Ka Kund 16th-Century Geometric Stepwell',
+            description: 'Marvel at the stunning criss-cross symmetrical stone stairways before tourist crowds arrive, capturing pristine morning light.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Near Amber Fort, Devisinghpura, Amer, Jaipur 302028'
+          },
+          {
+            id: 'act-raj-1-2',
+            time: '09:00 AM',
+            title: 'Amber Fort Hilltop Palace & Sheesh Mahal (Mirror Palace)',
+            description: 'Explore grand sandstone courtyards, marble lattice windows, and the world-famous hall of mirrors illuminated by single candle reflections.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 200,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Devisinghpura, Amer, Jaipur 302028, Rajasthan'
+          },
+          {
+            id: 'act-raj-1-3',
+            time: '01:30 PM',
+            title: 'Authentic Rajasthani Dal Baati Churma Feast',
+            description: 'Traditional baked wheat dumplings crushed with ghee, spiced five-lentil dal, gatte ki sabzi, and sweet cardamom churma.',
+            category: 'meal' as const,
+            cost: 380,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Amer Road Heritage Kitchen, Jaipur 302002'
+          },
+          {
+            id: 'act-raj-1-4',
+            time: '05:30 PM',
+            title: 'Jal Mahal Floating Lake Palace Promenade at Sunset',
+            description: 'Stroll along Man Sagar Lake as the illuminated 18th-century yellow sandstone water palace reflects upon the calm shimmering waters.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: false,
+            locationName: 'Amer Road, Jal Mahal Promenade, Jaipur 302002'
+          }
+        ]
+      },
+      {
+        title: 'Hawa Mahal Sunrise Facade, City Palace Museum & Jantar Mantar Observatory',
+        highlights: ['953 Jharokhas of Hawa Mahal', 'City Palace Royal Courtyard', 'UNESCO Jantar Mantar Sun Dial', 'Johari Bazaar Gems'],
+        activities: [
+          {
+            id: 'act-raj-2-1',
+            time: '07:00 AM',
+            title: 'Hawa Mahal (Palace of Winds) Sunrise Facade & Rooftop View',
+            description: 'Admire the 1799 five-story honeycomb pink sandstone facade with 953 carved jharokhas catching early morning sunshine.',
+            category: 'cafe' as PlaceCategory,
+            cost: 150,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Hawa Mahal Road, Badi Choupad, Jaipur 302002'
+          },
+          {
+            id: 'act-raj-2-2',
+            time: '09:30 AM',
+            title: 'Jaipur City Palace & Chandra Mahal Peacock Courtyard',
+            description: 'Explore the royal residence of the Maharaja of Jaipur featuring the famous four seasonal gates decorated with vibrant peacock mosaics.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 300,
+            durationMinutes: 105,
+            isHiddenGem: false,
+            locationName: 'Tulsi Marg, Gangori Bazaar, J.D.A. Market, Jaipur 302002'
+          },
+          {
+            id: 'act-raj-2-3',
+            time: '12:00 PM',
+            title: 'Jantar Mantar UNESCO World Heritage Astronomical Observatory',
+            description: 'Explore 19 monumental stone architectural instruments built in 1734, including the world’s largest stone sundial measuring time to 2 seconds.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 100,
+            durationMinutes: 75,
+            isHiddenGem: false,
+            locationName: 'Gangori Bazaar, J.D.A. Market, Jaipur 302002'
+          },
+          {
+            id: 'act-raj-2-4',
+            time: '01:30 PM',
+            title: 'LMB Special Rajasthani Thali & Hot Paneer Ghewar',
+            description: 'Century-old sweet shop feast featuring ker sangri, papad mangodi, and signature syrup-soaked honeycomb Ghewar.',
+            category: 'meal' as const,
+            cost: 450,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Laxmi Misthan Bhandar, Johari Bazaar, Jaipur 302003'
+          },
+          {
+            id: 'act-raj-2-5',
+            time: '05:30 PM',
+            title: 'Nahargarh Fort Sunset Point Overlooking Entire Pink City',
+            description: 'Sit on the ramparts of Nahargarh Fort perched on the Aravalli hills as the whole pink city lights up below in a sea of lights.',
+            category: 'sunset' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Nahargarh Fort Ridge, Krishna Nagar, Brahampuri, Jaipur 302002'
+          }
+        ]
+      },
+      {
+        title: 'Udaipur Lake Pichola Royal Boat Cruise & Bagore Ki Haveli Folk Show',
+        highlights: ['Lake Pichola Island Cruise', 'Jag Mandir Palace', 'Bagore Ki Haveli Dance', 'Ambrai Ghat Twilight'],
+        activities: [
+          {
+            id: 'act-raj-3-1',
+            time: '08:30 AM',
+            title: 'Jagdish Temple 1651 AD Indo-Aryan Stone Carvings',
+            description: 'Visit the 3-story carved Hindu temple dedicated to Lord Vishnu standing tall with sculpted elephant and celestial dancer friezes.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Jagdish Chowk, Old City, Udaipur 313001'
+          },
+          {
+            id: 'act-raj-3-2',
+            time: '10:30 AM',
+            title: 'Udaipur City Palace Complex Overlooking Lake Pichola',
+            description: 'Rajasthan\'s largest palace complex featuring the Crystal Gallery, Sheesh Mahal, and Mor Chowk with radiant glass peacocks.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 400,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Old City, Udaipur 313001, Rajasthan'
+          },
+          {
+            id: 'act-raj-3-3',
+            time: '01:30 PM',
+            title: 'Mewari Laal Maas & Bajra Roti Lakeside Lunch',
+            description: 'Fiery slow-cooked lamb curry prepared with traditional Mathania red chilies, served with pearl millet flatbreads.',
+            category: 'meal' as const,
+            cost: 520,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Lakeside Ghat Road, Udaipur 313001'
+          },
+          {
+            id: 'act-raj-3-4',
+            time: '04:30 PM',
+            title: 'Lake Pichola Sunset Boat Cruise to Jag Mandir Palace',
+            description: 'Glide over turquoise waters past the floating Lake Palace onto Jag Mandir island palace surrounded by stone elephant statues.',
+            category: 'sunset' as PlaceCategory,
+            cost: 500,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Rameshwar Ghat Jetty, City Palace, Udaipur 313001'
+          }
+        ]
+      },
+      {
+        title: 'Sajjangarh Monsoon Palace Ridge & Saheliyon Ki Bari Royal Fountains',
+        highlights: ['Sajjangarh Monsoon Palace', 'Saheliyon Ki Bari Fountains', 'Fateh Sagar Lake Promenade', 'Sukhadia Circle Kulfi'],
+        activities: [
+          {
+            id: 'act-raj-4-1',
+            time: '08:30 AM',
+            title: 'Saheliyon Ki Bari (Garden of the Maidens) Natural Rain Fountains',
+            description: '18th-century royal pleasure garden built for royal princesses with marble elephant fountains operating entirely on gravity pressure.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 75,
+            isHiddenGem: false,
+            locationName: 'Saheli Marg, New Fatehpura, Udaipur 313001'
+          },
+          {
+            id: 'act-raj-4-2',
+            time: '11:00 AM',
+            title: 'Fateh Sagar Lake Boat Ride & Nehru Park Island',
+            description: 'Scenic artificial lake framed by the Aravalli mountain ranges with an island park in the center housing a solar observatory.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 150,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Fateh Sagar Lake Promenade, Udaipur 313001'
+          },
+          {
+            id: 'act-raj-4-3',
+            time: '01:30 PM',
+            title: 'Kadhi Pakora & Ker Sangri Traditional Lunch',
+            description: 'Spiced gram-flour yogurt curry with desert bean delicacies and hot phulkas brushed with village churned butter.',
+            category: 'meal' as const,
+            cost: 280,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Panchwati Dining Lane, Udaipur 313001'
+          },
+          {
+            id: 'act-raj-4-4',
+            time: '05:00 PM',
+            title: 'Sajjangarh Monsoon Palace Hilltop Sunset Vista',
+            description: 'Perched 3,100 ft atop Bansdara mountain, offering the most spectacular sunset over all five lakes of Udaipur and the Aravalli range.',
+            category: 'sunset' as PlaceCategory,
+            cost: 110,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Bansdara Peak, Sajjangarh, Udaipur 313001'
+          }
+        ]
+      },
+      {
+        title: 'Jodhpur Mehrangarh Fort Ramparts, Jaswant Thada & Blue City Alley Walk',
+        highlights: ['Mehrangarh 400 ft Cliff Fort', 'Jaswant Thada White Marble', 'Blue Indigo Painted Houses', 'Mirchi Vada at Clock Tower'],
+        activities: [
+          {
+            id: 'act-raj-5-1',
+            time: '08:30 AM',
+            title: 'Mehrangarh Fort 400-Foot Vertical Cliff Citadel & Museum',
+            description: 'One of India\'s most impregnable fortresses built in 1459 AD featuring royal palanquins, weaponry, and cannonball scars.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 200,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'P.B# 165, The Fort, Jodhpur 342006, Rajasthan'
+          },
+          {
+            id: 'act-raj-5-2',
+            time: '11:30 AM',
+            title: 'Jaswant Thada "Taj Mahal of Marwar" Cenotaph',
+            description: 'Intricately carved translucent white marble memorial set beside a tiered garden and calm lake reflecting the Mehrangarh walls.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Lawaran, Jodhpur 342001, Rajasthan'
+          },
+          {
+            id: 'act-raj-5-3',
+            time: '01:30 PM',
+            title: 'Shahi Samosa, Crispy Mirchi Bada & Makhaniya Lassi',
+            description: 'Iconic street specialty of oversized spiced chili fritters and thick saffron-cardamom curd drink.',
+            category: 'meal' as const,
+            cost: 140,
+            durationMinutes: 45,
+            isHiddenGem: false,
+            locationName: 'Clock Tower Market, Jodhpur 342001'
+          },
+          {
+            id: 'act-raj-5-4',
+            time: '04:30 PM',
+            title: 'Navchokiya Blue City Indigo Alleys Walk & Pachetia Hill Sunset',
+            description: 'Wander past vibrant cobalt-blue Brahmin houses to reach Pachetia Hill for a 360-degree sunset over the indigo rooftops.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Navchokiya, Old Blue City, Jodhpur 342001'
+          }
+        ]
+      },
+      {
+        title: 'Jaisalmer Golden Fort Living Citadel, Patwon Ki Haveli & Gadisar Lake',
+        highlights: ['Jaisalmer Living Golden Fort', 'Patwon Ki Haveli Stone Carving', 'Gadisar Lake Desert Shrine', 'Thar Desert Sunset'],
+        activities: [
+          {
+            id: 'act-raj-6-1',
+            time: '08:00 AM',
+            title: 'Jaisalmer Fort (Sonar Qila) 1156 AD Living Sandstone Citadel',
+            description: 'The world\'s only living desert fort where a quarter of the city’s population still resides among carved golden stone lanes.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 100,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Fort Road, Dhibba Para, Jaisalmer 345001'
+          },
+          {
+            id: 'act-raj-6-2',
+            time: '11:00 AM',
+            title: 'Patwon Ki Haveli Cluster of 5 Stone-Carved Mansions',
+            description: 'Five adjoining 1805 merchant havelis famous for intricate yellow sandstone jali latticework resembling fine lace.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 100,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Patwa Complex, Sadar Bazar, Jaisalmer 345001'
+          },
+          {
+            id: 'act-raj-6-3',
+            time: '01:30 PM',
+            title: 'Traditional Gatte Ka Pulao & Ker Kaju Curry',
+            description: 'Fragrant spiced rice with gram flour dumplings and desert berries simmered with rich roasted cashews.',
+            category: 'meal' as const,
+            cost: 320,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Fort View Rooftop, Jaisalmer 345001'
+          },
+          {
+            id: 'act-raj-6-4',
+            time: '05:00 PM',
+            title: 'Gadisar Lake Desert Oasis & Gateway Arch Golden Sunset',
+            description: '14th-century rainwater reservoir surrounded by carved yellow sandstone temples and domed chhatris glowing at dusk.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Gadisar Lake Road, Jaisalmer 345001, Rajasthan'
+          }
+        ]
+      },
+      {
+        title: 'Sam Sand Dunes Camel Safari & Thar Desert Stargazing Camp',
+        highlights: ['Thar Desert Golden Dunes', 'Camel Sunset Safari', 'Rajasthani Kalbelia Folk Dance', 'Campfire Stargazing'],
+        activities: [
+          {
+            id: 'act-raj-7-1',
+            time: '09:00 AM',
+            title: 'Kuldhara Abandoned 13th Century Ghost Village',
+            description: 'Explore the haunting ruins of 84 Paliwal Brahmin villages cursed and abandoned overnight in the early 1800s.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Kuldhara Heritage Village, Jaisalmer 345001'
+          },
+          {
+            id: 'act-raj-7-2',
+            time: '01:30 PM',
+            title: 'Desert Camp Lunch with Bajra Khichdi & White Butter',
+            description: 'Nutritious slow-cooked pearl millet porridge tempered with cumin and served with fresh hand-churned white butter.',
+            category: 'meal' as const,
+            cost: 250,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Sam Dunes Road Camp, Jaisalmer 345001'
+          },
+          {
+            id: 'act-raj-7-3',
+            time: '04:30 PM',
+            title: 'Sam Sand Dunes Camel Safari & Golden Sun Horizon Drop',
+            description: 'Ride across pristine 30-meter rippled sand dunes as the desert sun dips into the endless Thar desert horizon.',
+            category: 'sunset' as PlaceCategory,
+            cost: 400,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Sam Sand Dunes, Thar Desert, Jaisalmer 345001'
+          }
+        ]
+      }
+    ];
+
+    for (let i = 0; i < validDuration; i++) {
+      const template = rajasthanTemplates[i % rajasthanTemplates.length];
+      const dayNum = i + 1;
+      const dayCostSum = template.activities.reduce((acc, a) => acc + a.cost, 0);
+
+      days.push({
+        dayNumber: dayNum,
+        title: `Day ${dayNum}: ${template.title}`,
+        dayCost: dayCostSum,
+        travelTimeMinutes: 40 + (i * 8),
+        distanceKm: 25 + (i * 10),
+        dayHighlights: template.highlights,
+        weather: getWeatherForDestinationDay('Jaipur', dayNum),
+        activities: template.activities.map((act, actIdx) => ({
+          ...act,
+          id: `act-raj-${dayNum}-${actIdx + 1}`
+        }))
+      });
+    }
+    return days;
+  }
+
+  // -------------------------------------------------------------
+  // 10. REAL UTTARAKHAND (RISHIKESH & CHOPTA) ITINERARY (7 Days Non-Repeating)
+  // -------------------------------------------------------------
+  if (d.includes('rishikesh') || d.includes('chopta') || d.includes('tungnath') || d.includes('haridwar') || d.includes('mussoorie') || d.includes('uttarakhand') || d.includes('dehradun')) {
+    const uttarakhandTemplates = [
+      {
+        title: 'Rishikesh Ganga Maha Aarti, Beatles Ashram & Laxman Jhula Trails',
+        highlights: ['Triveni Ghat Evening Maha Aarti', 'Beatles Chaurasi Kutia Ashram', 'Laxman Jhula Suspension Walk', 'German Bakery Chai'],
+        activities: [
+          {
+            id: 'act-uk-1-1',
+            time: '07:00 AM',
+            title: 'Laxman Jhula & Ram Jhula Ganga Riverside Morning Walk',
+            description: 'Walk across historic iron suspension bridges with sweeping views of the turquoise Ganges river flowing out of the Himalayan foothills.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Laxman Jhula Road, Tapovan, Rishikesh 249192'
+          },
+          {
+            id: 'act-uk-1-2',
+            time: '09:30 AM',
+            title: 'The Beatles Ashram (Chaurasi Kutia) Transcendental Meditation Ruins',
+            description: 'Explore the 1968 forest ashram where the Beatles composed the White Album, featuring 84 stone meditation caves and psychedelic graffiti art.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 150,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Swarg Ashram, Rajaji Tiger Reserve Boundary, Rishikesh 249304'
+          },
+          {
+            id: 'act-uk-1-3',
+            time: '01:30 PM',
+            title: 'Pure Ayurvedic Sattvic Thali with Himalayan Herbs',
+            description: 'Wholesome organic meal cooked with cold-pressed oils, mountain pulses, seasonal greens, and digestive herbal ginger infusions.',
+            category: 'meal' as const,
+            cost: 260,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Swarg Ashram Dining, Rishikesh 249304'
+          },
+          {
+            id: 'act-uk-1-4',
+            time: '05:30 PM',
+            title: 'Triveni Ghat Grand Ganga Maha Aarti with Chanting & Floating Diyas',
+            description: 'Hundreds of priests light multi-tiered brass oil lamps chanting Vedic hymns as floating marigold flower diyas illuminate the sacred river.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Triveni Ghat, Mayakund, Rishikesh 249201'
+          }
+        ]
+      },
+      {
+        title: 'Neer Garh Forest Waterfalls Trek & Shivpuri White Water Rapids',
+        highlights: ['Neer Garh 3-Tier Waterfall', 'Shivpuri Ganga Rapids', 'Cliff Jumping & Kayaking', 'Riverside Camp BBQ'],
+        activities: [
+          {
+            id: 'act-uk-2-1',
+            time: '07:30 AM',
+            title: 'Neer Garh Secluded Upper Waterfalls & Forest Plunge Pool Hike',
+            description: 'Trek 3 km up into dense Himalayan canopy to discover turquoise mountain pools and cold crystal-clear cascades.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Neer Waterfall Trail, Badrinath Highway, Rishikesh 249192'
+          },
+          {
+            id: 'act-uk-2-2',
+            time: '11:00 AM',
+            title: 'Shivpuri Grade III White Water Rafting to Marine Drive',
+            description: 'Navigate thrilling rapids including Roller Coaster and Golf Course with experienced international safety kayakers.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 800,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Shivpuri Rafting Base, NH 58, Rishikesh 249192'
+          },
+          {
+            id: 'act-uk-2-3',
+            time: '01:30 PM',
+            title: 'Riverside Pahadi Kadi & Steamed Jhangora (Barnyard Millet)',
+            description: 'Traditional Garhwali meal prepared with local mountain greens, tangy buttermilk curry, and indigenous Himalayan millets.',
+            category: 'meal' as const,
+            cost: 220,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Shivpuri River Beach Camp, Rishikesh 249192'
+          },
+          {
+            id: 'act-uk-2-4',
+            time: '05:00 PM',
+            title: 'Vashistha Cave (Gufa) Ancient Riverside Meditation Sunset',
+            description: '3,000-year-old natural cave on the banks of the Ganges where Sage Vashistha meditated, offering profound tranquility at twilight.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Vashistha Gufa, Badrinath Road, 18 km from Rishikesh 249192'
+          }
+        ]
+      },
+      {
+        title: 'Kunjapuri Temple Sunrise Himalayan Peak Vista & Haridwar Har Ki Pauri',
+        highlights: ['Kunjapuri Sunrise (Chaukhamba & Trishul Vista)', 'Haridwar Har Ki Pauri', 'Mansa Devi Cable Car', 'Mohan Ji Jalebi'],
+        activities: [
+          {
+            id: 'act-uk-3-1',
+            time: '05:00 AM',
+            title: 'Kunjapuri Devi Temple Sunrise over Himalayan Snow Peaks',
+            description: 'Witness the morning sun ignite the snow peaks of Swargarohini, Gangotri, Banderpoonch, and Chaukhamba at 5,400 ft altitude.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 105,
+            isHiddenGem: true,
+            locationName: 'Kunjapuri Peak, Hindolakhal, Tehri Garhwal 249175'
+          },
+          {
+            id: 'act-uk-3-2',
+            time: '10:00 AM',
+            title: 'Haridwar Har Ki Pauri Sacred Ghat & Brahmakund Walk',
+            description: 'Visit the world’s most renowned holy riverbank where the celestial Ganges officially leaves the mountains to enter the plains.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Har Ki Pauri, Haridwar 249401, Uttarakhand'
+          },
+          {
+            id: 'act-uk-3-3',
+            time: '01:00 PM',
+            title: 'Mohan Ji Puri Wale Crisp Bedmi Puri & Giant Rabdi Jalebi',
+            description: 'Historic Haridwar specialty of crispy urad dal puris served with spicy hing aloo sabzi and hot saffron jalebis.',
+            category: 'meal' as const,
+            cost: 160,
+            durationMinutes: 45,
+            isHiddenGem: false,
+            locationName: 'Moti Bazaar, Haridwar 249401'
+          },
+          {
+            id: 'act-uk-3-4',
+            time: '04:30 PM',
+            title: 'Mansa Devi Hilltop Temple Ropeway Cable Car & Sunset',
+            description: 'Ride the aerial cable car up Bilwa Parvat mountain for panoramic vistas over the meandering Ganges and ancient pilgrim city.',
+            category: 'sunset' as PlaceCategory,
+            cost: 120,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Bilwa Parvat, Haridwar 249401'
+          }
+        ]
+      },
+      {
+        title: 'Chopta "Mini Switzerland of India" & Tungnath World\'s Highest Shiva Temple',
+        highlights: ['Chopta Alpine Meadow (8,790 ft)', 'Tungnath Temple (12,073 ft)', 'Chandrashila Peak (13,100 ft)', 'Monal Pheasant Sighting'],
+        activities: [
+          {
+            id: 'act-uk-4-1',
+            time: '07:00 AM',
+            title: 'Chopta Bugyal (Alpine Meadow) Morning Rhododendron Trail',
+            description: 'Walk across untouched rolling mountain meadows framed by dense deodar and vibrant scarlet rhododendron forests.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Chopta Valley, Rudraprayag District 246419'
+          },
+          {
+            id: 'act-uk-4-2',
+            time: '09:00 AM',
+            title: 'Tungnath Temple (12,073 ft) 1,000-Year-Old Stone Shrine Trek',
+            description: 'Paved 3.5 km stone trek to the highest of the Panch Kedar temples, built by the Pandavas in North Indian Nagara style.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 150,
+            isHiddenGem: false,
+            locationName: 'Tungnath Peak Trail, Chopta 246419'
+          },
+          {
+            id: 'act-uk-4-3',
+            time: '01:30 PM',
+            title: 'Garhwali Gahat (Horsegram) Soup & Manduwa Roti Lunch',
+            description: 'Warming high-altitude mountain lunch of spiced horsegram broth, finger millet flatbread, and fresh homemade yak butter.',
+            category: 'meal' as const,
+            cost: 180,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Chopta Meadow Dhaba, Rudraprayag 246419'
+          },
+          {
+            id: 'act-uk-4-4',
+            time: '04:00 PM',
+            title: 'Chandrashila Peak (13,100 ft) 360-Degree Himalayan Sunset',
+            description: 'Stand atop the "Moon Rock" summit with majestic unbroken 360-degree views of Nanda Devi, Trishul, and Chaukhamba peaks.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Chandrashila Summit, Above Tungnath, Chopta 246419'
+          }
+        ]
+      }
+    ];
+
+    for (let i = 0; i < validDuration; i++) {
+      const template = uttarakhandTemplates[i % uttarakhandTemplates.length];
+      const dayNum = i + 1;
+      const dayCostSum = template.activities.reduce((acc, a) => acc + a.cost, 0);
+
+      days.push({
+        dayNumber: dayNum,
+        title: `Day ${dayNum}: ${template.title}`,
+        dayCost: dayCostSum,
+        travelTimeMinutes: 45 + (i * 10),
+        distanceKm: 28 + (i * 12),
+        dayHighlights: template.highlights,
+        weather: getWeatherForDestinationDay('Rishikesh', dayNum),
+        activities: template.activities.map((act, actIdx) => ({
+          ...act,
+          id: `act-uk-${dayNum}-${actIdx + 1}`
+        }))
+      });
+    }
+    return days;
+  }
+
+  // -------------------------------------------------------------
+  // 11. REAL MEGHALAYA & NORTHEAST (SHILLONG, CHERRAPUNJI, DAWKI) (7 Days Non-Repeating)
+  // -------------------------------------------------------------
+  if (d.includes('meghalaya') || d.includes('shillong') || d.includes('cherrapunji') || d.includes('sohra') || d.includes('dawki') || d.includes('sikkim') || d.includes('gangtok')) {
+    const northeastTemplates = [
+      {
+        title: 'Shillong Umiam Lake Kayaking, Ward\'s Lake & Police Bazar Street Food',
+        highlights: ['Umiam Lake Watersports', 'Ward\'s Lake Wooden Bridge', 'Police Bazar Khasi Bites', 'Laitlum Canyons'],
+        activities: [
+          {
+            id: 'act-meg-1-1',
+            time: '08:00 AM',
+            title: 'Umiam Lake (Barapani) Kayaking & Serene Waterway Trail',
+            description: 'Paddle across the expansive pine-fringed emerald waters of Umiam Lake surrounded by misty East Khasi Hills.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 250,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Umiam Water Sports Complex, Ri-Bhoi District 793103'
+          },
+          {
+            id: 'act-meg-1-2',
+            time: '11:00 AM',
+            title: 'Ward’s Lake Centenary Horseshoe Garden & Botanical Walk',
+            description: '100-year-old colonial lake with an ornate white wooden bridge, blooming cherry blossoms, and swan paddle boats.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 30,
+            durationMinutes: 75,
+            isHiddenGem: false,
+            locationName: 'Police Bazar Road, Shillong 793001, Meghalaya'
+          },
+          {
+            id: 'act-meg-1-3',
+            time: '01:30 PM',
+            title: 'Authentic Khasi Jadoh Rice & Dohkhlieh Pork Salad Lunch',
+            description: 'Aromatic short-grain rice cooked with local spices and wild ginger, paired with zesty herb-tossed pork and black sesame chutney.',
+            category: 'meal' as const,
+            cost: 260,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Police Bazar Khasi Kitchen, Shillong 793001'
+          },
+          {
+            id: 'act-meg-1-4',
+            time: '04:30 PM',
+            title: 'Laitlum Grand Canyons Misty Edge & Valley Sunset',
+            description: 'Dramatic rocky cliff edge dropping thousands of feet into lush green gorge valleys veiled in drifting white clouds.',
+            category: 'sunset' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Laitlum Canyons, Smit, East Khasi Hills 793015'
+          }
+        ]
+      },
+      {
+        title: 'Cherrapunji Nongriat Double Decker Living Root Bridge & Rainbow Falls',
+        highlights: ['3,500 Steps Nongriat Descent', 'Double Decker Living Root Bridge', 'Natural Turquoise Rock Pool', 'Rainbow Waterfalls'],
+        activities: [
+          {
+            id: 'act-meg-2-1',
+            time: '06:30 AM',
+            title: 'Tyrna Village 3,500 Stone Step Descent into Subtropical Rainforest',
+            description: 'Hike down ancient moss-covered stone staircases through dense jungle crossing suspension bridges over emerald mountain rivers.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Tyrna Village Entry Point, Cherrapunji (Sohra) 793108'
+          },
+          {
+            id: 'act-meg-2-2',
+            time: '09:30 AM',
+            title: 'Nongriat Umshiang Double Decker Living Root Bridge Marvel',
+            description: 'Stand in awe before two stacked 250-year-old living bridges trained by Khasi tribes from the aerial roots of Ficus elastica rubber trees.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Nongriat Village, Sohra, East Khasi Hills 793108'
+          },
+          {
+            id: 'act-meg-2-3',
+            time: '12:00 PM',
+            title: 'Rainbow Waterfalls Plunge Pool & Natural Fish Spa Bath',
+            description: 'Trek 1.5 hours further to a secluded waterfall creating continuous rainbows over deep turquoise glacial pools.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 105,
+            isHiddenGem: true,
+            locationName: 'Rainbow Falls Track, Beyond Nongriat 793108'
+          },
+          {
+            id: 'act-meg-2-4',
+            time: '02:30 PM',
+            title: 'Homestyle Khasi Steamed Bamboo Shoot Rice & Honey Cinnamon Tea',
+            description: 'Steamed country rice with bamboo shoots, roasted river fish, and freshly tapped mountain flower honey tea.',
+            category: 'meal' as const,
+            cost: 200,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Nongriat Eco-Homestay, Sohra 793108'
+          }
+        ]
+      },
+      {
+        title: 'Nohkalikai Falls (1,115 ft), Mawsmai Limestone Cave & Seven Sisters Falls',
+        highlights: ['Nohkalikai 1,115 ft Plunge', 'Mawsmai Prehistoric Cave', 'Seven Sisters Waterfall', 'Eco Park Edge'],
+        activities: [
+          {
+            id: 'act-meg-3-1',
+            time: '08:00 AM',
+            title: 'Nohkalikai Falls 1,115-Foot Plunge & Blue Lagoon Pool',
+            description: 'India\'s tallest plunge waterfall cascading dramatically from high clifftops into an emerald-blue natural pool below.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Nohkalikai Viewpoint, Sohra 793108, Meghalaya'
+          },
+          {
+            id: 'act-meg-3-2',
+            time: '10:30 AM',
+            title: 'Mawsmai Prehistoric Limestone Cave Exploration',
+            description: 'Navigate illuminated natural limestone cave passages packed with millions-of-years-old stalactites, stalagmites, and stone pillars.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 75,
+            isHiddenGem: false,
+            locationName: 'Mawsmai Village, Cherrapunji 793108'
+          },
+          {
+            id: 'act-meg-3-3',
+            time: '01:30 PM',
+            title: 'Meghalayan Smoked Pork & Roasted Red Pepper Chutney Lunch',
+            description: 'Traditional slow wood-smoked pork served with hot steamed red rice and spicy fermented bamboo shoot relish.',
+            category: 'meal' as const,
+            cost: 280,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Sohra Hill Road Diner, Cherrapunji 793108'
+          },
+          {
+            id: 'act-meg-3-4',
+            time: '04:30 PM',
+            title: 'Nohsngithiang (Seven Sisters) Falls Bangladesh Plains Sunset',
+            description: 'Seven segmented waterfalls plunging side-by-side off limestone cliffs glowing purple against the vast plains of Bangladesh.',
+            category: 'sunset' as PlaceCategory,
+            cost: 30,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Seven Sisters Viewpoint, Mawsmai, Sohra 793108'
+          }
+        ]
+      },
+      {
+        title: 'Dawki Umngot Crystal River Boating & Shnongpdeng Cliff Jumping Camp',
+        highlights: ['Umngot Glass-Like River', 'Boats Floating on Air Effect', 'Shnongpdeng Suspension Bridge', 'Indo-Bangla Border Post'],
+        activities: [
+          {
+            id: 'act-meg-4-1',
+            time: '08:00 AM',
+            title: 'Dawki Umngot River Boat Ride (Floating on Air Optical Illusion)',
+            description: 'Row upon water so crystal clear that boats appear to float in mid-air above the visible pebble riverbed 20 feet below.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 400,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Dawki Boating Point, West Jaintia Hills 793109'
+          },
+          {
+            id: 'act-meg-4-2',
+            time: '11:00 AM',
+            title: 'Shnongpdeng Riverside Pebble Beach & Cliff Jumping Camp',
+            description: 'Adventure hub upstream from Dawki offering cliff diving into crystal waters, zip-lining, and bamboo raft gliding.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 200,
+            durationMinutes: 105,
+            isHiddenGem: true,
+            locationName: 'Shnongpdeng Village, Dawki 793109, Meghalaya'
+          },
+          {
+            id: 'act-meg-4-3',
+            time: '01:30 PM',
+            title: 'Fresh River Catch Fish Fry & Steamed Tapioca Roots',
+            description: 'Freshly netted Umngot river fish fried with turmeric and local chili paste served with steamed mountain roots and herbs.',
+            category: 'meal' as const,
+            cost: 240,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Shnongpdeng Riverside Hut, Dawki 793109'
+          },
+          {
+            id: 'act-meg-4-4',
+            time: '05:00 PM',
+            title: 'Krang Shuri Natural Turquoise Blue Waterfalls & Sunset Dip',
+            description: 'Stunning silky waterfall pouring into an otherworldly natural turquoise-colored pool surrounded by jungle footpaths.',
+            category: 'sunset' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Krang Shuri Falls, Amlarem, West Jaintia Hills 793150'
+          }
+        ]
+      }
+    ];
+
+    for (let i = 0; i < validDuration; i++) {
+      const template = northeastTemplates[i % northeastTemplates.length];
+      const dayNum = i + 1;
+      const dayCostSum = template.activities.reduce((acc, a) => acc + a.cost, 0);
+
+      days.push({
+        dayNumber: dayNum,
+        title: `Day ${dayNum}: ${template.title}`,
+        dayCost: dayCostSum,
+        travelTimeMinutes: 50 + (i * 10),
+        distanceKm: 35 + (i * 12),
+        dayHighlights: template.highlights,
+        weather: getWeatherForDestinationDay('Meghalaya', dayNum),
+        activities: template.activities.map((act, actIdx) => ({
+          ...act,
+          id: `act-meg-${dayNum}-${actIdx + 1}`
+        }))
+      });
+    }
+    return days;
+  }
+
+  // -------------------------------------------------------------
+  // 12. REAL KARNATAKA (COORG, HAMPI & GOKARNA) (7 Days Non-Repeating)
+  // -------------------------------------------------------------
+  if (d.includes('coorg') || d.includes('madikeri') || d.includes('hampi') || d.includes('gokarna') || d.includes('karnataka') || d.includes('mysore')) {
+    const karnatakaTemplates = [
+      {
+        title: 'Coorg Abbey Waterfalls, Raja\'s Seat Sunset & Madikeri Coffee Plantation',
+        highlights: ['Abbey Falls Roar', 'Madikeri Fort 17th Century', 'Raja\'s Seat Hill Sunset', 'Coorg Pandi Curry'],
+        activities: [
+          {
+            id: 'act-kar-1-1',
+            time: '07:30 AM',
+            title: 'Abbey Falls Hanging Bridge & Spice Plantation Walk',
+            description: 'Walk through lush private coffee and cardamom plantations to witness the Kaveri tributary plunging over natural rock steps.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Abbey Falls Road, Madikeri, Coorg 571201, Karnataka'
+          },
+          {
+            id: 'act-kar-1-2',
+            time: '10:30 AM',
+            title: 'Madikeri Fort & Palace Stone Ramparts Walk',
+            description: '17th-century fortress rebuilt by Tipu Sultan housing life-size stone elephants, ancient prison quarters, and clock tower.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 20,
+            durationMinutes: 75,
+            isHiddenGem: false,
+            locationName: 'Madikeri Fort Precinct, Madikeri 571201'
+          },
+          {
+            id: 'act-kar-1-3',
+            time: '01:30 PM',
+            title: 'Authentic Kodava Pandi Curry & Kadambuttu (Steamed Rice Balls)',
+            description: 'Signature Coorg delicacy slow-cooked with roasted spices and dark Kachampuli garcinia vinegar, with soft steamed dumplings.',
+            category: 'meal' as const,
+            cost: 360,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'College Road, Madikeri, Coorg 571201'
+          },
+          {
+            id: 'act-kar-1-4',
+            time: '05:30 PM',
+            title: 'Raja’s Seat Golden Sunset & Musical Fountain Gardens',
+            description: 'Historic seasonal garden where the Kings of Kodagu watched the golden sun set over rolling green Western Ghats valleys.',
+            category: 'sunset' as PlaceCategory,
+            cost: 30,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Raja Seat Road, Stuart Hill, Madikeri 571201'
+          }
+        ]
+      },
+      {
+        title: 'Dubare Elephant River Camp & Namdroling Tibetan Golden Temple',
+        highlights: ['Dubare Elephant Bathing', 'Kaveri River Rafting', 'Bylakuppe Golden Temple', 'Tibetan Momos'],
+        activities: [
+          {
+            id: 'act-kar-2-1',
+            time: '07:30 AM',
+            title: 'Dubare Elephant Camp Kaveri River Bathing & Scrubbing',
+            description: 'Cross the river by boat to observe trained mahouts bathing gentle elephants and participate in morning river grooming.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 150,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Dubare Reserve Forest, Kushalnagar, Coorg 571234'
+          },
+          {
+            id: 'act-kar-2-2',
+            time: '11:00 AM',
+            title: 'Namdroling Monastery (Bylakuppe Golden Temple) & 60-ft Gilded Statues',
+            description: 'The largest Tibetan Buddhist settlement in South India featuring three 60-foot golden Buddha statues and vibrant thangka murals.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Arlikumari, Bylakuppe, Kushalnagar 571104'
+          },
+          {
+            id: 'act-kar-2-3',
+            time: '01:30 PM',
+            title: 'Tibetan Kothey Fried Momos & Shabalay Pastry Lunch',
+            description: 'Pan-fried handmade dumplings with spiced filling, crispy Tibetan beef/veg pastry pockets (Shabalay), and hot chili garlic dip.',
+            category: 'meal' as const,
+            cost: 200,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Camp 1 Market, Bylakuppe 571104'
+          },
+          {
+            id: 'act-kar-2-4',
+            time: '04:30 PM',
+            title: 'Harangi Dam Backwaters & Sunset Coconut Grove Walk',
+            description: 'Peaceful water reservoir edge with cool river breezes and sunset reflections away from regular tourist crowds.',
+            category: 'sunset' as PlaceCategory,
+            cost: 20,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Harangi Reservoir, Kushalnagar 571234'
+          }
+        ]
+      },
+      {
+        title: 'Hampi Vijayanagara Stone Chariot, Vittala Temple & Virupaksha 14th Century',
+        highlights: ['Vittala Temple Stone Chariot', 'Musical Stone Pillars', 'Virupaksha 7th Century Temple', 'Tungabhadra River Coracle'],
+        activities: [
+          {
+            id: 'act-kar-3-1',
+            time: '07:00 AM',
+            title: 'Virupaksha Temple 160-Foot Gopuram & Sacred Elephant Lakshmi',
+            description: 'Active 7th-century Dravidian temple complex on the banks of the sacred Tungabhadra River with pinhole camera inverted shadow phenomenon.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Hampi Bazaar, Hampi 583239, Karnataka'
+          },
+          {
+            id: 'act-kar-3-2',
+            time: '09:30 AM',
+            title: 'Vittala Temple UNESCO Monolithic Stone Chariot & 56 Musical Pillars',
+            description: 'Iconic 15th-century stone chariot dedicated to Garuda and ornate halls with granite musical pillars that emit musical notes when tapped.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 40,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Vittala Temple Complex, Hampi 583239'
+          },
+          {
+            id: 'act-kar-3-3',
+            time: '01:30 PM',
+            title: 'Mango Tree Restaurant Traditional South Indian Banana Leaf Thali',
+            description: 'Legendary Hampi lunch with hot Jolada Rotti (sorghum bread), brinjal curry (Ennegayi), kosambari salad, and sweet payasa.',
+            category: 'meal' as const,
+            cost: 240,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Near Kamalapur Main Road, Hampi 583239'
+          },
+          {
+            id: 'act-kar-3-4',
+            time: '05:00 PM',
+            title: 'Hemakuta Hill Sunset Monolithic Ganesha & Sunset Panorama',
+            description: 'Sit on ancient granite boulder plateaus beside pre-Vijayanagara triple-chambered shrines watching golden sunset wash over Hampi ruins.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Hemakuta Hill Top, Hampi 583239'
+          }
+        ]
+      },
+      {
+        title: 'Matanga Hill Sunrise, Sanapur Lake Cliff Coracle & Anegundi Ancient Kingdom',
+        highlights: ['Matanga 360-degree Sunrise', 'Sanapur Lake Cliff Coracle', 'Anegundi Kishkindha Village', 'Lotus Mahal Palace'],
+        activities: [
+          {
+            id: 'act-kar-4-1',
+            time: '05:30 AM',
+            title: 'Matanga Hill 500-Step Climb for 360-Degree Hampi Sunrise',
+            description: 'The highest point in central Hampi offering unforgettable golden sunrise light over endless boulder hills and temple ruins.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 105,
+            isHiddenGem: true,
+            locationName: 'Matanga Hill Trail, Hampi 583239'
+          },
+          {
+            id: 'act-kar-4-2',
+            time: '09:30 AM',
+            title: 'Sanapur Lake Boulders & Circular Coracle Boat Gliding',
+            description: 'Glide over turquoise reservoir waters on traditional woven round coracle boats flanked by million-year-old balancing rock boulders.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 300,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Sanapur Lake, Gangavathi Taluk, Koppal 583234'
+          },
+          {
+            id: 'act-kar-4-3',
+            time: '01:30 PM',
+            title: 'Authentic North Karnataka Jowar Roti & Shenga Chutney Lunch',
+            description: 'Crisp hand-flattened sorghum flatbreads, spicy roasted peanut powder (Shenga), curd, and sprouted bean curries.',
+            category: 'meal' as const,
+            cost: 180,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Anegundi Village Road, Koppal 583234'
+          },
+          {
+            id: 'act-kar-4-4',
+            time: '04:30 PM',
+            title: 'Lotus Mahal & Royal Elephant Stables Sunset Archways',
+            description: 'Secular Indo-Islamic palace with multi-foil lotus arches and eleven domed chambers that housed royal ceremonial elephants.',
+            category: 'sunset' as PlaceCategory,
+            cost: 40,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Zenana Enclosure, Kamalapur, Hampi 583239'
+          }
+        ]
+      },
+      {
+        title: 'Gokarna Om Beach & Kudle Beach Coastal Cliff Trek to Half Moon Beach',
+        highlights: ['Om Shaped Twin Cove Beach', 'Kudle Beach Sunset', 'Half Moon Beach Cliff Trail', 'Mahabaleshwar Temple Atmalinga'],
+        activities: [
+          {
+            id: 'act-kar-5-1',
+            time: '07:30 AM',
+            title: 'Mahabaleshwar Temple 4th-Century Pranalinga Stone Sanctum',
+            description: 'Ancient classical Dravidian coastal temple housing the sacred Atmalinga set in the heart of Gokarna old town.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Koti Teertha Road, Gokarna 581326, Karnataka'
+          },
+          {
+            id: 'act-kar-5-2',
+            time: '09:30 AM',
+            title: 'Om Beach Naturally Shaped "ॐ" Coastal Cliff Trail',
+            description: 'Unique geographic coastal marvel forming two semi-circular joined bays that resemble the sacred spiritual Om symbol.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Om Beach, Gokarna 581326'
+          },
+          {
+            id: 'act-kar-5-3',
+            time: '01:30 PM',
+            title: 'Coastal Karavali Fish Curry & Ghee Neer Dosa Lunch',
+            description: 'Fresh Arabian sea kingfish in coconut-kokum curry, served with feather-light lace rice crepes (Neer Dosa).',
+            category: 'meal' as const,
+            cost: 320,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Kudle Beach Shack, Gokarna 581326'
+          },
+          {
+            id: 'act-kar-5-4',
+            time: '05:00 PM',
+            title: 'Half Moon Beach & Paradise Beach Coastal Cliff Sunset',
+            description: 'Trek along scenic seaside laterite cliffs overlooking crashing waves to secluded crescent-shaped cove beaches at dusk.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Half Moon Beach Cliff Path, Gokarna 581326'
+          }
+        ]
+      }
+    ];
+
+    for (let i = 0; i < validDuration; i++) {
+      const template = karnatakaTemplates[i % karnatakaTemplates.length];
+      const dayNum = i + 1;
+      const dayCostSum = template.activities.reduce((acc, a) => acc + a.cost, 0);
+
+      days.push({
+        dayNumber: dayNum,
+        title: `Day ${dayNum}: ${template.title}`,
+        dayCost: dayCostSum,
+        travelTimeMinutes: 40 + (i * 10),
+        distanceKm: 25 + (i * 12),
+        dayHighlights: template.highlights,
+        weather: getWeatherForDestinationDay('Coorg', dayNum),
+        activities: template.activities.map((act, actIdx) => ({
+          ...act,
+          id: `act-kar-${dayNum}-${actIdx + 1}`
+        }))
+      });
+    }
+    return days;
+  }
+
+  // -------------------------------------------------------------
+  // 13. REAL GOA ITINERARY (7 Days Non-Repeating)
   // -------------------------------------------------------------
   if (d.includes('goa')) {
     const goaTemplates = [
@@ -2212,6 +4549,56 @@ export const getRealDestinationItinerary = (
             durationMinutes: 90,
             isHiddenGem: true,
             locationName: 'Palolem-Agonda Coast, Canacona, South Goa 403702'
+          }
+        ]
+      },
+      {
+        title: 'Divar Island Village Trails, Old Goa Baroque Churches & Spice Plantation',
+        highlights: ['Divar Island River Ferry', 'Basilica of Bom Jesus', 'Savoi Spice Plantation', 'Mandovi Sunset Cruise'],
+        activities: [
+          {
+            id: 'act-goa-3-1',
+            time: '08:00 AM',
+            title: 'Divar Island River Ferry & Piedade Hilltop Chapel Trail',
+            description: 'Cross on the open vehicle river ferry to explore peaceful countryside lanes, Portuguese mansions, and hilltop church vistas.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 105,
+            isHiddenGem: true,
+            locationName: 'Divar Island Ferry Point, Ribandar 403403'
+          },
+          {
+            id: 'act-goa-3-2',
+            time: '11:00 AM',
+            title: 'Basilica of Bom Jesus & Se Cathedral UNESCO World Heritage',
+            description: '1605 Jesuit church holding the sacred relics of St. Francis Xavier, featuring ornate gilded wood baroque altars.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: false,
+            locationName: 'Old Goa Road, Velha Goa 403402'
+          },
+          {
+            id: 'act-goa-3-3',
+            time: '01:30 PM',
+            title: 'Savoi Spice Plantation Organic Banana Leaf Buffet & Feni Tasting',
+            description: 'Guided spice walk through vanilla, cardamom, and betel groves followed by authentic Saraswat and Christian Goan dishes.',
+            category: 'meal' as const,
+            cost: 500,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Savoi Plantation, Ponda, Goa 403401'
+          },
+          {
+            id: 'act-goa-3-4',
+            time: '05:30 PM',
+            title: 'Chapora Fort (Dil Chahta Hai) Red Laterite Ramparts Sunset',
+            description: 'Climb the historic red laterite fort overlooking Vagator Beach and the Ozran coastline as the sun sets over the Arabian Sea.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: false,
+            locationName: 'Chapora Fort Trail, Vagator 403509'
           }
         ]
       }
