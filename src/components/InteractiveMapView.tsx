@@ -22,17 +22,21 @@ import {
   ArrowRight,
   Route,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Calendar,
+  Clock,
+  Sparkle
 } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Place, Trip } from '../types';
+import { Place, Trip, PlaceCategory } from '../types';
 import { generateWorldwidePlacesWithAi } from '../utils/aiTravelEngine';
 import { 
   getLocationCoordinates, 
   getNearestAirport, 
   calculateDistanceKm, 
-  getNearestDistrictFromCoords 
+  getNearestDistrictFromCoords,
+  DISTRICT_COORDINATES
 } from '../utils/travelDataService';
 
 interface InteractiveMapViewProps {
@@ -43,6 +47,12 @@ interface InteractiveMapViewProps {
   onAddToItinerary?: (place: Place) => void;
   onToggleBookmark?: (placeId: string) => void;
   onAddGeneratedPlaces?: (newPlaces: Place[]) => void;
+}
+
+interface TripPlaceItem extends Place {
+  dayNumber?: number;
+  time?: string;
+  isTripActivity?: boolean;
 }
 
 const WORLD_DESTINATIONS_GEO: Record<string, [number, number]> = {
@@ -135,6 +145,12 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
   const markersLayerGroupRef = useRef<L.LayerGroup | null>(null);
   const routePolylineRef = useRef<L.Polyline | null>(null);
 
+  const hasTripDays = Boolean(activeTrip && activeTrip.days && activeTrip.days.length > 0);
+
+  // View Mode: 'trip' (show all places belonging to the active trip) or 'explore' (browse all catalog spots)
+  const [viewMode, setViewMode] = useState<'trip' | 'explore'>(hasTripDays ? 'trip' : 'explore');
+  const [selectedDayFilter, setSelectedDayFilter] = useState<number | 'all'>('all');
+
   // Origin / Starting Location State (Point X)
   const [originLocation, setOriginLocation] = useState<string>(
     activeTrip?.originLocation || 'Coimbatore'
@@ -154,11 +170,96 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
   const [showHospitals, setShowHospitals] = useState<boolean>(true);
   const [showRouteLine, setShowRouteLine] = useState<boolean>(true);
   const [showWaypointsList, setShowWaypointsList] = useState<boolean>(true);
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<TripPlaceItem | null>(null);
 
   const [isGeneratingMapPlaces, setIsGeneratingMapPlaces] = useState(false);
   const [mapAiSuccess, setMapAiSuccess] = useState<string | null>(null);
   const [isSearchingGeocode, setIsSearchingGeocode] = useState(false);
+
+  // Synchronize when activeTrip prop updates
+  useEffect(() => {
+    if (activeTrip) {
+      if (activeTrip.originLocation) {
+        setOriginLocation(activeTrip.originLocation);
+        setOriginCoords(getLocationCoordinates(activeTrip.originLocation));
+      }
+      if (activeTrip.days && activeTrip.days.length > 0) {
+        setViewMode('trip');
+      }
+      if (activeTrip.region) {
+        setDestinationSearch(activeTrip.region);
+      }
+    }
+  }, [activeTrip]);
+
+  // Extract ALL places and activities of the active trip
+  const tripActivitiesAsPlaces: TripPlaceItem[] = useMemo(() => {
+    if (!activeTrip || !activeTrip.days || activeTrip.days.length === 0) return [];
+
+    const extracted: TripPlaceItem[] = [];
+    const baseCoords = getLocationCoordinates(activeTrip.region || activeTrip.title || 'Coimbatore');
+
+    activeTrip.days.forEach((day) => {
+      day.activities.forEach((act, actIdx) => {
+        const existingMatch = places.find(p => 
+          (act.placeId && p.id === act.placeId) || 
+          p.name.toLowerCase() === act.title.toLowerCase() ||
+          (act.locationName && p.name.toLowerCase().includes(act.locationName.toLowerCase()))
+        );
+
+        let coords: [number, number];
+        if (existingMatch) {
+          coords = existingMatch.coordinates;
+        } else if (act.locationName && DISTRICT_COORDINATES[act.locationName.toLowerCase()]) {
+          coords = DISTRICT_COORDINATES[act.locationName.toLowerCase()];
+        } else {
+          // Compute realistic geographic distribution around destination
+          const offsetAngle = (day.dayNumber * 1.6 + actIdx * 1.3);
+          const radius = 0.015 + (actIdx * 0.008) + (day.dayNumber * 0.010);
+          const lat = baseCoords[0] + Math.sin(offsetAngle) * radius;
+          const lng = baseCoords[1] + Math.cos(offsetAngle) * radius;
+          coords = [lat, lng];
+        }
+
+        const validCategories: PlaceCategory[] = [
+          'waterfall', 'viewpoint', 'village', 'tea_estate', 'nature_trail',
+          'forest_route', 'sunset', 'cafe', 'coworking', 'fuel', 'hospital'
+        ];
+
+        let mappedCat: PlaceCategory = 'nature_trail';
+        if (validCategories.includes(act.category as PlaceCategory)) {
+          mappedCat = act.category as PlaceCategory;
+        } else if (act.category === 'meal') {
+          mappedCat = 'cafe';
+        } else if (act.category === 'travel') {
+          mappedCat = 'forest_route';
+        }
+
+        extracted.push({
+          id: act.id,
+          name: act.title,
+          category: mappedCat,
+          description: act.description,
+          region: act.locationName || activeTrip.region || 'Trip Spot',
+          coordinates: coords,
+          crowdLevel: act.isHiddenGem ? 12 : 35,
+          difficulty: 'Easy',
+          bestTime: act.time || 'Morning',
+          estimatedCost: act.cost,
+          rating: 4.9,
+          imageUrl: existingMatch?.imageUrl || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
+          tags: [activeTrip.region, `Day ${day.dayNumber}`, act.time, act.isHiddenGem ? 'Hidden Gem' : 'Top Spot'],
+          localTips: [`Day ${day.dayNumber} activity at ${act.time}`],
+          ragSources: [],
+          dayNumber: day.dayNumber,
+          time: act.time,
+          isTripActivity: true
+        });
+      });
+    });
+
+    return extracted;
+  }, [activeTrip, places]);
 
   // Airport matched to the starting point X
   const originAirport = useMemo(() => {
@@ -261,7 +362,7 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
     };
   }, []);
 
-  // Filter matching places based on search destination & category
+  // Compute matching places based on viewMode (Trip vs Explore) and filters
   const qLower = destinationSearch.toLowerCase().trim();
   const searchKeywords = useMemo(() => {
     if (!qLower) return [];
@@ -272,6 +373,15 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
   }, [qLower]);
 
   const matchingPlaces = useMemo(() => {
+    // 1. In 'trip' mode: display ALL places belonging to the active trip!
+    if (viewMode === 'trip' && tripActivitiesAsPlaces.length > 0) {
+      return tripActivitiesAsPlaces.filter(p => {
+        if (selectedDayFilter !== 'all' && p.dayNumber !== selectedDayFilter) return false;
+        return true;
+      });
+    }
+
+    // 2. In 'explore' mode: filter all catalog places
     return places.filter(place => {
       const isFuel = place.category === 'fuel';
       const isHospital = place.category === 'hospital';
@@ -297,7 +407,7 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
 
       return false;
     });
-  }, [places, qLower, searchKeywords, selectedCategory, showFuel, showHospitals]);
+  }, [viewMode, tripActivitiesAsPlaces, selectedDayFilter, places, qLower, searchKeywords, selectedCategory, showFuel, showHospitals]);
 
   // Sequential waypoint list from Origin (X) to Y1, Y2, Y3...
   const routeWaypoints = useMemo(() => {
@@ -308,7 +418,9 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
       coordinates: [number, number];
       legDistanceKm: number;
       category?: string;
-      place?: Place;
+      place?: TripPlaceItem;
+      dayNumber?: number;
+      time?: string;
     }> = [];
 
     // Origin (Point X)
@@ -322,21 +434,26 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
     });
 
     let prevCoord = originCoords;
-
     const validPlaces = matchingPlaces.filter(p => p.category !== 'fuel' && p.category !== 'hospital');
 
     validPlaces.forEach((place, idx) => {
       const legDist = calculateDistanceKm(prevCoord, place.coordinates);
       prevCoord = place.coordinates;
 
+      const stopLabel = place.dayNumber 
+        ? `Day ${place.dayNumber} • Y${idx + 1}`
+        : `Stop Y${idx + 1}`;
+
       waypoints.push({
         code: `Y${idx + 1}`,
-        label: `Stop Y${idx + 1}`,
+        label: stopLabel,
         name: place.name,
         coordinates: place.coordinates,
         legDistanceKm: legDist,
         category: place.category,
-        place
+        place,
+        dayNumber: place.dayNumber,
+        time: place.time
       });
     });
 
@@ -378,7 +495,7 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
             color: white;
             font-size: 10px;
             font-weight: 900;
-            padding: 2px 7px;
+            padding: 2px 8px;
             border-radius: 9999px;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
             border: 2px solid white;
@@ -390,8 +507,8 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
           </div>
           <div style="
             background: #10b981;
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -426,7 +543,7 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
     `;
     startMarker.bindPopup(startPopupContent);
 
-    // 2. RENDER DESTINATION PLACES (Y1, Y2, Y3...)
+    // 2. RENDER ALL DESTINATION PLACES (Y1, Y2, Y3...)
     let placeIndex = 1;
     matchingPlaces.forEach((place) => {
       const isFuel = place.category === 'fuel';
@@ -443,7 +560,7 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
         markerBg = '#ef4444';
         markerIcon = '🏥';
       } else {
-        sequentialBadge = `Y${placeIndex}`;
+        sequentialBadge = place.dayNumber ? `D${place.dayNumber} • Y${placeIndex}` : `Y${placeIndex}`;
         placeIndex++;
 
         if (place.category === 'waterfall') {
@@ -476,15 +593,16 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
           ">
             ${sequentialBadge ? `
               <div style="
-                background-color: ${isSelected ? '#fbbf24' : '#1e293b'};
+                background-color: ${isSelected ? '#fbbf24' : '#0f172a'};
                 color: ${isSelected ? '#0f172a' : '#ffffff'};
                 font-size: 10px;
                 font-weight: 900;
-                padding: 1px 6px;
+                padding: 2px 7px;
                 border-radius: 9999px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
                 border: 1.5px solid white;
                 margin-bottom: 2px;
+                white-space: nowrap;
               ">
                 ${sequentialBadge}
               </div>
@@ -518,18 +636,21 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
             ` : ''}
           </div>
         `,
-        iconSize: [44, 48],
-        iconAnchor: [22, 40],
-        popupAnchor: [0, -40]
+        iconSize: [60, 52],
+        iconAnchor: [30, 44],
+        popupAnchor: [0, -44]
       });
 
       const marker = L.marker(place.coordinates, { icon: customIcon }).addTo(markersGroup);
 
       const popupContent = `
-        <div style="font-family: inherit; font-size: 12px; min-width: 200px; padding: 2px;">
+        <div style="font-family: inherit; font-size: 12px; min-width: 210px; padding: 2px;">
           ${sequentialBadge ? `
-            <div style="display: inline-block; background: #e0e7ff; color: #3730a3; font-weight: 800; font-size: 10px; padding: 1px 6px; border-radius: 4px; margin-bottom: 3px;">
-              WAYPOINT ${sequentialBadge}
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+              <span style="background: #e0e7ff; color: #3730a3; font-weight: 800; font-size: 10px; padding: 1px 6px; border-radius: 4px;">
+                ${sequentialBadge}
+              </span>
+              ${place.time ? `<span style="color: #64748b; font-size: 10px; font-weight: 700;">🕒 ${place.time}</span>` : ''}
             </div>
           ` : ''}
           <div style="font-weight: 800; font-size: 13px; color: #0f172a; margin-bottom: 2px;">${place.name}</div>
@@ -551,13 +672,13 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
       }
     });
 
-    // Check if route coordinates belong to a coherent cluster (within ~4 degrees lat/lng)
+    // Check if route coordinates belong to a coherent cluster (within ~4.5 degrees lat/lng)
     const isLocalCluster = routeCoords.length > 1 && routeCoords.every(([lat, lng]) => {
       const [firstLat, firstLng] = routeCoords[0];
       return Math.abs(lat - firstLat) < 5.0 && Math.abs(lng - firstLng) < 5.0;
     });
 
-    // Draw route line from START (X) ➔ Y1 ➔ Y2 ➔ Y3...
+    // Draw route line connecting START (X) ➔ Y1 ➔ Y2 ➔ Y3 ➔ Y4...
     if (showRouteLine && isLocalCluster && routeCoords.length > 1) {
       const poly = L.polyline(routeCoords, {
         color: '#2563eb',
@@ -678,6 +799,12 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
     { id: 'hidden', label: '💎 Hidden Gems' },
   ];
 
+  const uniqueTripDays = useMemo(() => {
+    if (!tripActivitiesAsPlaces.length) return [];
+    const setDays = new Set(tripActivitiesAsPlaces.map(p => p.dayNumber).filter(Boolean));
+    return Array.from(setDays).sort((a, b) => (a as number) - (b as number)) as number[];
+  }, [tripActivitiesAsPlaces]);
+
   return (
     <div className="space-y-4 pb-12 font-sans max-w-6xl mx-auto">
       {/* 1. Header */}
@@ -685,10 +812,10 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <MapIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Interactive Trail & Waypoint Map</h1>
+            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Interactive Trip & Waypoint Map</h1>
           </div>
           <p className="text-slate-600 dark:text-slate-400 text-xs mt-1 font-medium">
-            Sequential point-to-point routes from your starting location (X) to destination waypoints (Y1, Y2, Y3...).
+            Showing all planned itinerary places and sequential routes from starting location (X) to destination waypoints (Y1, Y2, Y3...).
           </p>
         </div>
 
@@ -820,123 +947,202 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
         )}
       </div>
 
-      {/* 3. Destination Map Search & Filter Controls */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-4 space-y-3 shadow-2xs">
-        <div className="flex flex-col sm:flex-row items-center gap-3">
-          {/* Destination Search Bar */}
-          <div className="relative flex-1 w-full">
-            <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search destination (e.g. Valparai, Kyoto, Amalfi, Paris, Tokyo, Switzerland, Goa)..."
-              value={destinationSearch}
-              onChange={(e) => setDestinationSearch(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSearchDestination(destinationSearch);
-                }
-              }}
-              className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-blue-500 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs rounded-xl pl-10 pr-20 py-2.5 font-semibold focus:outline-none"
-            />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-              {destinationSearch && (
-                <button
-                  onClick={() => {
-                    setDestinationSearch('');
-                    if (mapInstanceRef.current) {
-                      mapInstanceRef.current.setView(originCoords, 11);
-                    }
-                  }}
-                  className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-                  title="Clear search"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
+      {/* 3. TRIP PLACES VS EXPLORE VIEW TOGGLE BAR */}
+      {tripActivitiesAsPlaces.length > 0 && (
+        <div className="bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-900/60 rounded-3xl p-4 shadow-sm space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+                <Route className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="font-black text-sm text-slate-900 dark:text-white">
+                  Active Trip: {activeTrip?.title || activeTrip?.region}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  {tripActivitiesAsPlaces.length} planned places across {uniqueTripDays.length} itinerary days
+                </p>
+              </div>
+            </div>
+
+            {/* Mode Switcher Tabs */}
+            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl text-xs font-bold">
               <button
-                onClick={() => handleSearchDestination(destinationSearch)}
-                disabled={isSearchingGeocode || !destinationSearch.trim()}
-                className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-[11px] font-bold rounded-lg cursor-pointer transition flex items-center gap-1"
-                title="Search on Map"
+                onClick={() => setViewMode('trip')}
+                className={`px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1.5 ${
+                  viewMode === 'trip'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                }`}
               >
-                {isSearchingGeocode ? <Loader2 className="w-3 h-3 animate-spin" /> : <Search className="w-3 h-3" />}
-                <span>Fly To</span>
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Trip Places ({tripActivitiesAsPlaces.length})</span>
+              </button>
+
+              <button
+                onClick={() => setViewMode('explore')}
+                className={`px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1.5 ${
+                  viewMode === 'explore'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                }`}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>Explore All Spots</span>
               </button>
             </div>
           </div>
 
-          {/* AI Generator Button */}
-          <button
-            onClick={handleGenerateForMap}
-            disabled={isGeneratingMapPlaces}
-            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-60 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow-xs whitespace-nowrap cursor-pointer"
-          >
-            {isGeneratingMapPlaces ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin text-white" />
-                <span>Generating Map Places...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
-                <span>AI Generate Places for Map</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {mapAiSuccess && (
-          <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-2">
-            <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <span>{mapAiSuccess}</span>
-          </div>
-        )}
-
-        {/* Category Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-          <span className="font-bold text-slate-500 dark:text-slate-400 shrink-0 mr-1 text-[11px]">Filter:</span>
-          {categoryFilters.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3 py-1 rounded-xl font-bold shrink-0 transition cursor-pointer text-xs ${
-                selectedCategory === cat.id
-                  ? 'bg-blue-600 text-white shadow-2xs'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/60 dark:border-slate-700'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Preset Destination Quick Focus Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-1 border-t border-slate-100 dark:border-slate-800">
-          <span className="font-bold text-slate-500 dark:text-slate-400 shrink-0 mr-1 text-[11px]">Quick Focus:</span>
-          {presetDestinations.map((preset) => {
-            const isActive = destinationSearch.toLowerCase() === preset.query.toLowerCase();
-            return (
+          {/* Day Filter Pills for Trip Mode */}
+          {viewMode === 'trip' && uniqueTripDays.length > 1 && (
+            <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+              <span className="font-bold text-slate-500 dark:text-slate-400 shrink-0 text-[11px]">Filter Day:</span>
               <button
-                key={preset.label}
-                onClick={() => {
-                  setDestinationSearch(preset.query);
-                  handleSearchDestination(preset.query);
-                }}
-                className={`px-2.5 py-0.5 rounded-full font-bold shrink-0 transition cursor-pointer text-[11px] ${
-                  isActive
-                    ? 'bg-indigo-600 text-white shadow-2xs'
-                    : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700'
+                onClick={() => setSelectedDayFilter('all')}
+                className={`px-3 py-1 rounded-xl font-bold shrink-0 transition cursor-pointer text-xs ${
+                  selectedDayFilter === 'all'
+                    ? 'bg-blue-600 text-white shadow-2xs'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                 }`}
               >
-                {preset.label}
+                All Days ({tripActivitiesAsPlaces.length} places)
               </button>
-            );
-          })}
+              {uniqueTripDays.map((dNum) => {
+                const count = tripActivitiesAsPlaces.filter(p => p.dayNumber === dNum).length;
+                return (
+                  <button
+                    key={dNum}
+                    onClick={() => setSelectedDayFilter(dNum)}
+                    className={`px-3 py-1 rounded-xl font-bold shrink-0 transition cursor-pointer text-xs ${
+                      selectedDayFilter === dNum
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    Day {dNum} ({count} spots)
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
-      {/* 4. MAP MAIN CANVAS */}
-      <div className="relative w-full h-[450px] sm:h-[550px] lg:h-[620px] rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-md">
+      {/* 4. Destination Map Search & Filter Controls (Available in Explore Mode or Search) */}
+      {viewMode === 'explore' && (
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-4 space-y-3 shadow-2xs">
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="relative flex-1 w-full">
+              <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search destination (e.g. Valparai, Kyoto, Amalfi, Paris, Tokyo, Switzerland, Goa)..."
+                value={destinationSearch}
+                onChange={(e) => setDestinationSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearchDestination(destinationSearch);
+                  }
+                }}
+                className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-blue-500 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs rounded-xl pl-10 pr-20 py-2.5 font-semibold focus:outline-none"
+              />
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                {destinationSearch && (
+                  <button
+                    onClick={() => {
+                      setDestinationSearch('');
+                      if (mapInstanceRef.current) {
+                        mapInstanceRef.current.setView(originCoords, 11);
+                      }
+                    }}
+                    className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                    title="Clear search"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+                <button
+                  onClick={() => handleSearchDestination(destinationSearch)}
+                  disabled={isSearchingGeocode || !destinationSearch.trim()}
+                  className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-[11px] font-bold rounded-lg cursor-pointer transition flex items-center gap-1"
+                  title="Search on Map"
+                >
+                  {isSearchingGeocode ? <Loader2 className="w-3 h-3 animate-spin" /> : <Search className="w-3 h-3" />}
+                  <span>Fly To</span>
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={handleGenerateForMap}
+              disabled={isGeneratingMapPlaces}
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-60 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow-xs whitespace-nowrap cursor-pointer"
+            >
+              {isGeneratingMapPlaces ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Generating Map Places...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+                  <span>AI Generate Places for Map</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {mapAiSuccess && (
+            <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-2">
+              <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>{mapAiSuccess}</span>
+            </div>
+          )}
+
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+            <span className="font-bold text-slate-500 dark:text-slate-400 shrink-0 mr-1 text-[11px]">Filter:</span>
+            {categoryFilters.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`px-3 py-1 rounded-xl font-bold shrink-0 transition cursor-pointer text-xs ${
+                  selectedCategory === cat.id
+                    ? 'bg-blue-600 text-white shadow-2xs'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/60 dark:border-slate-700'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-1 border-t border-slate-100 dark:border-slate-800">
+            <span className="font-bold text-slate-500 dark:text-slate-400 shrink-0 mr-1 text-[11px]">Quick Focus:</span>
+            {presetDestinations.map((preset) => {
+              const isActive = destinationSearch.toLowerCase() === preset.query.toLowerCase();
+              return (
+                <button
+                  key={preset.label}
+                  onClick={() => {
+                    setDestinationSearch(preset.query);
+                    handleSearchDestination(preset.query);
+                  }}
+                  className={`px-2.5 py-0.5 rounded-full font-bold shrink-0 transition cursor-pointer text-[11px] ${
+                    isActive
+                      ? 'bg-indigo-600 text-white shadow-2xs'
+                      : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700'
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 5. MAP MAIN CANVAS */}
+      <div className="relative w-full h-[460px] sm:h-[560px] lg:h-[640px] rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-md">
         <div ref={mapContainerRef} className="w-full h-full z-10" />
 
         {/* Floating Top-Left Status Badge */}
@@ -946,7 +1152,9 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
             <span>Start (X): {originLocation}</span>
           </span>
           <span className="text-slate-400">&bull;</span>
-          <span>{matchingPlaces.length} Places (Y1...Y{matchingPlaces.length || 1})</span>
+          <span>
+            {viewMode === 'trip' ? `Trip Route (${matchingPlaces.length} Places)` : `${matchingPlaces.length} Places Visible`}
+          </span>
         </div>
 
         {/* Empty Places Quick Generate Callout */}
@@ -977,9 +1185,16 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
           <div className="absolute bottom-6 left-6 right-6 md:right-auto md:w-96 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-2xl z-20 space-y-3 text-slate-900 dark:text-slate-100 animate-in fade-in slide-in-from-bottom-3 duration-200">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-                  {selectedPlace.category.replace('_', ' ')}
-                </span>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {selectedPlace.dayNumber && (
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-indigo-600 text-white">
+                      Day {selectedPlace.dayNumber} {selectedPlace.time ? `• ${selectedPlace.time}` : ''}
+                    </span>
+                  )}
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                    {selectedPlace.category.replace('_', ' ')}
+                  </span>
+                </div>
                 <h3 className="font-extrabold text-base text-slate-900 dark:text-white mt-1 leading-snug">{selectedPlace.name}</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">{selectedPlace.region}</p>
               </div>
@@ -1048,7 +1263,7 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
         )}
       </div>
 
-      {/* 5. SEQUENTIAL WAYPOINT ROUTE CARD (X ➔ Y1 ➔ Y2 ➔ Y3...) */}
+      {/* 6. SEQUENTIAL WAYPOINT ROUTE CARD (X ➔ Y1 ➔ Y2 ➔ Y3...) */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
           <div className="flex items-center gap-2.5">
@@ -1057,7 +1272,9 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
             </div>
             <div>
               <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
-                Sequential Route & Waypoint Directions (X ➔ Y1 ➔ Y2 ➔ Y3...)
+                {viewMode === 'trip'
+                  ? `Trip Route Sequence: ${activeTrip?.title || activeTrip?.region} (X ➔ All Places)`
+                  : 'Sequential Route & Waypoint Directions (X ➔ Y1 ➔ Y2 ➔ Y3...)'}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                 Step-by-step driving itinerary starting from <strong className="text-emerald-600 dark:text-emerald-400">{originLocation} (X)</strong>
@@ -1110,7 +1327,12 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
                       }`}>
                         {wp.label}
                       </span>
-                      {!isStart && wp.legDistanceKm > 0 && (
+                      {wp.time && (
+                        <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+                          🕒 {wp.time}
+                        </span>
+                      )}
+                      {!isStart && wp.legDistanceKm > 0 && !wp.time && (
                         <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
                           +{wp.legDistanceKm} km leg
                         </span>
