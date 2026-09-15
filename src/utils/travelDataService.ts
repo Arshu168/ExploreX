@@ -430,124 +430,438 @@ export const getDestinationHotels = (dest: string, budget: number = 25000): Hote
 };
 
 // =========================================================================
-// 2. COMPREHENSIVE DISTRICT FLIGHT & TRANSIT SERVICE
+// 2. COMPREHENSIVE DISTRICT FLIGHT & NEAREST AIRPORT RESOLVER
 // =========================================================================
+
+
+export interface AirportInfo {
+  code: string;
+  name: string;
+  city: string;
+  distanceKm: number;
+  terminalAdvice: string;
+}
+
+export const DISTRICT_COORDINATES: Record<string, [number, number]> = {
+  coimbatore: [11.0168, 76.9558],
+  kovai: [11.0168, 76.9558],
+  madurai: [9.9252, 78.1198],
+  trichy: [10.7905, 78.7047],
+  tiruchirappalli: [10.7905, 78.7047],
+  thanjavur: [10.7870, 79.1378],
+  tanjore: [10.7870, 79.1378],
+  salem: [11.6643, 78.1460],
+  yercaud: [11.7753, 78.2093],
+  tirunelveli: [8.7139, 77.7567],
+  tenkasi: [8.9594, 77.3150],
+  courtallam: [8.9324, 77.2750],
+  kanyakumari: [8.0883, 77.5385],
+  nagercoil: [8.1833, 77.4119],
+  tuticorin: [8.7642, 78.1348],
+  thoothukudi: [8.7642, 78.1348],
+  pondicherry: [11.9416, 79.8083],
+  puducherry: [11.9416, 79.8083],
+  chennai: [13.0827, 80.2707],
+  madras: [13.0827, 80.2707],
+  kanchipuram: [12.8342, 79.7036],
+  tiruvallur: [13.1432, 79.9082],
+  chengalpattu: [12.6841, 79.9836],
+  vellore: [12.9165, 79.1325],
+  cuddalore: [11.7480, 79.7714],
+  villupuram: [11.9401, 79.4861],
+  dharmapuri: [12.1211, 78.1582],
+  krishnagiri: [12.5186, 78.2137],
+  namakkal: [11.2189, 78.1674],
+  erode: [11.3410, 77.7172],
+  tiruppur: [11.1085, 77.3411],
+  dindigul: [10.3673, 77.9803],
+  karur: [10.9601, 78.0766],
+  pudukkottai: [10.3833, 78.8001],
+  sivagangai: [9.8433, 78.4809],
+  ramanathapuram: [9.3639, 78.8395],
+  theni: [10.0104, 77.4768],
+  valparai: [10.3275, 76.9550],
+  pollachi: [10.6582, 77.0080],
+  ooty: [11.4102, 76.6950],
+  nilgiris: [11.4102, 76.6950],
+  munnar: [10.0889, 77.0595],
+  kodaikanal: [10.2381, 77.4892],
+  kodai: [10.2381, 77.4892],
+  bangalore: [12.9716, 77.5946],
+  bengaluru: [12.9716, 77.5946],
+  mumbai: [19.0760, 72.8777],
+  bombay: [19.0760, 72.8777],
+  delhi: [28.6139, 77.2090],
+  'new delhi': [28.6139, 77.2090],
+  hyderabad: [17.3850, 78.4867],
+  kochi: [9.9312, 76.2673],
+  cochin: [9.9312, 76.2673],
+  wayanad: [11.6854, 76.1320],
+  goa: [15.2993, 74.1240],
+  jaipur: [26.9124, 75.7873],
+  udaipur: [24.5854, 73.7125],
+  varanasi: [25.3176, 82.9739],
+  paris: [48.8566, 2.3522],
+  france: [46.2276, 2.2137],
+  london: [51.5074, -0.1278],
+  uk: [55.3781, -3.4360],
+  munich: [48.1351, 11.5820],
+  berlin: [52.5200, 13.4050],
+  frankfurt: [50.1109, 8.6821],
+  germany: [51.1657, 10.4515],
+  tokyo: [35.6762, 139.6503],
+  kyoto: [35.0116, 135.7681],
+  japan: [36.2048, 138.2529],
+  'new york': [40.7128, -74.0060],
+  usa: [37.0902, -95.7129],
+  dubai: [25.2048, 55.2708],
+  amalfi: [40.6281, 14.4850]
+};
+
+export const calculateDistanceKm = (coord1: [number, number], coord2: [number, number]): number => {
+  const [lat1, lon1] = coord1;
+  const [lat2, lon2] = coord2;
+  const R = 6371; // Earth radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c);
+};
+
+export const getNearestDistrictFromCoords = (lat: number, lng: number): string => {
+  let closestDistrict = 'Coimbatore';
+  let minDistance = Infinity;
+
+  for (const [districtName, coords] of Object.entries(DISTRICT_COORDINATES)) {
+    const dist = calculateDistanceKm([lat, lng], coords);
+    if (dist < minDistance) {
+      minDistance = dist;
+      closestDistrict = districtName.charAt(0).toUpperCase() + districtName.slice(1);
+    }
+  }
+  return closestDistrict;
+};
+
+export const getLocationCoordinates = (locationName: string): [number, number] => {
+  const locLower = (locationName || '').toLowerCase().trim();
+  for (const [key, coords] of Object.entries(DISTRICT_COORDINATES)) {
+    if (locLower === key || locLower.includes(key) || key.includes(locLower)) {
+      return coords;
+    }
+  }
+  // Default to Tamil Nadu central if unknown
+  return [11.0168, 76.9558];
+};
+
+
+export const getNearestAirport = (locationName: string): AirportInfo => {
+  const loc = (locationName || '').toLowerCase().trim();
+
+  // 1. COIMBATORE, POLLACHI, TIRUPPUR, VALPARAI, ERODE
+  if (loc.includes('coimbatore') || loc.includes('kovai') || loc.includes('pollachi') || loc.includes('valparai') || loc.includes('tiruppur')) {
+    return {
+      code: 'CJB',
+      name: 'Coimbatore International Airport (Peelamedu)',
+      city: 'Coimbatore',
+      distanceKm: 8,
+      terminalAdvice: 'Direct Avinashi Road access; 8 km from city center with 24/7 prepaid taxi & bus routes.'
+    };
+  }
+
+  // 2. MADURAI, DINDIGUL, THENI, SIVAGANGAI, RAMANATHAPURAM, VIRUDHUNAGAR
+  if (loc.includes('madurai') || loc.includes('dindigul') || loc.includes('theni') || loc.includes('sivagangai') || loc.includes('ramanathapuram') || loc.includes('virudhunagar')) {
+    return {
+      code: 'IXM',
+      name: 'Madurai International Airport (Perungudi)',
+      city: 'Madurai',
+      distanceKm: 10,
+      terminalAdvice: '10 km from Meenakshi Amman Temple via Ring Road with fast highway connectivity.'
+    };
+  }
+
+  // 3. TIRUCHIRAPPALLI (TRICHY), THANJAVUR, KARUR, PUDUKKOTTAI, PERAMBALUR, ARIYALUR
+  if (loc.includes('trichy') || loc.includes('tiruchirappalli') || loc.includes('thanjavur') || loc.includes('tanjore') || loc.includes('kumbakonam') || loc.includes('karur') || loc.includes('pudukkottai') || loc.includes('perambalur')) {
+    return {
+      code: 'TRZ',
+      name: 'Tiruchirappalli International Airport',
+      city: 'Tiruchirappalli',
+      distanceKm: 5,
+      terminalAdvice: '5 km from Central Bus Stand, 45 mins smooth 4-lane highway to Thanjavur.'
+    };
+  }
+
+  // 4. SALEM, NAMAKKAL, DHARMAPURI, KRISHNAGIRI
+  if (loc.includes('salem') || loc.includes('yercaud') || loc.includes('namakkal') || loc.includes('dharmapuri') || loc.includes('krishnagiri')) {
+    return {
+      code: 'SXV',
+      name: 'Salem Airport (Kamalapuram)',
+      city: 'Salem',
+      distanceKm: 18,
+      terminalAdvice: '18 km from Salem Junction via NH 44; direct connecting flights to Chennai and Bangalore.'
+    };
+  }
+
+  // 5. TIRUNELVELI, TENKASI, COURTALLAM, TUTICORIN, THOOTHUKUDI
+  if (loc.includes('tirunelveli') || loc.includes('tenkasi') || loc.includes('courtallam') || loc.includes('tuticorin') || loc.includes('thoothukudi')) {
+    return {
+      code: 'TCR',
+      name: 'Tuticorin Airport (Vagaikulam)',
+      city: 'Tuticorin / Tirunelveli',
+      distanceKm: 30,
+      terminalAdvice: '30 km from Tirunelveli center; direct shuttle flights and 4-lane express highway.'
+    };
+  }
+
+  // 6. KANYAKUMARI, NAGERCOIL
+  if (loc.includes('kanyakumari') || loc.includes('nagercoil') || loc.includes('cape comorin')) {
+    return {
+      code: 'TRV',
+      name: 'Trivandrum International Airport',
+      city: 'Thiruvananthapuram',
+      distanceKm: 65,
+      terminalAdvice: '65 km scenic coastal drive from Kanyakumari with frequent intercity express trains.'
+    };
+  }
+
+  // 7. PONDICHERRY, CUDDALORE, VILLUPURAM
+  if (loc.includes('pondicherry') || loc.includes('puducherry') || loc.includes('auroville') || loc.includes('cuddalore') || loc.includes('villupuram')) {
+    return {
+      code: 'PNY',
+      name: 'Pondicherry Airport (Lawspet)',
+      city: 'Puducherry',
+      distanceKm: 6,
+      terminalAdvice: '6 km from White Town French Quarter; connecting daily flights to Bengaluru and Hyderabad.'
+    };
+  }
+
+  // 8. CHENNAI, KANCHIPURAM, TIRUVALLUR, CHENGALPATTU, VELLORE
+  if (loc.includes('chennai') || loc.includes('madras') || loc.includes('kanchipuram') || loc.includes('tiruvallur') || loc.includes('chengalpattu') || loc.includes('vellore')) {
+    return {
+      code: 'MAA',
+      name: 'Chennai International Airport (Meenambakkam)',
+      city: 'Chennai',
+      distanceKm: 12,
+      terminalAdvice: 'Direct Airport Metro station inside terminal connecting to Guindy, Central, and Egmore.'
+    };
+  }
+
+  // 9. BENGALURU / BANGALORE, HOSUR
+  if (loc.includes('bangalore') || loc.includes('bengaluru') || loc.includes('hosur')) {
+    return {
+      code: 'BLR',
+      name: 'Kempegowda International Airport (Devanahalli)',
+      city: 'Bengaluru',
+      distanceKm: 32,
+      terminalAdvice: 'Vayu Vajra AC express buses and Airport Taxi line operate 24/7 to city center.'
+    };
+  }
+
+  // 10. MUMBAI, THANE, PUNE
+  if (loc.includes('mumbai') || loc.includes('bombay') || loc.includes('thane') || loc.includes('pune')) {
+    return {
+      code: 'BOM',
+      name: 'Chhatrapati Shivaji Maharaj International Airport (T2)',
+      city: 'Mumbai',
+      distanceKm: 14,
+      terminalAdvice: 'Terminal 2 with Western Express Highway and direct Metro Line 7A connectivity.'
+    };
+  }
+
+  // 11. DELHI, NOIDA, GURGAON
+  if (loc.includes('delhi') || loc.includes('noida') || loc.includes('gurgaon') || loc.includes('gurugram')) {
+    return {
+      code: 'DEL',
+      name: 'Indira Gandhi International Airport (Terminal 3)',
+      city: 'New Delhi',
+      distanceKm: 16,
+      terminalAdvice: 'Orange Line Airport Express Metro takes just 18 minutes to New Delhi Railway Station.'
+    };
+  }
+
+  // 12. KOCHI, MUNNAR, ALLEPPEY
+  if (loc.includes('kochi') || loc.includes('cochin') || loc.includes('munnar') || loc.includes('kerala')) {
+    return {
+      code: 'COK',
+      name: 'Cochin International Airport (Nedumbassery)',
+      city: 'Kochi',
+      distanceKm: 28,
+      terminalAdvice: 'World\'s first fully solar-powered airport; direct prepaid taxis to Munnar and Fort Kochi.'
+    };
+  }
+
+  // 13. CALICUT, WAYANAD
+  if (loc.includes('calicut') || loc.includes('kozhikode') || loc.includes('wayanad')) {
+    return {
+      code: 'CCJ',
+      name: 'Calicut International Airport (Karipur)',
+      city: 'Kozhikode',
+      distanceKm: 26,
+      terminalAdvice: '26 km from city; mountain taxi gateway up the Thamarassery Churam pass to Wayanad.'
+    };
+  }
+
+  // 14. HYDERABAD
+  if (loc.includes('hyderabad') || loc.includes('secunderabad')) {
+    return {
+      code: 'HYD',
+      name: 'Rajiv Gandhi International Airport (Shamshabad)',
+      city: 'Hyderabad',
+      distanceKm: 22,
+      terminalAdvice: 'PVNR Elevated Expressway connects directly to city in 30 minutes.'
+    };
+  }
+
+  // 15. GOA
+  if (loc.includes('goa')) {
+    return {
+      code: 'GOI / GOX',
+      name: 'Goa Dabolim & Manohar MOPA International Airport',
+      city: 'Goa',
+      distanceKm: 15,
+      terminalAdvice: 'Fly to GOX for North Goa beaches (Vagator/Anjuna) or GOI for South Goa (Benaulim/Colva).'
+    };
+  }
+
+  // 16. GERMANY (Munich, Frankfurt, Berlin)
+  if (loc.includes('germany') || loc.includes('munich') || loc.includes('berlin') || loc.includes('frankfurt')) {
+    return {
+      code: loc.includes('munich') ? 'MUC' : loc.includes('berlin') ? 'BER' : 'FRA',
+      name: loc.includes('munich') ? 'Munich Airport (Franz Josef Strauss)' : loc.includes('berlin') ? 'Berlin Brandenburg Airport' : 'Frankfurt Airport',
+      city: 'Germany',
+      distanceKm: 25,
+      terminalAdvice: 'Direct S-Bahn / ICE high-speed train platforms located directly beneath the terminal.'
+    };
+  }
+
+  // 17. FRANCE (Paris)
+  if (loc.includes('france') || loc.includes('paris')) {
+    return {
+      code: 'CDG',
+      name: 'Paris Charles de Gaulle Airport',
+      city: 'Paris',
+      distanceKm: 25,
+      terminalAdvice: 'RER B train connects terminal directly to Paris Châtelet in 35 minutes.'
+    };
+  }
+
+  // 18. UK (London)
+  if (loc.includes('uk') || loc.includes('london')) {
+    return {
+      code: 'LHR',
+      name: 'London Heathrow Airport',
+      city: 'London',
+      distanceKm: 23,
+      terminalAdvice: 'Elizabeth Line and Heathrow Express link directly to Central London.'
+    };
+  }
+
+  // 19. JAPAN (Tokyo, Kyoto)
+  if (loc.includes('japan') || loc.includes('tokyo') || loc.includes('kyoto')) {
+    return {
+      code: 'HND / NRT',
+      name: 'Tokyo Haneda & Narita International Airport',
+      city: 'Tokyo',
+      distanceKm: 15,
+      terminalAdvice: 'Tokyo Monorail connects Haneda to Yamanote Line in 13 minutes.'
+    };
+  }
+
+  // 20. USA (New York)
+  if (loc.includes('usa') || loc.includes('york') || loc.includes('nyc')) {
+    return {
+      code: 'JFK / EWR',
+      name: 'John F. Kennedy International Airport',
+      city: 'New York',
+      distanceKm: 20,
+      terminalAdvice: 'AirTrain connects to Jamaica Station and NYC Subway E/J/Z lines.'
+    };
+  }
+
+  // Universal Fallback
+  const cleanLoc = locationName.replace(/(?:district|city|town)/gi, '').trim();
+  return {
+    code: `${cleanLoc.toUpperCase().slice(0, 3)}`,
+    name: `${cleanLoc} Regional Airport / Junction Hub`,
+    city: cleanLoc,
+    distanceKm: 15,
+    terminalAdvice: `Direct local transit and connecting domestic flights for ${cleanLoc}.`
+  };
+};
+
 export const getDestinationFlight = (origin: string = 'India', dest: string = 'Coimbatore', budget: number = 25000): FlightExpenseDetails => {
   const d = (dest || '').toLowerCase();
   const o = (origin || '').toLowerCase();
 
+  const originAirport = getNearestAirport(origin || 'India');
+  const destAirport = getNearestAirport(dest || 'Coimbatore');
+
+  const isInternational = d.includes('germany') || d.includes('france') || d.includes('paris') || d.includes('japan') || d.includes('tokyo') || d.includes('london') || d.includes('uk') || d.includes('usa') || d.includes('york') || d.includes('dubai');
+  const isOriginInternational = o.includes('usa') || o.includes('uk') || o.includes('london') || o.includes('germany') || o.includes('france');
+
   let cost = 4500;
   let duration = 1.5;
   let airlines = ['IndiGo', 'Air India', 'Akasa Air'];
-  let depAirport = 'DEL / BOM / BLR / MAA (India)';
-  let arrAirport = `${(dest || 'Destination').toUpperCase()} Junction / Airport`;
-  let hasFlight = true;
-  let connectingAdvice = 'Direct daily flights and express superfast trains available';
+  let connectingAdvice = `Fly from ${originAirport.name} (${originAirport.code}) to ${destAirport.name} (${destAirport.code}).`;
 
-  // 1. COIMBATORE
-  if (d.includes('coimbatore') || d.includes('kovai') || d.includes('valparai') || d.includes('pollachi')) {
-    cost = 4200;
-    depAirport = 'MAA (Chennai) / BLR (Bangalore) / DEL / BOM';
-    arrAirport = 'CJB (Coimbatore International Airport, Peelamedu)';
-    airlines = ['IndiGo', 'Air India Express', 'Akasa Air'];
-    duration = 1.1;
-    connectingAdvice = 'Non-stop daily flights to CJB Airport. Direct Avinashi Road cab to city or mountain taxi to Valparai/Ooty.';
-  }
-  // 2. MADURAI
-  else if (d.includes('madurai') || d.includes('dindigul') || d.includes('sivagangai') || d.includes('ramanathapuram') || d.includes('virudhunagar')) {
-    cost = 4600;
-    depAirport = 'MAA (Chennai) / BLR / BOM / DEL';
-    arrAirport = 'IXM (Madurai International Airport, Perungudi)';
-    airlines = ['IndiGo', 'Air India', 'SpiceJet'];
-    duration = 1.2;
-    connectingAdvice = 'Direct flights to IXM Airport with 20-min Ring Road cab connectivity to Meenakshi Amman Temple.';
-  }
-  // 3. TIRUCHIRAPPALLI (TRICHY) & THANJAVUR
-  else if (d.includes('trichy') || d.includes('tiruchirappalli') || d.includes('thanjavur') || d.includes('tanjore') || d.includes('kumbakonam') || d.includes('perambalur') || d.includes('pudukkottai') || d.includes('karur')) {
-    cost = 4800;
-    depAirport = 'MAA / BLR / BOM (India)';
-    arrAirport = 'TRZ (Tiruchirappalli International Airport)';
-    airlines = ['IndiGo', 'Air India Express', 'Scoot'];
-    duration = 1.2;
-    connectingAdvice = 'Direct flights to TRZ Airport. Thanjavur is a scenic 45-minute drive via the 4-lane NH 83 highway.';
-  }
-  // 4. SALEM & YERCAUD
-  else if (d.includes('salem') || d.includes('yercaud') || d.includes('namakkal') || d.includes('dharmapuri') || d.includes('krishnagiri')) {
-    cost = 3900;
-    depAirport = 'MAA (Chennai) / BLR';
-    arrAirport = 'SXV (Salem Airport, Kamalapuram) / SA Junction';
-    airlines = ['Alliance Air', 'IndiGo', 'Vande Bharat Express'];
-    duration = 1.0;
-    connectingAdvice = 'Flight to SXV Airport or 4-hr Vande Bharat Train from Chennai/Bangalore directly to Salem Junction.';
-  }
-  // 5. TIRUNELVELI, TENKASI, TUTICORIN & KANYAKUMARI
-  else if (d.includes('tirunelveli') || d.includes('tenkasi') || d.includes('courtallam') || d.includes('tuticorin') || d.includes('thoothukudi') || d.includes('kanyakumari') || d.includes('nagercoil')) {
-    cost = 5100;
-    depAirport = 'MAA / BLR (India)';
-    arrAirport = 'TCR (Tuticorin Airport) / TRV (Trivandrum) / TEN Junction';
-    airlines = ['IndiGo', 'Air India', 'Vande Bharat Express'];
-    duration = 1.4;
-    connectingAdvice = 'Fly into TCR (Tuticorin - 35 mins from Tirunelveli) or TRV (Trivandrum - 1.5 hrs from Kanyakumari).';
-  }
-  // 6. PONDICHERRY & CUDDALORE
-  else if (d.includes('pondicherry') || d.includes('puducherry') || d.includes('auroville') || d.includes('cuddalore') || d.includes('villupuram')) {
-    cost = 3800;
-    depAirport = 'BLR / HYD (India)';
-    arrAirport = 'PNY (Pondicherry Airport, Lawspet) / MAA Airport';
-    airlines = ['SpiceJet', 'IndiGo'];
-    duration = 1.0;
-    connectingAdvice = 'Direct flights from Bangalore/Hyderabad to PNY, or 2.5-hr scenic East Coast Road (ECR) drive from Chennai MAA.';
-  }
-  // 7. CHENNAI
-  else if (d.includes('chennai') || d.includes('kanchipuram') || d.includes('tiruvallur') || d.includes('chengalpattu')) {
-    cost = 5200;
-    depAirport = o.includes('usa') ? 'JFK / SFO ➔ MAA' : 'DEL / BOM / BLR (India)';
-    arrAirport = 'MAA (Chennai International Airport, Meenambakkam)';
-    airlines = ['IndiGo', 'Air India', 'Akasa Air', 'SpiceJet'];
-    duration = 1.5;
-    connectingAdvice = 'Direct daily flights to MAA with Airport Metro connecting to Guindy, Central, and Egmore.';
-  }
-  // 8. GERMANY
-  else if (d.includes('germany') || d.includes('munich') || d.includes('berlin') || d.includes('frankfurt')) {
-    cost = 48000;
-    depAirport = 'DEL / BOM (India)';
-    arrAirport = 'FRA (Frankfurt) / MUC (Munich)';
-    airlines = ['Lufthansa', 'Air India', 'Qatar Airways', 'Emirates'];
-    duration = 9.5;
-    connectingAdvice = 'Direct daily flights from Delhi/Mumbai to Frankfurt and Munich.';
-  }
-  // 9. FRANCE
-  else if (d.includes('france') || d.includes('paris')) {
-    cost = 52000;
-    depAirport = 'DEL / BOM (India)';
-    arrAirport = 'CDG (Charles de Gaulle, Paris)';
-    airlines = ['Air France', 'Emirates', 'Qatar Airways'];
-    duration = 10.0;
-  }
-  // 10. JAPAN
-  else if (d.includes('japan') || d.includes('tokyo')) {
-    cost = 62000;
-    depAirport = 'DEL (New Delhi)';
-    arrAirport = 'HND (Haneda) / NRT (Narita, Tokyo)';
-    airlines = ['ANA', 'Japan Airlines', 'Air India'];
-    duration = 8.5;
-  }
-  // 11. GOA
-  else if (d.includes('goa')) {
-    cost = 5800;
-    depAirport = 'DEL / BOM / BLR / MAA (India)';
-    arrAirport = 'GOI (Dabolim) / GOX (MOPA International)';
-    airlines = ['IndiGo', 'Air India Express', 'Akasa Air'];
-    duration = 1.8;
-  }
-  // 12. GENERIC DISTRICT
-  else {
-    cost = Math.max(3500, Math.min(8500, Math.round((budget || 25000) * 0.2)));
-    depAirport = `${(origin || 'India').toUpperCase()} Hub`;
-    arrAirport = `${(dest || 'District').toUpperCase()} Airport / Superfast Railway`;
-    airlines = ['IndiGo', 'Air India', 'Southern Railway Vande Bharat'];
-    duration = 2.0;
-    connectingAdvice = `Direct domestic flight/train connections to ${dest} region.`;
+  if (isInternational || isOriginInternational) {
+    if (d.includes('germany') || d.includes('munich') || d.includes('berlin') || d.includes('frankfurt')) {
+      cost = 48000;
+      duration = 9.5;
+      airlines = ['Lufthansa', 'Air India', 'Qatar Airways', 'Emirates'];
+      connectingAdvice = `Departing from ${originAirport.code} (${originAirport.city}) ➔ Connecting flight to ${destAirport.name} (${destAirport.code}). Direct ICE train options available from Frankfurt/Munich.`;
+    } else if (d.includes('france') || d.includes('paris')) {
+      cost = 52000;
+      duration = 10.0;
+      airlines = ['Air France', 'Emirates', 'Qatar Airways'];
+      connectingAdvice = `Departing from ${originAirport.code} ➔ Direct/1-stop flight to ${destAirport.name} (${destAirport.code}). RER B train connects terminal directly to central Paris.`;
+    } else if (d.includes('japan') || d.includes('tokyo') || d.includes('kyoto')) {
+      cost = 62000;
+      duration = 8.5;
+      airlines = ['ANA', 'Japan Airlines', 'Air India'];
+      connectingAdvice = `Fly from ${originAirport.code} ➔ Tokyo Haneda/Narita (${destAirport.code}). Shinkansen bullet train connects Tokyo to Kyoto in 2 hrs 15 mins.`;
+    } else {
+      cost = Math.max(28000, Math.round(budget * 0.45));
+      duration = 8.0;
+      airlines = ['Emirates', 'Qatar Airways', 'Air India', 'Turkish Airlines'];
+      connectingAdvice = `Fly from ${originAirport.name} (${originAirport.code}) to ${destAirport.name} (${destAirport.code}).`;
+    }
+  } else {
+    // Domestic India / Tamil Nadu
+    if (originAirport.code === destAirport.code) {
+      cost = 0;
+      duration = 0.5;
+      airlines = ['Local Metro / Superfast Express'];
+      connectingAdvice = `Origin and destination are in the same district (${originAirport.city}). Recommended travel mode: City Metro / Taxi / Bike ride.`;
+    } else if (d.includes('coimbatore') || o.includes('coimbatore')) {
+      cost = 4200;
+      duration = 1.1;
+      airlines = ['IndiGo', 'Air India Express', 'Akasa Air'];
+      connectingAdvice = `Non-stop direct flights between ${originAirport.code} and ${destAirport.code}. Pre-booked taxis & Avinashi road cabs available at CJB terminal.`;
+    } else if (d.includes('madurai') || o.includes('madurai')) {
+      cost = 4600;
+      duration = 1.2;
+      airlines = ['IndiGo', 'Air India', 'SpiceJet'];
+      connectingAdvice = `Direct domestic flight connecting ${originAirport.code} ➔ ${destAirport.code}. 20 mins to Meenakshi Temple via Madurai Ring Road.`;
+    } else if (d.includes('trichy') || d.includes('thanjavur') || o.includes('trichy')) {
+      cost = 4800;
+      duration = 1.2;
+      airlines = ['IndiGo', 'Air India Express', 'Vande Bharat Express'];
+      connectingAdvice = `Fast direct flights/express trains from ${originAirport.code} to ${destAirport.code}. Thanjavur is 45 mins via NH 83.`;
+    } else if (d.includes('chennai') || o.includes('chennai')) {
+      cost = 5200;
+      duration = 1.5;
+      airlines = ['IndiGo', 'Air India', 'Akasa Air', 'SpiceJet'];
+      connectingAdvice = `Direct shuttle flights connecting ${originAirport.code} to MAA Chennai. Direct Airport Metro link at terminal.`;
+    } else {
+      cost = Math.max(3500, Math.min(7800, Math.round((budget || 25000) * 0.2)));
+      duration = 1.5;
+      airlines = ['IndiGo', 'Air India', 'Akasa Air', 'Southern Railway'];
+      connectingAdvice = `Direct flight/train connection from ${originAirport.name} (${originAirport.code}) to ${destAirport.name} (${destAirport.code}).`;
+    }
   }
 
   const isWithinBudget = budget >= cost;
@@ -558,9 +872,12 @@ export const getDestinationFlight = (origin: string = 'India', dest: string = 'C
     estimatedFlightCost: cost,
     airlineSuggestions: airlines,
     flightDurationHours: duration,
-    departureAirport: depAirport,
-    arrivalAirport: arrAirport,
-    hasFlightOption: hasFlight,
+    departureAirport: `${originAirport.name} (${originAirport.code})`,
+    arrivalAirport: `${destAirport.name} (${destAirport.code})`,
+    nearestOriginAirport: `${originAirport.name} (${originAirport.code})`,
+    nearestDestinationAirport: `${destAirport.name} (${destAirport.code})`,
+    distanceToDepartureAirportKm: originAirport.distanceKm,
+    hasFlightOption: true,
     isWithinBudget,
     connectingAdvice
   };

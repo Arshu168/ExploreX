@@ -107,6 +107,9 @@ export interface FlightExpenseDetails {
   flightDurationHours: number;
   departureAirport?: string;
   arrivalAirport?: string;
+  nearestOriginAirport?: string;
+  nearestDestinationAirport?: string;
+  distanceToDepartureAirportKm?: number;
   hasFlightOption?: boolean;
   isWithinBudget?: boolean;
   connectingAdvice?: string;

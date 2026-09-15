@@ -37,7 +37,9 @@ import {
   Phone,
   ExternalLink,
   Star,
-  Globe
+  Globe,
+  LocateFixed,
+  Route
 } from 'lucide-react';
 import { Trip, Place, ItineraryDay, Activity, HotelOption, FlightExpenseDetails, HiddenGemReview } from '../types';
 import { getWeatherForDestinationDay, getWeatherTheme } from '../utils/weatherUtils';
@@ -47,11 +49,14 @@ import {
   getDestinationHotels,
   getDestinationFlight,
   getDestinationReviews,
-  getRealDestinationItinerary
+  getRealDestinationItinerary,
+  getNearestAirport,
+  getNearestDistrictFromCoords
 } from '../utils/travelDataService';
 
 // Re-export for compatibility
-export { getDestinationHotels, getDestinationFlight, getDestinationReviews, getRealDestinationItinerary };
+export { getDestinationHotels, getDestinationFlight, getDestinationReviews, getRealDestinationItinerary, getNearestAirport, getNearestDistrictFromCoords };
+
 
 interface AiPlannerViewProps {
   activeTrip?: Trip;
@@ -852,7 +857,121 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
         </div>
       </div>
 
-      {/* FLIGHT & INTERCITY EXPENSE BREAKDOWN CARD */}
+      {/* 1. PRIMARY STARTING LOCATION (ORIGIN - X) SELECTION CARD */}
+      <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 text-white rounded-3xl p-5 sm:p-6 shadow-md border border-emerald-800/80 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-800/80 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2.5 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-400">
+              <LocateFixed className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-black text-[10px] tracking-wider uppercase">
+                  Start Pointer (X)
+                </span>
+                <h3 className="font-black text-base text-white">Where are you starting from?</h3>
+              </div>
+              <p className="text-xs text-emerald-200 font-medium mt-0.5">
+                Calculates your exact departure airport, travel costs, and sequential map routes (X ➔ Y1, Y2, Y3...)
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              if (!navigator.geolocation) {
+                showToast("Geolocation is not supported by your browser.");
+                return;
+              }
+              showToast("Detecting your GPS location...");
+              navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                  const distName = getNearestDistrictFromCoords(pos.coords.latitude, pos.coords.longitude);
+                  setTripSummary(prev => ({ ...prev, originLocation: distName }));
+                  const updatedFlight = getDestinationFlight(distName, tripSummary.destination, tripSummary.budgetTotal);
+                  setFlightExpense(updatedFlight);
+                  showToast(`📍 Set starting location to ${distName}!`);
+                },
+                (err) => {
+                  showToast(`GPS unavailable: ${err.message}`);
+                },
+                { timeout: 8000, enableHighAccuracy: true }
+              );
+            }}
+            className="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center gap-1.5 transition shadow-sm cursor-pointer"
+          >
+            <LocateFixed className="w-3.5 h-3.5" />
+            <span>Use My Current GPS Location</span>
+          </button>
+        </div>
+
+        {/* Origin Input & Nearest Airport Card */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+          <div className="md:col-span-5 relative">
+            <MapPin className="w-4 h-4 text-emerald-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={tripSummary.originLocation}
+              onChange={(e) => {
+                const val = e.target.value;
+                setTripSummary(prev => ({ ...prev, originLocation: val }));
+                if (val.trim()) {
+                  const updatedFlight = getDestinationFlight(val, tripSummary.destination, tripSummary.budgetTotal);
+                  setFlightExpense(updatedFlight);
+                }
+              }}
+              placeholder="Enter origin district/city (e.g. Coimbatore, Madurai, Chennai)..."
+              className="w-full bg-slate-900/90 border border-emerald-800/60 focus:border-emerald-400 text-white placeholder-slate-400 text-xs font-bold rounded-xl pl-9 pr-3 py-2.5 focus:outline-none"
+            />
+          </div>
+
+          <div className="md:col-span-7 bg-slate-900/80 border border-emerald-900/60 rounded-xl p-3 flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2 overflow-hidden">
+              <Plane className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="truncate">
+                <span className="text-[10px] text-emerald-300 font-extrabold uppercase">Nearest Departure Airport: </span>
+                <span className="font-extrabold text-white">
+                  {flightExpense?.departureAirport || getNearestAirport(tripSummary.originLocation).name}
+                </span>
+                <span className="text-slate-300 text-[11px] ml-1.5 font-medium">
+                  ({getNearestAirport(tripSummary.originLocation).distanceKm} km from {tripSummary.originLocation})
+                </span>
+              </div>
+            </div>
+            <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-black shrink-0">
+              {getNearestAirport(tripSummary.originLocation).code}
+            </span>
+          </div>
+        </div>
+
+        {/* Quick Origin District Buttons */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-1 border-t border-emerald-900/40">
+          <span className="font-bold text-emerald-400 text-[11px] shrink-0">Quick Start Districts:</span>
+          {['Coimbatore', 'Madurai', 'Chennai', 'Trichy', 'Salem', 'Tirunelveli', 'Ooty', 'Bangalore', 'Kochi', 'Mumbai', 'Delhi'].map((dist) => {
+            const isSelected = tripSummary.originLocation.toLowerCase() === dist.toLowerCase();
+            return (
+              <button
+                key={dist}
+                onClick={() => {
+                  setTripSummary(prev => ({ ...prev, originLocation: dist }));
+                  const updatedFlight = getDestinationFlight(dist, tripSummary.destination, tripSummary.budgetTotal);
+                  setFlightExpense(updatedFlight);
+                  showToast(`Starting point set to ${dist}!`);
+                }}
+                className={`px-2.5 py-0.5 rounded-full font-bold text-[11px] shrink-0 transition cursor-pointer ${
+                  isSelected
+                    ? 'bg-emerald-400 text-slate-950 shadow-xs'
+                    : 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700'
+                }`}
+              >
+                📍 {dist}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 2. FLIGHT & INTERCITY EXPENSE BREAKDOWN CARD */}
       {flightExpense && (
         <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white rounded-3xl p-5 sm:p-6 shadow-md border border-blue-800/80 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-blue-800/80 pb-3">
@@ -951,6 +1070,7 @@ export const AiPlannerView: React.FC<AiPlannerViewProps> = ({
           )}
         </div>
       )}
+
 
       {/* GENERATED ITINERARY TIMELINE VIEW */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 space-y-6 shadow-2xs">
