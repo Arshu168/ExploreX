@@ -1688,7 +1688,430 @@ export const getRealDestinationItinerary = (
   }
 
   // -------------------------------------------------------------
-  // 6. REAL GOA ITINERARY
+  // 6. REAL KERALA ITINERARY (Munnar, Wayanad, Kochi, Alleppey, Thekkady, Varkala, Athirappilly)
+  // -------------------------------------------------------------
+  if (d.includes('kerala') || d.includes('munnar') || d.includes('wayanad') || d.includes('kochi') || d.includes('cochin') || d.includes('alleppey') || d.includes('thekkady') || d.includes('varkala')) {
+    const keralaTemplates = [
+      {
+        title: 'Munnar High Ranges, Pothamedu Sunrise Ridge & Attukal Secret Waterfall',
+        highlights: ['Pothamedu Sunrise Ridge', 'Rapsy Appam Stew', 'Attukal Secret Waterfall', 'Lockhart 1857 Tea Factory'],
+        activities: [
+          {
+            id: 'act-ker-1-1',
+            time: '06:30 AM',
+            title: 'Pothamedu Viewpoint & Bison Valley Ridge Sunrise Trail',
+            description: 'Early morning misty hike overlooking emerald rolling tea slopes, cardamoms, and deep valleys of the Western Ghats.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Pothamedu View Point, Bison Valley Road, Munnar, Idukki District, Kerala 685612'
+          },
+          {
+            id: 'act-ker-1-2',
+            time: '09:00 AM',
+            title: 'Traditional Kerala Appam & Egg Stew Breakfast at Rapsy Restaurant',
+            description: 'Fluffy fermented rice appams with creamy spiced coconut milk vegetable/egg stew and fresh Nilgiri tea.',
+            category: 'meal' as const,
+            cost: 160,
+            durationMinutes: 45,
+            isHiddenGem: true,
+            locationName: 'Main Bazaar Road, Near Central Post Office, Munnar Town 685612'
+          },
+          {
+            id: 'act-ker-1-3',
+            time: '11:15 AM',
+            title: 'Attukal Hidden Waterfalls & Mountain Tea Stream Trek',
+            description: 'Cascading waterfalls set in thick jungle tea estate trails with crystal cold mountain pools for nature walks.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 105,
+            isHiddenGem: true,
+            locationName: 'Attukal Waterfalls Road, Pallivasal, Munnar, Kerala 685565'
+          },
+          {
+            id: 'act-ker-1-4',
+            time: '02:30 PM',
+            title: 'Lockhart Gap 1857 Heritage Tea Factory & Tea Tasting Session',
+            description: 'Historic British-era tea factory showing Orthodox CTC manufacturing and freshly processed high-altitude green tea tasting.',
+            category: 'tea_estate' as PlaceCategory,
+            cost: 150,
+            durationMinutes: 80,
+            isHiddenGem: false,
+            locationName: 'Lockhart Estate, Munnar-Theni National Highway, Devikulam, Kerala 685613'
+          },
+          {
+            id: 'act-ker-1-5',
+            time: '05:30 PM',
+            title: 'Chithirapuram Colonial Bungalow Sunset Walk',
+            description: 'Tranquil evening stroll past 1920s stone cottages, golf lawns, and sleepy hills as mist blankets the valleys.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Chithirapuram, Anachal, Munnar, Kerala 685565'
+          }
+        ]
+      },
+      {
+        title: 'Wayanad Rainforests, Chembra Peak & 6,000 BCE Edakkal Petroglyphs',
+        highlights: ['Chembra Heart Lake', 'Kadala Curry Puttu', 'Edakkal Neolithic Caves', 'Soochipara Plunge Falls'],
+        activities: [
+          {
+            id: 'act-ker-2-1',
+            time: '06:30 AM',
+            title: 'Chembra Peak Heart-Shaped Lake Mountain Trek',
+            description: 'Trek through misty grasslands and Shola forests to the legendary perennial heart-shaped lake (Hridaya Saras).',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 750,
+            durationMinutes: 180,
+            isHiddenGem: true,
+            locationName: 'Chembra Peak Forest Base, Meppadi, Wayanad District, Kerala 673577'
+          },
+          {
+            id: 'act-ker-2-2',
+            time: '10:30 AM',
+            title: 'Malabar Puttu & Spicy Kadala Curry at 1980\'s A Nostalgic Restaurant',
+            description: 'Authentic Wayanad village-style breakfast served on plantain leaves with steamed rice puttu and slow-simmered black chickpea gravy.',
+            category: 'meal' as const,
+            cost: 180,
+            durationMinutes: 45,
+            isHiddenGem: true,
+            locationName: 'Kalpetta Bypass Road, Wayanad, Kerala 673121'
+          },
+          {
+            id: 'act-ker-2-3',
+            time: '12:30 PM',
+            title: 'Edakkal Caves 6,000 BCE Neolithic Rock Carvings',
+            description: 'Prehistoric stone-age petroglyphs and human motifs etched onto ambukuthi hill split rock shelters.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Nenmeni, Ambalavayal, Wayanad, Kerala 673593'
+          },
+          {
+            id: 'act-ker-2-4',
+            time: '03:30 PM',
+            title: 'Soochipara (Sentinel Rock) 3-Tier Waterfall Base Pool',
+            description: 'Spectacular 3-tiered waterfall crashing into deep natural rock pools amidst deciduous tea woodlands.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 80,
+            durationMinutes: 105,
+            isHiddenGem: false,
+            locationName: 'Vellarimala, Meppadi, Wayanad, Kerala 673577'
+          },
+          {
+            id: 'act-ker-2-5',
+            time: '06:00 PM',
+            title: 'Banasura Sagar Earthen Dam Reservoir Sunset Boating',
+            description: 'Largest earth dam in India with picturesque islands floating against the rugged Banasura hill backdrop.',
+            category: 'sunset' as PlaceCategory,
+            cost: 120,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Padinjarathara, Wayanad, Kerala 673575'
+          }
+        ]
+      },
+      {
+        title: 'Fort Kochi Heritage, Dutch Palace & Ancient Chinese Fishing Nets',
+        highlights: ['Fort Kochi Chinese Nets', 'Kayees Mutton Biryani', 'Jew Town Spice Warehouse', 'Kathakali Performance'],
+        activities: [
+          {
+            id: 'act-ker-3-1',
+            time: '06:30 AM',
+            title: 'Fort Kochi Beach Promenade & Chinese Fishing Nets Sunrise',
+            description: 'Watch local fishermen operating 14th-century cantilevered bamboo fishing nets (Cheena Vala) under morning sunlight.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: false,
+            locationName: 'River Road, Fort Kochi, Kochi, Kerala 682001'
+          },
+          {
+            id: 'act-ker-3-2',
+            time: '09:00 AM',
+            title: 'Kashi Art Cafe Organic Breakfast & Sourdough Toast',
+            description: 'Bohemian heritage art cafe featuring organic local coffee, fresh papaya jam, scrambled farm eggs, and live art installations.',
+            category: 'cafe' as PlaceCategory,
+            cost: 250,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Burgher Street, Fort Kochi, Kochi 682001'
+          },
+          {
+            id: 'act-ker-3-3',
+            time: '11:30 AM',
+            title: 'Mattancherry Dutch Palace & Jew Town Antique Spice Guild',
+            description: '1555 Portuguese-Dutch palace adorned with mythological Ramayana murals, followed by ginger, cardamom, and clove market walks.',
+            category: 'village' as PlaceCategory,
+            cost: 30,
+            durationMinutes: 90,
+            isHiddenGem: false,
+            locationName: 'Synagogue Lane, Jew Town, Mattancherry, Kochi 682002'
+          },
+          {
+            id: 'act-ker-3-4',
+            time: '01:30 PM',
+            title: 'Legendary Kayees Rahmathulla Dum Biryani Lunch',
+            description: '70-year-old heritage eatery world-famous for aromatic Malabar ghee rice cooked with tender local spiced meat and date pickle.',
+            category: 'meal' as const,
+            cost: 280,
+            durationMinutes: 50,
+            isHiddenGem: true,
+            locationName: 'Aanavaathil, Mattancherry, Kochi, Kerala 682002'
+          },
+          {
+            id: 'act-ker-3-5',
+            time: '05:30 PM',
+            title: 'Kerala Kathakali Centre Classical Dance & Live Makeup Demo',
+            description: 'Intimate theater presentation of ancient Kathakali dance-drama with live green-room face painting and Chenda drum rhythms.',
+            category: 'sunset' as PlaceCategory,
+            cost: 400,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'KB Jacob Road, Fort Kochi, Kochi 682001'
+          }
+        ]
+      },
+      {
+        title: 'Alleppey Backwaters, Kuttanad Paddy Waterways & Marari Beach',
+        highlights: ['Kuttanad Canoe Trail', 'Karimeen Pollichathu', 'Snake Boat Pavilion', 'Marari Sunset Palm Beach'],
+        activities: [
+          {
+            id: 'act-ker-4-1',
+            time: '07:00 AM',
+            title: 'Kuttanad Below-Sea-Level Paddy Canoe Canal Safari',
+            description: 'Silent wooden canoe cruise gliding past duck farms, lotus ponds, and village canals where farming occurs 2 meters below sea level.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 300,
+            durationMinutes: 120,
+            isHiddenGem: true,
+            locationName: 'Champakulam Ferry Point, Kuttanad, Alappuzha, Kerala 688505'
+          },
+          {
+            id: 'act-ker-4-2',
+            time: '10:00 AM',
+            title: 'Punnamada Lake & Chundan Vallam (Snake Boat) Race Pavilion',
+            description: 'Home of the Nehru Trophy Boat Race. Walk the racing track pavilion and view the 120-foot long historic wooden racing war-canoes.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: 'Punnamada Lake, Alappuzha 688006'
+          },
+          {
+            id: 'act-ker-4-3',
+            time: '01:00 PM',
+            title: 'Authentic Karimeen Pollichathu & Kappa Feast at Mullakkal Shappu',
+            description: 'Pearl spot fish marinated in shallots, green chilies, and coconut oil, wrapped in banana leaf and pan-roasted with steamed tapioca.',
+            category: 'meal' as const,
+            cost: 360,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Mullakkal Street, Alappuzha 688011'
+          },
+          {
+            id: 'act-ker-4-4',
+            time: '03:30 PM',
+            title: 'Pathiramanal Island Migratory Bird Sanctuary Crossing',
+            description: 'Untouched 10-acre island in Vembanad Lake accessible only by boat, sheltering 90+ rare resident and migratory bird species.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 150,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Muhamma, Vembanad Lake, Alappuzha 688525'
+          },
+          {
+            id: 'act-ker-4-5',
+            time: '05:45 PM',
+            title: 'Marari Pristine White Sand Beach & Palm Grove Sunset',
+            description: 'Secluded coconut-fringed coastal paradise with turquoise Arabian sea waves away from crowded tourist beaches.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Mararikulam Beach Road, Alappuzha, Kerala 688523'
+          }
+        ]
+      },
+      {
+        title: 'Thekkady & Periyar Tiger Sanctuary Spice Trail & Martial Arts',
+        highlights: ['Periyar Lake Mist Safari', 'Cardamom Spice Plantation', 'Chellarkovil Watchtower', 'Kalaripayattu Arena'],
+        activities: [
+          {
+            id: 'act-ker-5-1',
+            time: '06:30 AM',
+            title: 'Periyar Tiger Reserve Morning Mist Boat Safari',
+            description: 'Early morning cruise through submerged forest tree stumps in Periyar Lake, spotting wild elephant herds, gaur, and sambar deer.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 350,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Periyar Tiger Reserve, Kumily, Thekkady 685509'
+          },
+          {
+            id: 'act-ker-5-2',
+            time: '10:30 AM',
+            title: 'Abraham\'s Organic Spice Garden Guided Plantation Walk',
+            description: 'Guided tour identifying organic green cardamom pods, black pepper vines, nutmeg, vanilla, and medicinal Ayurvedic flora.',
+            category: 'tea_estate' as PlaceCategory,
+            cost: 100,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Spring Valley, Kumily-Thekkady Road, Kerala 685509'
+          },
+          {
+            id: 'act-ker-5-3',
+            time: '02:00 PM',
+            title: 'Chellarkovil Panoramic Waterfalls & Tamil Nadu Plain Watchtower',
+            description: 'Scenic ridge where cascading streams drop 1,200m into the coconut plains of neighboring Cumbum Valley.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 30,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Chellarkovil Eco Tourism Post, Idukki District, Kerala 685515'
+          },
+          {
+            id: 'act-ker-5-4',
+            time: '06:00 PM',
+            title: 'Kadathanadan Kalari Centre Traditional Martial Arts Demonstration',
+            description: 'Witness 3,000-year-old Kalaripayattu combat techniques with sword fights, fire jumps, and ancient warrior acrobatics.',
+            category: 'village' as PlaceCategory,
+            cost: 250,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Kumily Thekkady Road, Kumily 685509'
+          }
+        ]
+      },
+      {
+        title: 'Varkala Red Cliff Coast, 2000-Yr Temple & Kappil Estuary',
+        highlights: ['Varkala Red Cliff', 'Janardhana Swamy Temple', 'Cafe Del Mar Breakfast', 'Kappil Ocean Estuary'],
+        activities: [
+          {
+            id: 'act-ker-6-1',
+            time: '06:30 AM',
+            title: 'Varkala North Cliff Geological Formation Sunrise Trek',
+            description: 'Walk the majestic 80-foot tertiary sedimentary red sandstone cliffs overlooking the crashing turquoise Arabian Sea.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 80,
+            isHiddenGem: false,
+            locationName: 'North Cliff Promenade, Varkala, Thiruvananthapuram 695141'
+          },
+          {
+            id: 'act-ker-6-2',
+            time: '09:00 AM',
+            title: 'Cafe Del Mar Rooftop Smoothie Bowls & Fresh Brews',
+            description: 'Cliffside sea-view cafe serving fresh coconut passionfruit bowls, avocado toast, and locally roasted filter coffee.',
+            category: 'cafe' as PlaceCategory,
+            cost: 280,
+            durationMinutes: 50,
+            isHiddenGem: true,
+            locationName: 'Helipad Area, North Cliff, Varkala 695141'
+          },
+          {
+            id: 'act-ker-6-3',
+            time: '11:00 AM',
+            title: '2,000-Year-Old Janardhana Swamy Temple & Mineral Springs',
+            description: 'Ancient coastal Vaishnavite temple with Dutch ship bell, holy banyan tree, and natural holy spring pools.',
+            category: 'temple' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Beach Road, Papanasam, Varkala 695141'
+          },
+          {
+            id: 'act-ker-6-4',
+            time: '04:30 PM',
+            title: 'Kappil Lake & Ocean Sand Spit Estuary Golden Sunset',
+            description: 'Scenic point where the calm backwaters of Edava-Nadayara Lake merge with the Arabian Sea along a narrow scenic bridge.',
+            category: 'sunset' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Kappil Beach Road, Varkala Coastal Highway, Kerala 695311'
+          }
+        ]
+      },
+      {
+        title: 'Athirappilly "Niagara of India", Vazhachal & Sholayar Rain Forest',
+        highlights: ['Athirappilly Giant Cascade', 'Vazhachal Forest Walk', 'Chalakudy River Feast', 'Sholayar Canopy View'],
+        activities: [
+          {
+            id: 'act-ker-7-1',
+            time: '07:00 AM',
+            title: 'Athirappilly 80-Foot Giant Forest Waterfall Base Trek',
+            description: 'Hike down through bamboo groves to the rocky riverbed directly beneath the massive 330-foot wide thundering cascade.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 60,
+            durationMinutes: 120,
+            isHiddenGem: false,
+            locationName: 'Chalakudy River Gorge, Athirappilly, Thrissur District 680721'
+          },
+          {
+            id: 'act-ker-7-2',
+            time: '10:30 AM',
+            title: 'Vazhachal Forest Cascade & Herbal Botanical Garden',
+            description: 'Fast-flowing river rapids surrounded by dense riparian rainforest, medicinal flora, and hornbill conservation trails.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 40,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Vazhachal Forest Division, Thrissur 680721'
+          },
+          {
+            id: 'act-ker-7-3',
+            time: '01:30 PM',
+            title: 'Traditional River Fish Curry & Red Rice Feast at Rainforest View',
+            description: 'Authentic Kerala lunch with fresh Chalakudy river fish, moru curry, thoran, and mango pickle.',
+            category: 'meal' as const,
+            cost: 280,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Athirappilly Ghat Road, Thrissur 680721'
+          },
+          {
+            id: 'act-ker-7-4',
+            time: '04:30 PM',
+            title: 'Sholayar Rainforest Canopy Viewpoint & Hornbill Nesting Trail',
+            description: 'Scenic mountain overlook on the Valparai forest border where Malabar Pied Hornbills nest in giant canopy trees.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Sholayar Dam Forest Road, Kerala-Tamil Nadu Border 680721'
+          }
+        ]
+      }
+    ];
+
+    for (let i = 0; i < validDuration; i++) {
+      const template = keralaTemplates[i % keralaTemplates.length];
+      const dayNum = i + 1;
+      const dayCostSum = template.activities.reduce((acc, a) => acc + a.cost, 0);
+
+      days.push({
+        dayNumber: dayNum,
+        title: `Day ${dayNum}: ${template.title}`,
+        dayCost: dayCostSum,
+        travelTimeMinutes: 45 + (i * 10),
+        distanceKm: 32 + (i * 12),
+        dayHighlights: template.highlights,
+        weather: getWeatherForDestinationDay('Kerala', dayNum),
+        activities: template.activities.map((act, actIdx) => ({
+          ...act,
+          id: `act-ker-${dayNum}-${actIdx + 1}`
+        }))
+      });
+    }
+    return days;
+  }
+
+  // -------------------------------------------------------------
+  // 7. REAL GOA ITINERARY
   // -------------------------------------------------------------
   if (d.includes('goa')) {
     const goaTemplates = [
@@ -1717,6 +2140,78 @@ export const getRealDestinationItinerary = (
             durationMinutes: 90,
             isHiddenGem: true,
             locationName: 'Fontainhas, Altinho, Panaji, Goa 403001'
+          },
+          {
+            id: 'act-goa-1-3',
+            time: '01:30 PM',
+            title: 'Authentic Goan Fish Curry Thali at Ritz Classic Panjim',
+            description: 'Signature feast with Kingfish Rava fry, crab masala, clam sukka, kokum curry (Sol Kadi), and red rice.',
+            category: 'meal' as const,
+            cost: 380,
+            durationMinutes: 60,
+            isHiddenGem: false,
+            locationName: '18th June Road, Panaji, Goa 403001'
+          },
+          {
+            id: 'act-goa-1-4',
+            time: '05:30 PM',
+            title: 'Reis Magos Fort & Mandovi River Estuary Golden Sunset',
+            description: '1551 restored Portuguese cliffside fortress offering panoramic views over the Arabian sea and passing river boats.',
+            category: 'sunset' as PlaceCategory,
+            cost: 50,
+            durationMinutes: 75,
+            isHiddenGem: true,
+            locationName: 'Verem, Reis Magos, Goa 403114'
+          }
+        ]
+      },
+      {
+        title: 'South Goa Secret Coves, Cabo De Rama & Cola Lagoon',
+        highlights: ['Cabo De Rama Cliff', 'Cola Emerald Lagoon', 'Netravali Bubble Lake', 'Palolem Kayaking'],
+        activities: [
+          {
+            id: 'act-goa-2-1',
+            time: '07:00 AM',
+            title: 'Cabo De Rama Cape Fortress & Coastal Cliff Sunrise',
+            description: 'Ancient coastal promontory fortress with 360-degree ocean views overlooking secluded emerald cove beaches.',
+            category: 'viewpoint' as PlaceCategory,
+            cost: 0,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Cabo De Rama, Canacona, South Goa 403702'
+          },
+          {
+            id: 'act-goa-2-2',
+            time: '10:30 AM',
+            title: 'Cola Beach Fresh Water Emerald Lagoon & Kayak',
+            description: 'Unique secret beach with a freshwater lagoon running parallel to the Arabian Sea separated only by a sand spit.',
+            category: 'waterfall' as PlaceCategory,
+            cost: 200,
+            durationMinutes: 105,
+            isHiddenGem: true,
+            locationName: 'Cola Beach, Canacona, South Goa 403702'
+          },
+          {
+            id: 'act-goa-2-3',
+            time: '02:00 PM',
+            title: 'Netravali Bubble Lake (Budbudyanchi Tali) Geological Wonder',
+            description: 'Sacred temple pond where methane bubbles continuously rise to the surface when hands are clapped.',
+            category: 'nature_trail' as PlaceCategory,
+            cost: 20,
+            durationMinutes: 60,
+            isHiddenGem: true,
+            locationName: 'Netravali, Sanguem, South Goa 403704'
+          },
+          {
+            id: 'act-goa-2-4',
+            time: '05:30 PM',
+            title: 'Butterfly Beach Hidden Cove Dolphin Sunset Boat',
+            description: 'Semi-circular secluded bay accessible by boat, known for playful dolphins and spectacular golden hour reflections.',
+            category: 'sunset' as PlaceCategory,
+            cost: 400,
+            durationMinutes: 90,
+            isHiddenGem: true,
+            locationName: 'Palolem-Agonda Coast, Canacona, South Goa 403702'
           }
         ]
       }
@@ -1745,76 +2240,187 @@ export const getRealDestinationItinerary = (
   }
 
   // -------------------------------------------------------------
-  // 7. UNIVERSAL DISTRICT & WORLDWIDE GENERATOR
+  // 8. UNIVERSAL DISTRICT & WORLDWIDE GENERATOR (10 Non-Repeating Thematic Days)
   // -------------------------------------------------------------
   const cleanDistrict = dest.replace(/(?:district|city|tour|trip)/gi, '').trim();
   const dayBudgetPart = Math.round(budget / validDuration);
 
-  for (let dNum = 1; dNum <= validDuration; dNum++) {
-    const isDay1 = dNum === 1;
-    const isLast = dNum === validDuration;
+  const universalThemeDays = [
+    {
+      titleSuffix: 'Ancient Heritage Quarter, Riverbank Sunrise & Bazaar Guild',
+      act1Title: `${cleanDistrict} Heritage Riverbank & Old Temple Sunrise Walk`,
+      act1Desc: `Early morning quiet walk avoiding crowds with pristine natural morning light along the ancient riverbanks and historic landmarks of ${cleanDistrict}.`,
+      act1Cat: 'nature_trail' as PlaceCategory,
+      act1Loc: `Heritage River Promenade, Old Town Quarter, ${cleanDistrict}`,
+      act2Title: `Traditional ${cleanDistrict} Artisanal Breakfast & Fresh Local Brew`,
+      act2Desc: `Locally famous breakfast with regional hot specialities, crispy savories, freshly ground chutneys, and authentic coffee/tea.`,
+      act2Cat: 'meal' as const,
+      act2Loc: `Main Town Bazaar, ${cleanDistrict}`,
+      act3Title: `${cleanDistrict} Historical Fort & Stone Carving Guild`,
+      act3Desc: `Explore ancient stone architecture, regional craftsmanship, and live artisan demonstrations.`,
+      act3Cat: 'village' as PlaceCategory,
+      act3Loc: `Heritage Fort Precinct, ${cleanDistrict}`,
+      act4Title: `Authentic ${cleanDistrict} Regional Banana Leaf Thali Feast`,
+      act4Desc: `Authentic multi-course lunch featuring seasonal local vegetables, rasam, payasam, and regional delicacies.`,
+      act4Cat: 'meal' as const,
+      act4Loc: `Central Dining Hall, ${cleanDistrict}`,
+      act5Title: `${cleanDistrict} Panoramic Reservoir Sunset & Lakeside Promenade`,
+      act5Desc: `Unwind by the tranquil water body with golden-hour sunset views across the landscape.`,
+      act5Cat: 'sunset' as PlaceCategory,
+      act5Loc: `Scenic Lake Promenade, ${cleanDistrict}`
+    },
+    {
+      titleSuffix: 'Foothill Waterfalls, Cloud Forests & Mountain Streams',
+      act1Title: `${cleanDistrict} Foothills Forest Canopy & Stream Hike`,
+      act1Desc: `Early morning trail under lush mountain forest canopies listening to indigenous bird songs along natural water streams.`,
+      act1Cat: 'nature_trail' as PlaceCategory,
+      act1Loc: `Valley Foothills Reserve, ${cleanDistrict}`,
+      act2Title: `${cleanDistrict} Hill Farm Organic Herbal Breakfast`,
+      act2Desc: `Farm-to-table breakfast featuring wild honey, steamed millet breads, fresh local fruits, and herbal infusions.`,
+      act2Cat: 'meal' as const,
+      act2Loc: `Foothills Eco Estate, ${cleanDistrict}`,
+      act3Title: `${cleanDistrict} Hidden Cascades & Natural Rock Plunge Pool`,
+      act3Desc: `Trek through secluded plantation paths to discover a pristine forest waterfall away from mainstream tourist crowds.`,
+      act3Cat: 'waterfall' as PlaceCategory,
+      act3Loc: `Forest Cascade Road, Upper ${cleanDistrict}`,
+      act4Title: `Traditional Claypot Cooked Country Lunch`,
+      act4Desc: `Slow-cooked regional delicacies cooked over firewood in earthen claypots with fragrant local rice.`,
+      act4Cat: 'meal' as const,
+      act4Loc: `Village Countryside Road, ${cleanDistrict}`,
+      act5Title: `${cleanDistrict} High Ridge Valley Sunset Viewpoint`,
+      act5Desc: `Watch the sunset paint the distant mountain ranges in vivid shades of amber and violet from the highest valley ridge.`,
+      act5Cat: 'viewpoint' as PlaceCategory,
+      act5Loc: `High Ridge Peak, ${cleanDistrict}`
+    },
+    {
+      titleSuffix: 'Artisan Potteries, Weaving Villages & Spice Gardens',
+      act1Title: `${cleanDistrict} Village Sunrise Agro-Trail & Coconut Groves`,
+      act1Desc: `Stroll through peaceful agrarian settlements, observing traditional irrigation canals and morning farming activities.`,
+      act1Cat: 'nature_trail' as PlaceCategory,
+      act1Loc: `East Village Enclave, ${cleanDistrict}`,
+      act2Title: `Local Market Street Tiffin & Sweet Delicacies`,
+      act2Desc: `Sample freshly fried crispy regional snacks and sweet desserts prepared in traditional village sweet shops.`,
+      act2Cat: 'meal' as const,
+      act2Loc: `Old Market Chowk, ${cleanDistrict}`,
+      act3Title: `${cleanDistrict} Master Handloom Weavers & Terracotta Guild`,
+      act3Desc: `Observe skilled artisans operating wooden handlooms and shaping clay into intricate pottery and terracotta figurines.`,
+      act3Cat: 'village' as PlaceCategory,
+      act3Loc: `Artisan Guild Village, ${cleanDistrict}`,
+      act4Title: `Traditional Plantation Lunch with Fresh Spices`,
+      act4Desc: `Wholesome multi-dish lunch prepared with spices harvested fresh from adjacent garden estates.`,
+      act4Cat: 'meal' as const,
+      act4Loc: `Plantation Garden Dining, ${cleanDistrict}`,
+      act5Title: `${cleanDistrict} Heritage Temple Tank Sunset & Bell Chimes`,
+      act5Desc: `Relax on the ancient stone steps of the temple teppakulam as temple bells ring and oil lamps light up at dusk.`,
+      act5Cat: 'sunset' as PlaceCategory,
+      act5Loc: `Heritage Temple Square, ${cleanDistrict}`
+    },
+    {
+      titleSuffix: 'Rock-Cut Caverns, Ancient Inscriptions & Panoramic Hills',
+      act1Title: `${cleanDistrict} Sacred Granite Hill Step Climb & Cave Shrines`,
+      act1Desc: `Ascend ancient stone steps carved into natural granite hills to explore historic rock-cut caverns and old inscriptions.`,
+      act1Cat: 'viewpoint' as PlaceCategory,
+      act1Loc: `Granite Hill Reserve, ${cleanDistrict}`,
+      act2Title: `Hilltop Cafe Fresh Breakfast with Panoramic Horizon`,
+      act2Desc: `Hot breakfast served overlooking sweeping valleys and morning clouds clearing across the district plains.`,
+      act2Cat: 'cafe' as PlaceCategory,
+      act2Loc: `Hilltop Rest Pavilion, ${cleanDistrict}`,
+      act3Title: `${cleanDistrict} Geological Rock Formations & Natural Arch`,
+      act3Desc: `Explore million-year-old natural geological rock bridges and weathered stone amphitheaters.`,
+      act3Cat: 'nature_trail' as PlaceCategory,
+      act3Loc: `Geological Park, ${cleanDistrict}`,
+      act4Title: `Authentic Regional Lunch & Chilled Tender Coconut`,
+      act4Desc: `Satisfying local meal paired with sweet cooling tender coconut water sourced from nearby orchards.`,
+      act4Cat: 'meal' as const,
+      act4Loc: `Main Junction Diner, ${cleanDistrict}`,
+      act5Title: `${cleanDistrict} Fortress Bastion Sunset Watch`,
+      act5Desc: `Golden sunset photography vantage point from the highest bastion of the historical fortifications.`,
+      act5Cat: 'sunset' as PlaceCategory,
+      act5Loc: `Old Bastion Point, ${cleanDistrict}`
+    },
+    {
+      titleSuffix: 'Botanical Sanctuary, Lake Boating & Night Food Promenade',
+      act1Title: `${cleanDistrict} Botanical Forest Walk & Rare Flora Collection`,
+      act1Desc: `Morning walk amidst centenary trees, exotic ferns, medicinal herbs, and butterfly host plants.`,
+      act1Cat: 'nature_trail' as PlaceCategory,
+      act1Loc: `Botanical Sanctuary Post, ${cleanDistrict}`,
+      act2Title: `Artisan Bakery Fresh Breads & Specialty Coffee`,
+      act2Desc: `Freshly baked artisanal sourdough breads, buttery pastries, and single-origin coffee.`,
+      act2Cat: 'cafe' as PlaceCategory,
+      act2Loc: `Town Promenade Cafe, ${cleanDistrict}`,
+      act3Title: `${cleanDistrict} Peaceful Lake Pedal Boating & Island Trail`,
+      act3Desc: `Glide over calm shimmering lake waters and walk along shaded lakeside island footpaths.`,
+      act3Cat: 'nature_trail' as PlaceCategory,
+      act3Loc: `Municipal Lake Park, ${cleanDistrict}`,
+      act4Title: `Grand Festive Thali Lunch with Regional Desserts`,
+      act4Desc: `Celebratory traditional meal with an assortment of curries, chutneys, crispy papad, and rich milk payasam.`,
+      act4Cat: 'meal' as const,
+      act4Loc: `Heritage Grand Dining, ${cleanDistrict}`,
+      act5Title: `${cleanDistrict} Evening Food Street & Artisanal Night Bazaar`,
+      act5Desc: `Vibrant evening walk tasting authentic street eats, steamed delicacies, and browsing local handcrafted souvenirs.`,
+      act5Cat: 'sunset' as PlaceCategory,
+      act5Loc: `Evening Bazaar Lane, ${cleanDistrict}`
+    }
+  ];
 
-    const dayTitle = isDay1
-      ? `${cleanDistrict} Ancient Heritage Quarter & Sunrise Ridge`
-      : isLast
-      ? `${cleanDistrict} Artisan Craft Bazaar & Lake Sunset`
-      : `${cleanDistrict} Forest Waterfalls & Rural Farm Sanctuary`;
+  for (let dNum = 1; dNum <= validDuration; dNum++) {
+    const theme = universalThemeDays[(dNum - 1) % universalThemeDays.length];
 
     const dayActivities: Activity[] = [
       {
         id: `act-${cleanDistrict.toLowerCase().slice(0, 3)}-${dNum}-1`,
         time: '06:30 AM',
-        title: isDay1 ? `${cleanDistrict} Heritage Temple & Riverbank Sunrise Walk` : `${cleanDistrict} Foothills Forest Nature Trail`,
-        description: `Early morning quiet walk avoiding crowds with pristine natural morning light across ${cleanDistrict}.`,
-        category: 'nature_trail',
+        title: theme.act1Title,
+        description: theme.act1Desc,
+        category: theme.act1Cat,
         cost: 0,
         durationMinutes: 90,
         isHiddenGem: true,
-        locationName: `${cleanDistrict} Heritage Riverbank / Foothills, Tamil Nadu / India`
+        locationName: theme.act1Loc
       },
       {
         id: `act-${cleanDistrict.toLowerCase().slice(0, 3)}-${dNum}-2`,
         time: '09:00 AM',
-        title: `Traditional ${cleanDistrict} Artisanal Breakfast & Ghee Roast`,
-        description: `Locally famous breakfast with steaming hot idlis, crispy vada, regional chutneys, and authentic filter coffee.`,
-        category: 'meal',
+        title: theme.act2Title,
+        description: theme.act2Desc,
+        category: theme.act2Cat,
         cost: Math.min(180, Math.round(dayBudgetPart * 0.08)),
         durationMinutes: 45,
         isHiddenGem: true,
-        locationName: `Main Town Bazaar, ${cleanDistrict}`
+        locationName: theme.act2Loc
       },
       {
         id: `act-${cleanDistrict.toLowerCase().slice(0, 3)}-${dNum}-3`,
         time: '11:30 AM',
-        title: `${cleanDistrict} Historical Fort & Stone Carving Guild`,
-        description: `Explore ancient stone architecture, regional craftsmanship, and live artisan demonstrations.`,
-        category: 'village',
-        cost: Math.min(50, Math.round(dayBudgetPart * 0.04)),
+        title: theme.act3Title,
+        description: theme.act3Desc,
+        category: theme.act3Cat,
+        cost: Math.min(60, Math.round(dayBudgetPart * 0.04)),
         durationMinutes: 90,
         isHiddenGem: true,
-        locationName: `Heritage Fort Precinct, ${cleanDistrict}`
+        locationName: theme.act3Loc
       },
       {
         id: `act-${cleanDistrict.toLowerCase().slice(0, 3)}-${dNum}-4`,
         time: '01:30 PM',
-        title: `Authentic ${cleanDistrict} Regional Banana Leaf Thali Feast`,
-        description: `Authentic multi-course lunch featuring seasonal local vegetables, rasam, payasam, and regional delicacies.`,
-        category: 'meal',
+        title: theme.act4Title,
+        description: theme.act4Desc,
+        category: theme.act4Cat,
         cost: Math.min(300, Math.round(dayBudgetPart * 0.15)),
         durationMinutes: 60,
         isHiddenGem: false,
-        locationName: `Town Dining Hall, ${cleanDistrict}`
+        locationName: theme.act4Loc
       },
       {
         id: `act-${cleanDistrict.toLowerCase().slice(0, 3)}-${dNum}-5`,
         time: '05:30 PM',
-        title: `${cleanDistrict} Panoramic Reservoir Sunset & Promenade`,
-        description: `Unwind by the tranquil water body with golden-hour sunset views across the landscape.`,
-        category: 'sunset',
+        title: theme.act5Title,
+        description: theme.act5Desc,
+        category: theme.act5Cat,
         cost: 0,
         durationMinutes: 90,
         isHiddenGem: true,
-        locationName: `Scenic Lake Promenade, ${cleanDistrict}`
+        locationName: theme.act5Loc
       }
     ];
 
@@ -1822,11 +2428,11 @@ export const getRealDestinationItinerary = (
 
     days.push({
       dayNumber: dNum,
-      title: `Day ${dNum}: ${dayTitle}`,
+      title: `Day ${dNum}: ${cleanDistrict} ${theme.titleSuffix}`,
       dayCost: dayCostSum,
       travelTimeMinutes: 35 + (dNum * 8),
       distanceKm: 20 + (dNum * 10),
-      dayHighlights: ['Heritage Landmark', 'Artisan Cuisine', 'Sunset Horizon'],
+      dayHighlights: [theme.act1Title.split(' ')[1] || 'Heritage', 'Artisanal Cuisine', 'Sunset Horizon'],
       weather: getWeatherForDestinationDay(cleanDistrict, dNum),
       activities: dayActivities
     });
@@ -1834,3 +2440,4 @@ export const getRealDestinationItinerary = (
 
   return days;
 };
+

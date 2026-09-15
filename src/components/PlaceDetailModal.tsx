@@ -133,25 +133,39 @@ export const PlaceDetailModal: React.FC<PlaceDetailModalProps> = ({
           )}
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
-            <button
-              onClick={() => onToggleBookmark(place.id)}
-              className={`px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition ${
-                place.isBookmarked
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700'
-              }`}
-            >
-              <Bookmark className="w-4 h-4" />
-              <span>{place.isBookmarked ? "Bookmarked" : "Bookmark Spot"}</span>
-            </button>
+          <div className="flex flex-wrap items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 gap-2">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => onToggleBookmark(place.id)}
+                className={`px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition cursor-pointer ${
+                  place.isBookmarked
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700'
+                }`}
+              >
+                <Bookmark className="w-4 h-4" />
+                <span>{place.isBookmarked ? "Bookmarked" : "Bookmark Spot"}</span>
+              </button>
+
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name + ' ' + place.region)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                title="Open place in Google Maps"
+              >
+                <MapPin className="w-3.5 h-3.5 text-rose-500" />
+                <span>Open in Google Maps</span>
+                <ExternalLink className="w-3 h-3 opacity-60" />
+              </a>
+            </div>
 
             <button
               onClick={() => {
                 onAddToItinerary(place);
                 onClose();
               }}
-              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-xs transition"
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-xs transition cursor-pointer"
             >
               <Sparkles className="w-4 h-4" />
               <span>Add to Active Itinerary</span>
