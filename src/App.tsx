@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
-import { LandingView } from './components/LandingView';
 import { DashboardView } from './components/DashboardView';
 import { AiPlannerView } from './components/AiPlannerView';
 import { ExplorePlacesView } from './components/ExplorePlacesView';
@@ -564,15 +563,6 @@ export default function App() {
 
         {/* View Viewport */}
         <main className="flex-1 p-3 sm:p-4 lg:p-6 overflow-y-auto max-w-7xl mx-auto w-full">
-          {currentView === 'landing' && (
-            <LandingView
-              onStartPlanning={handleOpenNewTrip}
-              onOpenOnboarding={handleOpenNewTrip}
-              onOpenLogin={() => { setAuthMode('login'); setShowAuthModal(true); }}
-              onOpenRegister={() => { setAuthMode('register'); setShowAuthModal(true); }}
-            />
-          )}
-
           {currentView === 'dashboard' && (
             <DashboardView
               userProfile={userProfile}

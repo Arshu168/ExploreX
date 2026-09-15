@@ -13,7 +13,6 @@ import {
   User,
   Settings,
   ShieldCheck,
-  Home,
   X,
   Server,
   Sun,
@@ -46,7 +45,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenBackendGuide,
 }) => {
   const navItems = [
-    { id: 'landing', label: 'Landing Page', icon: Home },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'ai-planner', label: 'AI Planner', icon: Sparkles },
     { id: 'ai-chat', label: 'AI Assistant', icon: Sparkles },
