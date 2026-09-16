@@ -278,8 +278,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
           )}
 
-          {/* Auth Form */}
-          <form onSubmit={handleSubmit} className="space-y-3.5 text-xs font-medium">
+          {/* Auth Form with dynamic key so inputs are strictly recreated fresh on tab switches */}
+          <form 
+            key={`${activeRole}-${mode}`} 
+            onSubmit={handleSubmit} 
+            className="space-y-3.5 text-xs font-medium"
+            autoComplete="off"
+          >
             {activeRole === 'user' && mode === 'register' && (
               <div>
                 <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Full Name</label>
@@ -287,6 +292,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <User className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                   <input
                     type="text"
+                    name="explorex_modal_fullname"
+                    autoComplete="off"
                     required
                     placeholder="e.g. Maya Lin"
                     value={name}
@@ -305,6 +312,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                 <input
                   type="email"
+                  name={`explorex_modal_${activeRole}_${mode}_email`}
+                  autoComplete="new-password"
                   required
                   placeholder={activeRole === 'admin' ? 'admin@explorex.ai' : 'explorer@explorex.ai'}
                   value={email}
@@ -320,6 +329,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                 <input
                   type={showPassword ? 'text' : 'password'}
+                  name={`explorex_modal_${activeRole}_${mode}_pwd`}
+                  autoComplete="new-password"
                   required
                   placeholder="••••••••"
                   value={password}

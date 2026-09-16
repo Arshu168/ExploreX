@@ -57,6 +57,17 @@ export const LoginView: React.FC<LoginViewProps> = ({
   // Compute password strength in real time
   const passwordStrength = checkPasswordStrength(password);
 
+  // Clear all fields whenever initialMode or initialRole changes
+  useEffect(() => {
+    setMode(initialMode);
+    setActiveRole(initialRole);
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setName('');
+    setErrorMessage('');
+  }, [initialMode, initialRole]);
+
   // Load or seed registered accounts
   useEffect(() => {
     try {
@@ -91,6 +102,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
     setEmail('');
     setPassword('');
     setConfirmPassword('');
+    setName('');
     if (newRole === 'admin') {
       setMode('login');
     }
@@ -393,8 +405,13 @@ export const LoginView: React.FC<LoginViewProps> = ({
               </div>
             )}
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs font-medium" autoComplete="off">
+            {/* Form with dynamic key so DOM nodes are strictly recreated fresh on tab switches */}
+            <form 
+              key={`${activeRole}-${mode}`} 
+              onSubmit={handleSubmit} 
+              className="space-y-3.5 text-xs font-medium" 
+              autoComplete="off"
+            >
               {activeRole === 'user' && mode === 'register' && (
                 <div>
                   <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Full Name</label>
@@ -402,6 +419,8 @@ export const LoginView: React.FC<LoginViewProps> = ({
                     <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5" />
                     <input
                       type="text"
+                      name="explorex_reg_fullname"
+                      autoComplete="off"
                       required
                       placeholder="e.g. Maya Lin"
                       value={name}
@@ -420,6 +439,8 @@ export const LoginView: React.FC<LoginViewProps> = ({
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5" />
                   <input
                     type="email"
+                    name={`explorex_${activeRole}_${mode}_email`}
+                    autoComplete="new-password"
                     required
                     placeholder={activeRole === 'admin' ? 'admin@explorex.ai' : 'explorer@explorex.ai'}
                     value={email}
@@ -435,6 +456,8 @@ export const LoginView: React.FC<LoginViewProps> = ({
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5" />
                   <input
                     type={showPassword ? 'text' : 'password'}
+                    name={`explorex_${activeRole}_${mode}_pwd`}
+                    autoComplete="new-password"
                     required
                     placeholder="••••••••"
                     value={password}
