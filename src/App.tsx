@@ -621,10 +621,13 @@ export default function App() {
             <InteractiveMapView
               places={places}
               activeTrip={activeTrip}
+              trips={trips}
+              onSelectTrip={(t) => setSelectedTripId(t.id)}
               onSelectPlace={(p) => setSelectedPlaceModal(p)}
               onToggleBookmark={handleToggleBookmark}
               onAddToItinerary={handleAddToItinerary}
               onAddGeneratedPlaces={handleAddGeneratedPlaces}
+              onOpenNewTrip={handleOpenNewTrip}
             />
           )}
 
