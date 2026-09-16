@@ -14,18 +14,20 @@ import {
   UserCheck,
   Clock
 } from 'lucide-react';
-import { Place, TeamWorkspace, Task, TeamMember } from '../types';
+import { Place, TeamWorkspace, Task, TeamMember, UserProfile } from '../types';
 
 interface TeamWorkspaceViewProps {
   team: TeamWorkspace;
   places: Place[];
   onUpdateTeam: (updatedTeam: TeamWorkspace) => void;
+  currentUser?: UserProfile;
 }
 
 export const TeamWorkspaceView: React.FC<TeamWorkspaceViewProps> = ({
   team,
   places,
   onUpdateTeam,
+  currentUser,
 }) => {
   const [copiedLink, setCopiedLink] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
@@ -37,6 +39,8 @@ export const TeamWorkspaceView: React.FC<TeamWorkspaceViewProps> = ({
   // Paste Code state
   const [pastedCode, setPastedCode] = useState('');
   const [codeFeedback, setCodeFeedback] = useState<{ text: string; isError: boolean } | null>(null);
+
+  const activeUserName = currentUser?.name || 'Explorer';
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(team.code);
@@ -64,9 +68,9 @@ export const TeamWorkspaceView: React.FC<TeamWorkspaceViewProps> = ({
     const newTask: Task = {
       id: `task-${Date.now()}`,
       teamId: team.id,
-      title: newTaskTitle,
-      assigneeName: "Harish",
-      dueDate: "2026-08-14",
+      title: newTaskTitle.trim(),
+      assigneeName: activeUserName,
+      dueDate: new Date().toISOString().split('T')[0],
       isCompleted: false,
       category: "General"
     };
@@ -131,12 +135,12 @@ export const TeamWorkspaceView: React.FC<TeamWorkspaceViewProps> = ({
         onUpdateTeam({ ...team, members: updatedMembers });
         setCodeFeedback({ text: `Invite Accepted! ${pendingMember.name} is now an active team member.`, isError: false });
       } else {
-        // Add new active traveler member
+        // Add current user or new active traveler member
         const newMember: TeamMember = {
           id: `mem-${Date.now()}`,
-          name: 'New Team Traveler',
-          email: 'traveler@explorex.ai',
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+          name: activeUserName,
+          email: currentUser?.email || 'traveler@explorex.ai',
+          avatar: currentUser?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
           role: 'Traveler',
           status: 'Active'
         };
@@ -155,18 +159,29 @@ export const TeamWorkspaceView: React.FC<TeamWorkspaceViewProps> = ({
   };
 
   const handleVote = (placeId: string) => {
-    const currentMemberName = "Harish";
-    const updatedVotes = team.votes.map(v => {
-      if (v.placeId === placeId) {
-        const hasUpvoted = v.upvotes.includes(currentMemberName);
-        let newUpvotes = [...v.upvotes];
-        newUpvotes = hasUpvoted 
-          ? newUpvotes.filter(n => n !== currentMemberName)
-          : [...newUpvotes, currentMemberName];
-        return { ...v, upvotes: newUpvotes };
-      }
-      return v;
-    });
+    const currentMemberName = activeUserName;
+    const existingVote = team.votes.find(v => v.placeId === placeId);
+    let updatedVotes: { placeId: string; upvotes: string[]; downvotes: string[] }[];
+
+    if (existingVote) {
+      const hasUpvoted = existingVote.upvotes.includes(currentMemberName);
+      updatedVotes = team.votes.map(v => {
+        if (v.placeId === placeId) {
+          return {
+            ...v,
+            upvotes: hasUpvoted
+              ? v.upvotes.filter(n => n !== currentMemberName)
+              : [...v.upvotes, currentMemberName]
+          };
+        }
+        return v;
+      });
+    } else {
+      updatedVotes = [
+        ...team.votes,
+        { placeId, upvotes: [currentMemberName], downvotes: [] }
+      ];
+    }
 
     onUpdateTeam({ ...team, votes: updatedVotes });
   };
@@ -230,72 +245,91 @@ export const TeamWorkspaceView: React.FC<TeamWorkspaceViewProps> = ({
           </div>
 
           <div className="space-y-3">
-            {team.members.map((mem) => {
-              const isPending = mem.status === 'Pending';
-
-              return (
-                <div 
-                  key={mem.id} 
-                  className={`p-3.5 rounded-2xl border transition space-y-2 ${
-                    isPending 
-                      ? 'bg-amber-50/60 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/60' 
-                      : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/80'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <img src={mem.avatar} alt={mem.name} className="w-9 h-9 rounded-full object-cover ring-2 ring-blue-500/20" />
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <p className="font-bold text-xs text-slate-900 dark:text-white">{mem.name}</p>
-                          {isPending ? (
-                            <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 border border-amber-300/80 dark:border-amber-700 flex items-center gap-0.5">
-                              <Clock className="w-2.5 h-2.5" />
-                              Pending Invite
-                            </span>
-                          ) : (
-                            <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-700 flex items-center gap-0.5">
-                              <UserCheck className="w-2.5 h-2.5" />
-                              Active
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">{mem.email}</p>
-                      </div>
-                    </div>
-
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                      mem.role === 'Organizer' ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200'
-                    }`}>
-                      {mem.role}
-                    </span>
-                  </div>
-
-                  {/* Accept Invite Action for Pending Members */}
-                  {isPending && (
-                    <div className="pt-2 border-t border-amber-200/60 dark:border-amber-900/60 flex items-center justify-between gap-2">
-                      <span className="text-[10px] text-amber-800 dark:text-amber-300 font-semibold">Invite pending acceptance</span>
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          onClick={() => handleAcceptInvite(mem.id)}
-                          className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] flex items-center gap-1 shadow-2xs transition cursor-pointer"
-                        >
-                          <Check className="w-3 h-3" />
-                          <span>Accept Invite</span>
-                        </button>
-                        <button
-                          onClick={() => handleRemoveMember(mem.id)}
-                          className="p-1 rounded-lg bg-slate-200/80 dark:bg-slate-700 hover:bg-rose-100 dark:hover:bg-rose-950/40 text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 transition cursor-pointer"
-                          title="Cancel Invite"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
+            {team.members.length === 0 ? (
+              <div className="p-8 text-center rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-700 space-y-3">
+                <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
+                  <Users className="w-6 h-6" />
                 </div>
-              );
-            })}
+                <div>
+                  <h4 className="font-bold text-sm text-slate-900 dark:text-white">No team members yet</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">Invite your travel buddies with their email or share the invite code to collaborate.</p>
+                </div>
+                <button
+                  onClick={() => setShowInviteModal(true)}
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-xs transition cursor-pointer"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>Invite First Member</span>
+                </button>
+              </div>
+            ) : (
+              team.members.map((mem) => {
+                const isPending = mem.status === 'Pending';
+
+                return (
+                  <div 
+                    key={mem.id} 
+                    className={`p-3.5 rounded-2xl border transition space-y-2 ${
+                      isPending 
+                        ? 'bg-amber-50/60 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/60' 
+                        : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/80'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <img src={mem.avatar} alt={mem.name} className="w-9 h-9 rounded-full object-cover ring-2 ring-blue-500/20" />
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <p className="font-bold text-xs text-slate-900 dark:text-white">{mem.name}</p>
+                            {isPending ? (
+                              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 border border-amber-300/80 dark:border-amber-700 flex items-center gap-0.5">
+                                <Clock className="w-2.5 h-2.5" />
+                                Pending Invite
+                              </span>
+                            ) : (
+                              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-700 flex items-center gap-0.5">
+                                <UserCheck className="w-2.5 h-2.5" />
+                                Active
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">{mem.email}</p>
+                        </div>
+                      </div>
+
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                        mem.role === 'Organizer' ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200'
+                      }`}>
+                        {mem.role}
+                      </span>
+                    </div>
+
+                    {/* Accept Invite Action for Pending Members */}
+                    {isPending && (
+                      <div className="pt-2 border-t border-amber-200/60 dark:border-amber-900/60 flex items-center justify-between gap-2">
+                        <span className="text-[10px] text-amber-800 dark:text-amber-300 font-semibold">Invite pending acceptance</span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => handleAcceptInvite(mem.id)}
+                            className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] flex items-center gap-1 shadow-2xs transition cursor-pointer"
+                          >
+                            <Check className="w-3 h-3" />
+                            <span>Accept Invite</span>
+                          </button>
+                          <button
+                            onClick={() => handleRemoveMember(mem.id)}
+                            className="p-1 rounded-lg bg-slate-200/80 dark:bg-slate-700 hover:bg-rose-100 dark:hover:bg-rose-950/40 text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 transition cursor-pointer"
+                            title="Cancel Invite"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -305,9 +339,9 @@ export const TeamWorkspaceView: React.FC<TeamWorkspaceViewProps> = ({
           <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Team members upvote offbeat spots before finalizing the itinerary.</p>
 
           <div className="space-y-3">
-            {places.slice(0, 3).map((place) => {
+            {places.slice(0, 4).map((place) => {
               const voteRecord = team.votes.find(v => v.placeId === place.id) || { upvotes: [] };
-              const hasUpvoted = voteRecord.upvotes.includes("Harish");
+              const hasUpvoted = voteRecord.upvotes.includes(activeUserName);
 
               return (
                 <div key={place.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex flex-wrap items-center justify-between gap-4">
@@ -344,7 +378,7 @@ export const TeamWorkspaceView: React.FC<TeamWorkspaceViewProps> = ({
         <form onSubmit={handleAddTask} className="flex gap-2">
           <input
             type="text"
-            placeholder="Add new task (e.g. Reserve Villa Cimbrone or check flight deals)..."
+            placeholder="Add new task (e.g. Book hotels, check flight deals, or prepare trekking gear)..."
             value={newTaskTitle}
             onChange={(e) => setNewTaskTitle(e.target.value)}
             className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-medium"
@@ -359,38 +393,44 @@ export const TeamWorkspaceView: React.FC<TeamWorkspaceViewProps> = ({
         </form>
 
         <div className="space-y-2 pt-1">
-          {team.tasks.map((task) => (
-            <div
-              key={task.id}
-              onClick={() => handleToggleTask(task.id)}
-              className={`p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between group ${
-                task.isCompleted
-                  ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 line-through'
-                  : 'bg-slate-50 dark:bg-slate-800/70 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-medium'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                {task.isCompleted ? (
-                  <CheckSquare className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
-                ) : (
-                  <Square className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" />
-                )}
-                <span className="text-xs font-semibold">{task.title}</span>
-              </div>
-
-              <div className="flex items-center gap-3 text-[11px] text-slate-600 dark:text-slate-400">
-                <span className="font-medium">{task.assigneeName}</span>
-                <span className="px-2 py-0.5 rounded bg-slate-200/70 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold">{task.category}</span>
-                <button
-                  onClick={(e) => handleDeleteTask(e, task.id)}
-                  className="p-1 text-slate-400 hover:text-red-600 dark:hover:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-950/40 transition cursor-pointer"
-                  title="Delete Task"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
+          {team.tasks.length === 0 ? (
+            <div className="p-8 text-center rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-700">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">No tasks added yet. Add tasks above to coordinate bookings, permits, gear, and trails with your squad.</p>
             </div>
-          ))}
+          ) : (
+            team.tasks.map((task) => (
+              <div
+                key={task.id}
+                onClick={() => handleToggleTask(task.id)}
+                className={`p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between group ${
+                  task.isCompleted
+                    ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 line-through'
+                    : 'bg-slate-50 dark:bg-slate-800/70 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-medium'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  {task.isCompleted ? (
+                    <CheckSquare className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                  ) : (
+                    <Square className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" />
+                  )}
+                  <span className="text-xs font-semibold">{task.title}</span>
+                </div>
+
+                <div className="flex items-center gap-3 text-[11px] text-slate-600 dark:text-slate-400">
+                  <span className="font-medium">{task.assigneeName}</span>
+                  <span className="px-2 py-0.5 rounded bg-slate-200/70 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold">{task.category}</span>
+                  <button
+                    onClick={(e) => handleDeleteTask(e, task.id)}
+                    className="p-1 text-slate-400 hover:text-red-600 dark:hover:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-950/40 transition cursor-pointer"
+                    title="Delete Task"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 

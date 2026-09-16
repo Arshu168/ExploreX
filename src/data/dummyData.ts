@@ -937,99 +937,12 @@ export const INITIAL_EXPENSES: Expense[] = [
 
 export const INITIAL_TEAM_WORKSPACE: TeamWorkspace = {
   id: "team-1",
-  name: "Western Ghats Nomads",
-  code: "HT-NOMAD-8842",
-  budgetCap: 25000,
-  sharedTripId: "trip-101",
-  members: [
-    {
-      id: "mem-1",
-      name: "Arjun Verma",
-      email: "arjun@hiddentrail.ai",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
-      role: "Organizer",
-      status: "Active"
-    },
-    {
-      id: "mem-2",
-      name: "Sneha Patel",
-      email: "sneha.photo@gmail.com",
-      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80",
-      role: "Traveler",
-      status: "Active"
-    },
-    {
-      id: "mem-3",
-      name: "Kavya Nair",
-      email: "kavya.nair@design.co",
-      avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=200&q=80",
-      role: "Editor",
-      status: "Active"
-    },
-    {
-      id: "mem-4",
-      name: "Rohan Das",
-      email: "rohan.d@techlab.io",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
-      role: "Traveler",
-      status: "Pending"
-    }
-  ],
-  tasks: [
-    {
-      id: "task-1",
-      teamId: "team-1",
-      title: "Obtain Forest Department Grass Hills Permits at Pollachi",
-      assigneeName: "Arjun Verma",
-      dueDate: "2026-08-13",
-      isCompleted: true,
-      category: "Booking"
-    },
-    {
-      id: "task-2",
-      teamId: "team-1",
-      title: "Pack Camera Lenses (70-200mm for wildlife + 16-35mm for landscapes)",
-      assigneeName: "Sneha Patel",
-      dueDate: "2026-08-13",
-      isCompleted: true,
-      category: "Gear"
-    },
-    {
-      id: "task-3",
-      teamId: "team-1",
-      title: "Download offline Leaflet maps & GPX tracks for Valparai trails",
-      assigneeName: "Kavya Nair",
-      dueDate: "2026-08-14",
-      isCompleted: false,
-      category: "Route"
-    },
-    {
-      id: "task-4",
-      teamId: "team-1",
-      title: "Reserve Eco Lodge Homestay in Valparai Town",
-      assigneeName: "Arjun Verma",
-      dueDate: "2026-08-12",
-      isCompleted: true,
-      category: "Booking"
-    }
-  ],
-  votes: [
-    {
-      placeId: "place-1",
-      upvotes: ["Arjun Verma", "Sneha Patel", "Kavya Nair"],
-      downvotes: []
-    },
-    {
-      placeId: "place-2",
-      upvotes: ["Arjun Verma", "Kavya Nair"],
-      downvotes: []
-    },
-    {
-      placeId: "place-3",
-      upvotes: ["Sneha Patel", "Arjun Verma"],
-      downvotes: []
-    }
-  ]
+  name: "ExploreX Squad",
+  code: "EXP-TEAM-2026",
+  budgetCap: 0,
+  members: [],
+  tasks: [],
+  votes: []
 };
 
 export const INITIAL_MEMORIES: Memory[] = [

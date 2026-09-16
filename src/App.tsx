@@ -651,6 +651,7 @@ export default function App() {
               team={team}
               places={places}
               onUpdateTeam={(updated) => setTeam(updated)}
+              currentUser={userProfile}
             />
           )}
 
