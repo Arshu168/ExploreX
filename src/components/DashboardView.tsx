@@ -82,36 +82,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div className="space-y-6 pb-12 max-w-6xl mx-auto font-sans text-slate-900 dark:text-slate-100">
-      {/* Top Welcome Header + AI Insight Card */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
-        <div className="lg:col-span-2 space-y-1.5 justify-center flex flex-col">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            {isNewUser ? `Welcome to ExploreX, ${firstName}!` : `Welcome back, ${firstName}!`}
-          </h1>
-          <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-medium leading-relaxed">
-            {isNewUser
-              ? 'Your personalized AI travel hub is ready. Start by planning your first itinerary or exploring secret destinations!'
-              : `You have ${activeTripsCount} active trip${activeTripsCount === 1 ? '' : 's'} saved. Ready for your next hidden adventure?`}
-          </p>
-        </div>
-
-        {/* AI INSIGHT Banner Card */}
-        <div className="bg-blue-600 dark:bg-blue-600 text-white rounded-2xl p-4 sm:p-5 shadow-sm flex items-center justify-between gap-4">
-          <div className="space-y-1">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-blue-200 block">
-              AI INSIGHT
-            </span>
-            <p className="text-xs sm:text-sm font-bold leading-snug">
-              Flight prices to Reykjavik dropped by 18%!
-            </p>
-          </div>
-          <button
-            onClick={() => onNavigate('explore')}
-            className="shrink-0 bg-white hover:bg-blue-50 text-blue-600 font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-xs cursor-pointer"
-          >
-            View Deal
-          </button>
-        </div>
+      {/* Top Welcome Header */}
+      <div className="space-y-1.5">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          {isNewUser ? `Welcome to ExploreX, ${firstName}!` : `Welcome back, ${firstName}!`}
+        </h1>
+        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-medium leading-relaxed">
+          {isNewUser
+            ? 'Your personalized AI travel hub is ready. Start by planning your first itinerary or exploring secret destinations!'
+            : `You have ${activeTripsCount} active trip${activeTripsCount === 1 ? '' : 's'} saved. Ready for your next hidden adventure?`}
+        </p>
       </div>
 
       {/* Natural Language Search Prompt */}
