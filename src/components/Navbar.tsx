@@ -83,20 +83,28 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentView('dashboard')}>
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 font-bold shrink-0">
-            <Compass className="w-4 h-4 sm:w-5 sm:h-5" />
+        <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => setCurrentView('dashboard')}>
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700 shrink-0 flex items-center justify-center transition group-hover:scale-105">
+            <img 
+              src="/explorex-logo.png" 
+              alt="ExploreX Logo" 
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                // Fallback to compass if image fails
+                (e.target as HTMLElement).style.display = 'none';
+              }}
+            />
           </div>
           <div>
             <div className="flex items-center gap-1">
-              <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white font-sans">
-                ExploreX
+              <span className="font-black text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white font-sans">
+                Explore<span className="bg-gradient-to-tr from-amber-500 to-rose-500 bg-clip-text text-transparent">X</span>
               </span>
               <span className="text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
                 AI
               </span>
             </div>
-            <p className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block -mt-0.5">Premium AI Travel</p>
+            <p className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block -mt-0.5">Flights • Trains • Buses • Cabs</p>
           </div>
         </div>
       </div>

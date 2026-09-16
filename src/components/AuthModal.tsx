@@ -191,8 +191,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shadow-md shadow-blue-500/20">
-                <Compass className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center shrink-0">
+                <img 
+                  src="/explorex-logo.png" 
+                  alt="ExploreX" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <h3 className="font-black text-base text-slate-900 dark:text-white">

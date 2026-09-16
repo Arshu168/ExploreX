@@ -204,11 +204,17 @@ export const LoginView: React.FC<LoginViewProps> = ({
         <div className="lg:col-span-5 bg-gradient-to-br from-blue-900/80 via-slate-900 to-indigo-950/80 p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-800">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black shadow-lg shadow-blue-500/30">
-                <Compass className="w-6 h-6 animate-pulse" />
+              <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 p-1 border border-slate-700/60 shadow-lg shadow-blue-500/20 flex items-center justify-center shrink-0">
+                <img 
+                  src="/explorex-logo.png" 
+                  alt="ExploreX" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
-                <span className="font-black text-xl tracking-tight text-white block">ExploreX AI</span>
+                <span className="font-black text-xl tracking-tight text-white block">
+                  Explore<span className="bg-gradient-to-tr from-amber-500 to-rose-500 bg-clip-text text-transparent">X</span>
+                </span>
                 <span className="text-[10px] font-extrabold text-blue-400 uppercase tracking-widest">Travel Intelligence</span>
               </div>
             </div>

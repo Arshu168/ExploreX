@@ -14,6 +14,7 @@ import { RagVisualizerView } from './components/RagVisualizerView';
 import { ProfileView } from './components/ProfileView';
 import { AdminView } from './components/AdminView';
 import { LoginView } from './components/LoginView';
+import { ExploreXIntroLoader } from './components/ExploreXIntroLoader';
 import { OnboardingModal } from './components/OnboardingModal';
 import { AuthModal } from './components/AuthModal';
 import { FloatingAiAssistant } from './components/FloatingAiAssistant';
@@ -45,6 +46,7 @@ export default function App() {
   });
 
   const [currentView, setCurrentView] = useState<string>('dashboard');
+  const [showIntroAnimation, setShowIntroAnimation] = useState<boolean>(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
 
   const [userProfile, setUserProfile] = useState<UserProfile>(() => {
@@ -273,15 +275,16 @@ export default function App() {
     setExpenses(loadedExpenses);
     setMemories(loadedMemories);
 
+    // Trigger full ExploreX drop & vehicle loading animation
+    setShowIntroAnimation(true);
+    setCurrentView('dashboard');
+
     if (effectiveRole === 'admin') {
       showToast(`Welcome Administrator ${userName}! Admin Panel unlocked.`);
-      setCurrentView('admin');
     } else if (isNewUser) {
       showToast(`Welcome to ExploreX, ${userName}! Your explorer hub is ready.`);
-      setCurrentView('dashboard');
     } else {
       showToast(`Welcome back, ${userName}! Logged in successfully.`);
-      setCurrentView('dashboard');
     }
   };
 
@@ -516,6 +519,20 @@ export default function App() {
     setCurrentView('ai-planner');
     showToast(`Generated ${duration}-day itinerary for ${dest} with budget ₹${budget.toLocaleString()}!`);
   };
+
+  // If intro animation is active after login, show the ExploreX letter drop & vehicle driving animation
+  if (showIntroAnimation) {
+    return (
+      <ExploreXIntroLoader
+        userName={userProfile.name}
+        onComplete={() => {
+          setShowIntroAnimation(false);
+          setCurrentView('dashboard');
+        }}
+        darkMode={darkMode}
+      />
+    );
+  }
 
   // If user is not logged in, show full-page Login & Registration screen first
   if (!isLoggedIn) {
