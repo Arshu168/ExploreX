@@ -16,6 +16,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import { GoogleAccountChooserModal } from './GoogleAccountChooserModal';
+import { checkPasswordStrength } from '../utils/passwordUtils';
 
 interface LoginViewProps {
   onLoginSuccess: (userName: string, email: string, isNewUser?: boolean, role?: 'admin' | 'user') => void;
@@ -31,8 +32,8 @@ interface RegisteredAccount {
 }
 
 const DEFAULT_ACCOUNTS: RegisteredAccount[] = [
-  { name: 'Arshuu', email: 'arshuu8888@gmail.com', password: 'password123', role: 'admin' },
-  { name: 'Raam Harish', email: 'harish@explorex.ai', password: 'password123', role: 'user' }
+  { name: 'Arshuu', email: 'arshuu8888@gmail.com', password: 'ExploreX@2026!', role: 'admin' },
+  { name: 'Raam Harish', email: 'harish@explorex.ai', password: 'ExploreX@2026!', role: 'user' }
 ];
 
 export const LoginView: React.FC<LoginViewProps> = ({
@@ -52,6 +53,9 @@ export const LoginView: React.FC<LoginViewProps> = ({
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [registeredUsers, setRegisteredUsers] = useState<RegisteredAccount[]>([]);
   const [showGoogleChooser, setShowGoogleChooser] = useState(false);
+
+  // Compute password strength in real time
+  const passwordStrength = checkPasswordStrength(password);
 
   // Load or seed registered accounts
   useEffect(() => {
@@ -84,12 +88,21 @@ export const LoginView: React.FC<LoginViewProps> = ({
   const handleRoleChange = (newRole: 'user' | 'admin') => {
     setActiveRole(newRole);
     setErrorMessage('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
     if (newRole === 'admin') {
       setMode('login');
-      setEmail('arshuu8888@gmail.com');
-    } else {
-      setEmail('');
     }
+  };
+
+  const handleModeSwitch = (newMode: 'login' | 'register') => {
+    setMode(newMode);
+    setErrorMessage('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setName('');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -145,8 +158,9 @@ export const LoginView: React.FC<LoginViewProps> = ({
         return;
       }
 
-      if (!password || password.length < 4) {
-        setErrorMessage('Password must be at least 4 characters long.');
+      // Strong password enforcement
+      if (!passwordStrength.isStrong) {
+        setErrorMessage(`🔒 Strong Password Required: Missing ${passwordStrength.missingRequirements.join(', ')}.`);
         return;
       }
 
@@ -333,14 +347,14 @@ export const LoginView: React.FC<LoginViewProps> = ({
                 <div className="grid grid-cols-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold mt-4 border border-slate-200/80 dark:border-slate-700">
                   <button
                     type="button"
-                    onClick={() => { setMode('login'); setErrorMessage(''); }}
+                    onClick={() => handleModeSwitch('login')}
                     className={`py-2 rounded-lg transition cursor-pointer ${mode === 'login' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}`}
                   >
                     Log In
                   </button>
                   <button
                     type="button"
-                    onClick={() => { setMode('register'); setErrorMessage(''); }}
+                    onClick={() => handleModeSwitch('register')}
                     className={`py-2 rounded-lg transition cursor-pointer ${mode === 'register' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}`}
                   >
                     Register
@@ -360,7 +374,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
                 {errorMessage.includes('not registered') && (
                   <button
                     type="button"
-                    onClick={() => { setMode('register'); setErrorMessage(''); }}
+                    onClick={() => handleModeSwitch('register')}
                     className="mt-1 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] transition shadow-2xs block"
                   >
                     Click here to Register this email →
@@ -370,7 +384,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
                 {errorMessage.includes('already registered') && (
                   <button
                     type="button"
-                    onClick={() => { setMode('login'); setErrorMessage(''); }}
+                    onClick={() => handleModeSwitch('login')}
                     className="mt-1 px-3 py-1.5 rounded-lg bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold text-[11px] transition shadow-2xs block"
                   >
                     Click here to Log In now →
@@ -380,7 +394,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
             )}
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs font-medium">
+            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs font-medium" autoComplete="off">
               {activeRole === 'user' && mode === 'register' && (
                 <div>
                   <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Full Name</label>
@@ -407,7 +421,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
                   <input
                     type="email"
                     required
-                    placeholder={activeRole === 'admin' ? 'arshuu8888@gmail.com' : 'explorer@explorex.ai'}
+                    placeholder={activeRole === 'admin' ? 'admin@explorex.ai' : 'explorer@explorex.ai'}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-3 py-2.5 text-xs focus:outline-none focus:border-blue-500 font-semibold text-slate-900 dark:text-slate-100"
@@ -435,6 +449,36 @@ export const LoginView: React.FC<LoginViewProps> = ({
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
+
+                {/* Live Strong Password Meter & Checklist (Shown in Register Mode) */}
+                {mode === 'register' && password && (
+                  <div className="mt-2.5 space-y-2 p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between font-bold">
+                      <span className="text-slate-600 dark:text-slate-400">Password Strength:</span>
+                      <span className={passwordStrength.isStrong ? 'text-emerald-600 dark:text-emerald-400 font-extrabold' : 'text-amber-600 dark:text-amber-400'}>
+                        {passwordStrength.strengthLabel} {passwordStrength.isStrong && '🔒'}
+                      </span>
+                    </div>
+                    {/* Visual Segmented Meter */}
+                    <div className="grid grid-cols-4 gap-1 h-1.5 rounded-full overflow-hidden">
+                      <div className={`h-full rounded-full transition-all ${passwordStrength.score >= 1 ? passwordStrength.color : 'bg-slate-300 dark:bg-slate-700'}`} />
+                      <div className={`h-full rounded-full transition-all ${passwordStrength.score >= 2 ? passwordStrength.color : 'bg-slate-300 dark:bg-slate-700'}`} />
+                      <div className={`h-full rounded-full transition-all ${passwordStrength.score >= 3 ? passwordStrength.color : 'bg-slate-300 dark:bg-slate-700'}`} />
+                      <div className={`h-full rounded-full transition-all ${passwordStrength.score >= 4 ? passwordStrength.color : 'bg-slate-300 dark:bg-slate-700'}`} />
+                    </div>
+                    {/* Requirements Badges */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 pt-1 text-[10px]">
+                      {passwordStrength.requirements.map(req => (
+                        <div key={req.id} className={`flex items-center gap-1.5 ${req.met ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-400 dark:text-slate-500'}`}>
+                          <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] font-black ${req.met ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>
+                            {req.met ? '✓' : '•'}
+                          </div>
+                          <span>{req.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {activeRole === 'user' && mode === 'register' && (

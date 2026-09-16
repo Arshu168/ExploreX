@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Lock, Mail, User, Compass, Check, ArrowRight, Shield, AlertCircle } from 'lucide-react';
+import { X, Lock, Mail, User, Compass, Check, ArrowRight, Shield, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { GoogleAccountChooserModal } from './GoogleAccountChooserModal';
+import { checkPasswordStrength } from '../utils/passwordUtils';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -23,16 +24,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<string[]>(['Nature', 'Adventure']);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showGoogleChooser, setShowGoogleChooser] = useState(false);
+
+  // Compute password strength in real time
+  const passwordStrength = checkPasswordStrength(password);
 
   useEffect(() => {
     setMode(initialMode);
     setActiveRole(initialRole);
     setErrorMessage('');
     setName('');
-    setEmail(initialRole === 'admin' ? 'arshuu8888@gmail.com' : '');
+    setEmail('');
     setPassword('');
     setConfirmPassword('');
   }, [initialMode, initialRole, isOpen]);
@@ -48,8 +53,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
     } catch {}
     return [
-      { name: 'Arshuu', email: 'arshuu8888@gmail.com', password: 'password123', role: 'admin' },
-      { name: 'Raam Harish', email: 'harish@explorex.ai', password: 'password123', role: 'user' }
+      { name: 'Arshuu', email: 'arshuu8888@gmail.com', password: 'ExploreX@2026!', role: 'admin' },
+      { name: 'Raam Harish', email: 'harish@explorex.ai', password: 'ExploreX@2026!', role: 'user' }
     ];
   };
 
@@ -66,16 +71,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const handleSwitchMode = (newMode: 'login' | 'register') => {
     setMode(newMode);
     setErrorMessage('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setName('');
   };
 
   const handleRoleChange = (newRole: 'user' | 'admin') => {
     setActiveRole(newRole);
     setErrorMessage('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
     if (newRole === 'admin') {
       setMode('login');
-      setEmail('arshuu8888@gmail.com');
-    } else {
-      setEmail('');
     }
   };
 
@@ -134,8 +143,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         return;
       }
 
-      if (!password || password.length < 4) {
-        setErrorMessage('Password must be at least 4 characters long.');
+      // Strong password enforcement
+      if (!passwordStrength.isStrong) {
+        setErrorMessage(`🔒 Strong Password Required: Missing ${passwordStrength.missingRequirements.join(', ')}.`);
         return;
       }
 
@@ -296,7 +306,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <input
                   type="email"
                   required
-                  placeholder={activeRole === 'admin' ? 'arshuu8888@gmail.com' : 'explorer@explorex.ai'}
+                  placeholder={activeRole === 'admin' ? 'admin@explorex.ai' : 'explorer@explorex.ai'}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 font-semibold placeholder:text-slate-400 dark:placeholder:text-slate-500"
@@ -309,14 +319,51 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 font-semibold placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-9 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 font-semibold placeholder:text-slate-400 dark:placeholder:text-slate-500"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
+
+              {/* Live Strong Password Meter & Checklist (Shown in Register Mode) */}
+              {activeRole === 'user' && mode === 'register' && password && (
+                <div className="mt-2.5 space-y-2 p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between font-bold">
+                    <span className="text-slate-600 dark:text-slate-400">Password Strength:</span>
+                    <span className={passwordStrength.isStrong ? 'text-emerald-600 dark:text-emerald-400 font-extrabold' : 'text-amber-600 dark:text-amber-400'}>
+                      {passwordStrength.strengthLabel} {passwordStrength.isStrong && '🔒'}
+                    </span>
+                  </div>
+                  {/* Visual Segmented Meter */}
+                  <div className="grid grid-cols-4 gap-1 h-1.5 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full transition-all ${passwordStrength.score >= 1 ? passwordStrength.color : 'bg-slate-300 dark:bg-slate-700'}`} />
+                    <div className={`h-full rounded-full transition-all ${passwordStrength.score >= 2 ? passwordStrength.color : 'bg-slate-300 dark:bg-slate-700'}`} />
+                    <div className={`h-full rounded-full transition-all ${passwordStrength.score >= 3 ? passwordStrength.color : 'bg-slate-300 dark:bg-slate-700'}`} />
+                    <div className={`h-full rounded-full transition-all ${passwordStrength.score >= 4 ? passwordStrength.color : 'bg-slate-300 dark:bg-slate-700'}`} />
+                  </div>
+                  {/* Requirements Badges */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 pt-1 text-[10px]">
+                    {passwordStrength.requirements.map(req => (
+                      <div key={req.id} className={`flex items-center gap-1.5 ${req.met ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-400 dark:text-slate-500'}`}>
+                        <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] font-black ${req.met ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>
+                          {req.met ? '✓' : '•'}
+                        </div>
+                        <span>{req.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {activeRole === 'user' && mode === 'register' && (
@@ -326,7 +373,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <div className="relative">
                     <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                     <input
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       required
                       placeholder="••••••••"
                       value={confirmPassword}
