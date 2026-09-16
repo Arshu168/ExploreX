@@ -13,57 +13,43 @@ export const ExploreXIntroLoader: React.FC<ExploreXIntroLoaderProps> = ({
   darkMode = true,
 }) => {
   // Animation Phase State Machine
-  // 1: 'letters-drop' (Letters dropping one by one, X spinning)
-  // 2: 'x-slam' (X drops and slams in place)
-  // 3: 'vehicle-drop' (Vehicle drops from top)
-  // 4: 'vehicle-drive' (Vehicle drives forward on the road)
-  // 5: 'finish' (Fade out and complete)
-  const [phase, setPhase] = useState<'letters-drop' | 'x-slam' | 'vehicle-drop' | 'vehicle-drive' | 'finish'>('letters-drop');
+  // 1: 'letters-spin' (Letters dropping, X spinning in 3D)
+  // 2: 'x-slam' (X drops and locks into place)
+  // 3: 'vehicle-run' (Vehicle drops and drives across road in one single smooth pass)
+  const [phase, setPhase] = useState<'letters-spin' | 'x-slam' | 'vehicle-run'>('letters-spin');
   const [progress, setProgress] = useState<number>(0);
   const [loadingText, setLoadingText] = useState<string>('Initializing ExploreX AI engine...');
 
   useEffect(() => {
     // Timeline Sequence:
-    // T = 0ms: Letters drop
-    // T = 1600ms: X finishes spin and drops/slams
-    // T = 2200ms: Vehicle drops onto the road
-    // T = 2700ms: Vehicle starts driving with progress bar
-    // T = 4500ms: Finish and transition to dashboard
+    // T = 0ms: Letters drop, X spins in 3D
+    // T = 1300ms: X slams into place
+    // T = 1700ms: Vehicle drops and drives in 1 continuous pass
+    // T = 3900ms: Transition directly to dashboard
 
     const t1 = setTimeout(() => {
       setPhase('x-slam');
-    }, 1500);
+    }, 1300);
 
     const t2 = setTimeout(() => {
-      setPhase('vehicle-drop');
+      setPhase('vehicle-run');
       setLoadingText('Calibrating multi-modal routes...');
-    }, 2100);
+    }, 1700);
 
     const t3 = setTimeout(() => {
-      setPhase('vehicle-drive');
-      setLoadingText('Connecting flights, trains & hotels...');
-    }, 2700);
-
-    const t4 = setTimeout(() => {
-      setPhase('finish');
-    }, 4500);
-
-    const t5 = setTimeout(() => {
       onComplete();
-    }, 4900);
+    }, 4000);
 
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
-      clearTimeout(t4);
-      clearTimeout(t5);
     };
   }, [onComplete]);
 
   // Progress Bar Incrementer
   useEffect(() => {
-    if (phase === 'vehicle-drive' || phase === 'vehicle-drop') {
+    if (phase === 'vehicle-run') {
       const interval = setInterval(() => {
         setProgress(prev => {
           if (prev >= 100) {
@@ -71,12 +57,12 @@ export const ExploreXIntroLoader: React.FC<ExploreXIntroLoaderProps> = ({
             return 100;
           }
           const next = prev + 5;
-          if (next > 30 && next < 60) setLoadingText('Discovering authentic hidden gems...');
-          else if (next >= 60 && next < 85) setLoadingText(`Welcome back, ${userName}! Opening workspace...`);
+          if (next > 25 && next < 55) setLoadingText('Discovering authentic hidden gems...');
+          else if (next >= 55 && next < 85) setLoadingText(`Welcome back, ${userName}! Opening workspace...`);
           else if (next >= 85) setLoadingText('Ready to Explore!');
           return next;
         });
-      }, 70);
+      }, 95);
       return () => clearInterval(interval);
     }
   }, [phase, userName]);
@@ -100,14 +86,14 @@ export const ExploreXIntroLoader: React.FC<ExploreXIntroLoaderProps> = ({
       <div className="relative flex flex-col items-center justify-center w-full max-w-xl px-4 text-center">
         
         {/* ============================================================== */}
-        {/* VEHICLE DROP & DRIVE STAGE */}
+        {/* VEHICLE DROP & DRIVE STAGE (Single 1-Pass Motion) */}
         {/* ============================================================== */}
         <div className="relative w-full h-44 flex items-center justify-center overflow-hidden mb-2">
           {/* Animated Road Line */}
           <div className="absolute bottom-6 left-0 right-0 h-3 bg-slate-800/80 rounded-full overflow-hidden border border-slate-700/50 shadow-inner">
             {/* Moving Dashes */}
             <div 
-              className={`absolute inset-0 flex gap-4 ${phase === 'vehicle-drive' ? 'animate-road-move' : ''}`}
+              className={`absolute inset-0 flex gap-4 ${phase === 'vehicle-run' ? 'animate-road-move' : ''}`}
               style={{ width: '200%' }}
             >
               {Array.from({ length: 24 }).map((_, idx) => (
@@ -116,17 +102,9 @@ export const ExploreXIntroLoader: React.FC<ExploreXIntroLoaderProps> = ({
             </div>
           </div>
 
-          {/* ExploreX Vehicle Container */}
-          {(phase === 'vehicle-drop' || phase === 'vehicle-drive' || phase === 'finish') && (
-            <div
-              className={`absolute bottom-6 z-20 flex flex-col items-center transition-all ${
-                phase === 'vehicle-drop' 
-                  ? 'animate-vehicle-slam' 
-                  : phase === 'vehicle-drive' 
-                  ? 'animate-vehicle-cruising' 
-                  : 'translate-x-[280px] opacity-0'
-              }`}
-            >
+          {/* ExploreX Vehicle Container - Executes 1 Single Continuous Pass */}
+          {phase === 'vehicle-run' && (
+            <div className="absolute bottom-6 z-20 flex flex-col items-center animate-vehicle-single-pass">
               {/* Vehicle Body Graphic */}
               <div className="relative w-52 sm:w-60 group">
                 {/* Vehicle SVG Logo Recreation */}
@@ -212,19 +190,19 @@ export const ExploreXIntroLoader: React.FC<ExploreXIntroLoaderProps> = ({
                   <g transform="translate(95, 136)">
                     <circle cx="0" cy="0" r="18" fill="#0a2540" stroke="#ffffff" strokeWidth="3" />
                     <circle cx="0" cy="0" r="8" fill="#38bdf8" />
-                    <line x1="-12" y1="0" x2="12" y2="0" stroke="#ffffff" strokeWidth="2" className={phase === 'vehicle-drive' ? 'animate-spin' : ''} />
-                    <line x1="0" y1="-12" x2="0" y2="12" stroke="#ffffff" strokeWidth="2" className={phase === 'vehicle-drive' ? 'animate-spin' : ''} />
+                    <line x1="-12" y1="0" x2="12" y2="0" stroke="#ffffff" strokeWidth="2" className={phase === 'vehicle-run' ? 'animate-spin' : ''} />
+                    <line x1="0" y1="-12" x2="0" y2="12" stroke="#ffffff" strokeWidth="2" className={phase === 'vehicle-run' ? 'animate-spin' : ''} />
                   </g>
 
                   <g transform="translate(225, 132)">
                     <circle cx="0" cy="0" r="18" fill="#0a2540" stroke="#ffffff" strokeWidth="3" />
                     <circle cx="0" cy="0" r="8" fill="#38bdf8" />
-                    <line x1="-12" y1="0" x2="12" y2="0" stroke="#ffffff" strokeWidth="2" className={phase === 'vehicle-drive' ? 'animate-spin' : ''} />
-                    <line x1="0" y1="-12" x2="0" y2="12" stroke="#ffffff" strokeWidth="2" className={phase === 'vehicle-drive' ? 'animate-spin' : ''} />
+                    <line x1="-12" y1="0" x2="12" y2="0" stroke="#ffffff" strokeWidth="2" className={phase === 'vehicle-run' ? 'animate-spin' : ''} />
+                    <line x1="0" y1="-12" x2="0" y2="12" stroke="#ffffff" strokeWidth="2" className={phase === 'vehicle-run' ? 'animate-spin' : ''} />
                   </g>
 
                   {/* Headlight Beam */}
-                  {phase === 'vehicle-drive' && (
+                  {phase === 'vehicle-run' && (
                     <polygon
                       points="290,110 370,80 370,140 290,120"
                       fill="url(#headlight-grad)"
@@ -281,7 +259,7 @@ export const ExploreXIntroLoader: React.FC<ExploreXIntroLoaderProps> = ({
           <div className="inline-block ml-0.5 relative perspective-1000">
             <span
               className={`inline-block font-black bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent transform-gpu ${
-                phase === 'letters-drop'
+                phase === 'letters-spin'
                   ? 'animate-x-spin-3d text-5xl sm:text-7xl md:text-8xl drop-shadow-[0_0_25px_rgba(249,115,22,0.8)]'
                   : 'animate-x-slam text-4xl sm:text-6xl md:text-7xl drop-shadow-[0_0_15px_rgba(249,115,22,0.6)]'
               }`}
@@ -294,7 +272,7 @@ export const ExploreXIntroLoader: React.FC<ExploreXIntroLoaderProps> = ({
         {/* Subtitle: Flights • Trains • Buses • Cabs • Ferries */}
         <div 
           className={`flex items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-xs tracking-widest uppercase font-extrabold text-slate-400 mt-1 transition-all duration-700 ${
-            phase !== 'letters-drop' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            phase !== 'letters-spin' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
           <span>Flights</span>
