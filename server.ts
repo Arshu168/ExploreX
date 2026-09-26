@@ -113,6 +113,15 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// 1.05 Version Check
+app.get("/api/version", (req, res) => {
+  res.json({
+    version: "2.1.0-gemini-3.7-flash",
+    models: CANDIDATE_GEMINI_MODELS,
+    deployedAt: new Date().toISOString()
+  });
+});
+
 // 1.1 Supabase Status Check
 app.get("/api/supabase/status", async (req, res) => {
   const client = getSupabaseClient();
