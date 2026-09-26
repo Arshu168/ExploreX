@@ -96,7 +96,7 @@ Return ONLY a valid JSON array of 4 objects with:
 ]`;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.6-flash",
+        model: "gemini-3.8-flash",
         contents: prompt,
         config: {
           systemInstruction: "You are an expert global travel curator. Generate realistic coordinates, captivating descriptions, and practical travel advice in clean JSON.",
@@ -219,7 +219,7 @@ Answer the user's question directly, accurately, and thoroughly with:
 - Engaging, helpful, and concise tone.`;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.6-flash",
+        model: "gemini-3.8-flash",
         contents: prompt,
         config: {
           systemInstruction: "You are ExploreX AI Travel Assistant. Always answer the user's specific travel question with accuracy, deep local knowledge, and crisp Markdown formatting.",

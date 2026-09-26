@@ -1,10 +1,39 @@
 const API_BASES = ['/api', 'http://localhost:8000/api'];
 
+export function getStoredGeminiKey(): string {
+  if (typeof localStorage !== 'undefined') {
+    return localStorage.getItem('explorex_gemini_api_key') || '';
+  }
+  return '';
+}
+
+export function setStoredGeminiKey(key: string): void {
+  if (typeof localStorage !== 'undefined') {
+    if (key && key.trim()) {
+      localStorage.setItem('explorex_gemini_api_key', key.trim());
+    } else {
+      localStorage.removeItem('explorex_gemini_api_key');
+    }
+  }
+}
+
 async function fetchFromBackend(endpoint: string, options?: RequestInit) {
+  const userKey = getStoredGeminiKey();
+  const headers: Record<string, string> = {
+    ...(options?.headers as Record<string, string> || {})
+  };
+  if (userKey) {
+    headers['x-gemini-api-key'] = userKey;
+  }
+  const mergedOptions: RequestInit = {
+    ...options,
+    headers
+  };
+
   for (const base of API_BASES) {
     try {
       const url = `${base}${endpoint}`;
-      const res = await fetch(url, options);
+      const res = await fetch(url, mergedOptions);
       if (res.ok) {
         return await res.json();
       }

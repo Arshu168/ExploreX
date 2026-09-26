@@ -15,8 +15,8 @@ app.use(express.json({ limit: "10mb" }));
 
 // Initialize Supabase Client
 function getSupabaseClient() {
-  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_KEY;
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://blxvbbvvfwwggtnmkwnq.supabase.co";
+  const supabaseKey = process.env.SUPABASE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJseHZiYnZ2Znd3Z2d0bm1rd25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1MDA2NTQsImV4cCI6MjEwMTA3NjY1NH0.rjBHWjy781iVb-gNo81a_eiGxh0CjuhwOHBr2Y6kqIg";
   if (!supabaseUrl || !supabaseKey) return null;
   return createClient(supabaseUrl, supabaseKey);
 }
@@ -58,8 +58,9 @@ const ragDocumentStore: RagDocument[] = [
 ];
 
 // Initialize Gemini Client
-function getGeminiClient(): GoogleGenAI | null {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+function getGeminiClient(req?: express.Request): GoogleGenAI | null {
+  const reqKey = req?.headers?.['x-gemini-api-key'] as string;
+  const apiKey = (reqKey && reqKey.trim()) || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
     console.warn("GEMINI_API_KEY / VITE_GEMINI_API_KEY environment variable is not set. Real AI responses will use intelligent server backup.");
     return null;
@@ -80,7 +81,8 @@ function getGeminiClient(): GoogleGenAI | null {
 
 // 1. Health check
 app.get("/api/health", (req, res) => {
-  const apiKeyPresent = Boolean(process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY);
+  const reqKey = req?.headers?.['x-gemini-api-key'] as string;
+  const apiKeyPresent = Boolean((reqKey && reqKey.trim()) || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY);
   const supabasePresent = Boolean(
     (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL) && 
     (process.env.SUPABASE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_KEY)
@@ -183,7 +185,7 @@ app.post("/api/ai/chat", async (req, res) => {
       return res.status(400).json({ error: "Message prompt is required" });
     }
 
-    const ai = getGeminiClient();
+    const ai = getGeminiClient(req);
     if (!ai) {
       return res.json({
         answer: `I'm ExploreX AI Guide! For "${message}", I recommend exploring offbeat viewpoints, morning trail walks, and local culinary spots. Connect your GEMINI_API_KEY for deep real-time answers.`,
@@ -210,7 +212,7 @@ User Query: "${message}"
 Provide a detailed, helpful, beautifully structured markdown response with clear bullet points, estimated costs in ₹ or local currency, best times to visit, and insider tips. Keep it concise, engaging, and directly helpful.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-3.8-flash",
       contents: prompt,
       config: {
         systemInstruction: "You are ExploreX, a passionate, knowledgeable worldwide travel guide. Always give actionable, accurate, offbeat travel advice with Markdown styling.",
@@ -241,7 +243,7 @@ app.post("/api/ai/generate-trip", async (req, res) => {
     const startDateStr = start_date || new Date().toISOString().split('T')[0];
     const originLoc = origin || "India";
 
-    const ai = getGeminiClient();
+    const ai = getGeminiClient(req);
 
     if (!ai) {
       const destLower = dest.toLowerCase();
@@ -388,7 +390,7 @@ CRITICAL REQUIREMENTS:
 5. Provide structured day-by-day itinerary with exact activity locations, time slots, categories, and costs.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-3.8-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -522,7 +524,7 @@ app.post("/api/places/generate", async (req, res) => {
     const { destination } = req.body;
     const dest = destination || "Kyoto, Japan";
 
-    const ai = getGeminiClient();
+    const ai = getGeminiClient(req);
 
     if (!ai) {
       return res.json([
@@ -564,7 +566,7 @@ Return a JSON array of objects. Each place object must have:
 - isOffbeat (boolean: true)`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-3.8-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -652,7 +654,7 @@ app.post("/api/budget/calculate", async (req, res) => {
     const days = Number(duration_days) || 3;
     const group = Number(group_size) || 2;
 
-    const ai = getGeminiClient();
+    const ai = getGeminiClient(req);
 
     if (!ai) {
       const stay = days * group * 1500;
@@ -684,7 +686,7 @@ Return a JSON object with:
 - savingsTips (array of 3 practical money-saving strings for ${dest})`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-3.8-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { X, Settings, Check, Sun, Moon } from 'lucide-react';
+import { X, Settings, Check, Sun, Moon, Sparkles, Key } from 'lucide-react';
 import { UserProfile } from '../types';
+import { getStoredGeminiKey, setStoredGeminiKey } from '../utils/apiClient';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -26,10 +27,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [preferredCurrency, setPreferredCurrency] = useState(userProfile.preferredCurrency);
   const [defaultPace, setDefaultPace] = useState(userProfile.defaultPace);
   const [defaultTransport, setDefaultTransport] = useState(userProfile.defaultTransport);
+  const [geminiApiKey, setGeminiApiKeyState] = useState(() => getStoredGeminiKey());
   const [savedMsg, setSavedMsg] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    setStoredGeminiKey(geminiApiKey);
     setUserProfile({
       ...userProfile,
       name,
@@ -160,6 +163,29 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <option value="Bus/Train" className="dark:bg-slate-800">Public Bus / Train</option>
               <option value="Walking" className="dark:bg-slate-800">Walking / Trek</option>
             </select>
+          </div>
+
+          {/* Gemini AI Key Input */}
+          <div className="p-3 rounded-2xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-extrabold text-blue-900 dark:text-blue-300 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                <span>Google Gemini API Key</span>
+              </label>
+              <span className="text-[10px] text-blue-600/80 dark:text-blue-400 font-mono">gemini-3.8-flash</span>
+            </div>
+            <div className="relative">
+              <input
+                type="password"
+                value={geminiApiKey}
+                onChange={(e) => setGeminiApiKeyState(e.target.value)}
+                placeholder="AIzaSy... or AQ.Ab8..."
+                className="w-full bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-mono"
+              />
+            </div>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+              Paste your Gemini API key here to activate live AI answers, trip planning, and hidden gem discovery.
+            </p>
           </div>
 
           <div className="pt-2 flex items-center justify-between">
