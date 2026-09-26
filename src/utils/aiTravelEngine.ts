@@ -212,22 +212,21 @@ export async function processAiTravelQuery(query: string, availablePlaces: Place
   // 2. Try Direct Client-Side Gemini AI
   const ai = getClientGeminiInstance();
   if (ai) {
-    for (let attempt = 1; attempt <= 2; attempt++) {
+    const candidateModels = ["gemini-3.7-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"];
+    for (const modelName of candidateModels) {
       try {
-        const prompt = `You are ExploreX AI, an expert, enthusiastic worldwide travel assistant.
-The user asked: "${cleanQuery}"
+        const prompt = `You are ExploreX AI, an enthusiastic, knowledgeable worldwide travel assistant.
+The user said: "${cleanQuery}"
 
-Answer the user's question directly, accurately, and thoroughly with:
-- Clear markdown headings & bullet points
-- Specific local recommendations, hidden gems, or practical advice matching their exact query
-- Best times to visit, approximate costs, weather, and insider tips where relevant
-- Engaging, helpful, and concise tone.`;
+INSTRUCTIONS:
+1. If the user is saying hello, greeting you, asking "how are you", or chatting casually, respond warmly, naturally, and conversationally as ExploreX AI Guide, and ask how you can help them explore the world today.
+2. If the user is asking about places, itineraries, sightseeing, food, or travel advice, provide an insightful, structured response with clear bullet points, estimated costs, best times to visit, and insider tips.`;
 
         const response = await ai.models.generateContent({
-          model: "gemini-3.8-flash",
+          model: modelName,
           contents: prompt,
           config: {
-            systemInstruction: "You are ExploreX AI Travel Assistant. Always answer the user's specific travel question with accuracy, deep local knowledge, and crisp Markdown formatting.",
+            systemInstruction: "You are ExploreX AI Travel Assistant. If asked general pleasantries like 'how are you', respond warmly and naturally. If asked about travel, give detailed actionable advice.",
             temperature: 0.7,
           }
         });
@@ -248,10 +247,7 @@ Answer the user's question directly, accurately, and thoroughly with:
           };
         }
       } catch (clientAiErr: any) {
-        console.warn(`Client Gemini attempt ${attempt} failed:`, clientAiErr);
-        if (attempt < 2) {
-          await new Promise(r => setTimeout(r, 1000));
-        }
+        console.warn(`Client Gemini model ${modelName} failed, trying next:`, clientAiErr?.message?.slice(0, 80));
       }
     }
   }
@@ -290,7 +286,17 @@ Answer the user's question directly, accurately, and thoroughly with:
     };
   }
 
-  // 4. Intelligent contextual guide if external API is temporarily busy
+  // 4. Check if user is saying hello or casual pleasantries
+  const isGreeting = /^(hi|hello|hey|how are you|how r u|what's up|who are you|good morning|good afternoon|good evening)/i.test(cleanQuery);
+  if (isGreeting) {
+    return {
+      text: "Hello! I'm ExploreX AI Guide, full of wanderlust and ready for adventure! 😊\n\nHow can I help you today? Ask me about hidden gems, trip itineraries, budgeting, or any city you'd like to explore!",
+      ragSources: [],
+      suggestedPlaces: availablePlaces.slice(0, 2)
+    };
+  }
+
+  // 5. Intelligent contextual guide if external API is temporarily busy
   return {
     text: `🧭 **ExploreX Travel Assistant for "${cleanQuery}"**\n\n` +
       `Here are recommended travel highlights for **${cleanQuery}**:\n\n` +

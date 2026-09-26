@@ -75,22 +75,22 @@ function getGeminiClient(req?: express.Request): GoogleGenAI | null {
   });
 }
 
-// Resilient Gemini generator with exponential backoff for temporary spikes (503/429)
-async function generateWithRetry(ai: GoogleGenAI, params: any, retries = 3): Promise<any> {
-  for (let attempt = 1; attempt <= retries; attempt++) {
+// Resilient Gemini generator with multi-model fallback (gemini-3.7-flash, gemini-3.1-flash-lite, gemini-3.8-flash)
+const CANDIDATE_GEMINI_MODELS = ["gemini-3.7-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"];
+
+async function generateWithRetry(ai: GoogleGenAI, params: any): Promise<any> {
+  let lastError: any = null;
+  for (const modelName of CANDIDATE_GEMINI_MODELS) {
     try {
-      return await ai.models.generateContent(params);
+      const mergedParams = { ...params, model: modelName };
+      return await ai.models.generateContent(mergedParams);
     } catch (err: any) {
+      lastError = err;
       const errMsg = String(err?.message || '');
-      const isTemporary = errMsg.includes('503') || errMsg.includes('429') || errMsg.includes('UNAVAILABLE') || errMsg.includes('high demand');
-      if (isTemporary && attempt < retries) {
-        console.warn(`[Gemini Spike] Attempt ${attempt} returned busy, retrying in ${attempt}s...`);
-        await new Promise(r => setTimeout(r, attempt * 1000));
-        continue;
-      }
-      throw err;
+      console.warn(`[Gemini model ${modelName} returned]: ${errMsg.slice(0, 80)}, trying next model...`);
     }
   }
+  throw lastError;
 }
 
 // ==========================================
@@ -220,25 +220,26 @@ app.post("/api/ai/chat", async (req, res) => {
 
     const contextSnippet = relevantDocs.map(d => `[Source: ${d.title}]\n${d.content}`).join('\n\n');
 
-    const prompt = `You are ExploreX AI, an expert worldwide travel assistant specializing in hidden gems, offbeat travel, budgeting, itineraries, and local tips.
+    const prompt = `You are ExploreX AI, an enthusiastic, knowledgeable worldwide travel assistant.
 Target Destination Context: ${destination || 'Global'}
 Relevant Archives Knowledge:
-${contextSnippet || 'No direct local archive match found; draw upon full global travel knowledge.'}
+${contextSnippet || 'No direct local archive match found.'}
 
 User Query: "${message}"
 
-Provide a detailed, helpful, beautifully structured markdown response with clear bullet points, estimated costs in ₹ or local currency, best times to visit, and insider tips. Keep it concise, engaging, and directly helpful.`;
+INSTRUCTIONS:
+1. If the user is saying hello, greeting you, asking "how are you", or making casual conversation, respond warmly, naturally, and conversationally as ExploreX AI Guide, and ask how you can help them explore the world today.
+2. If the user is asking about destinations, itineraries, sightseeing, food, or travel advice, provide an insightful, structured response with clear bullet points, estimated costs, best times to visit, and insider tips.`;
 
     const response = await generateWithRetry(ai, {
-      model: "gemini-3.8-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are ExploreX, a passionate, knowledgeable worldwide travel guide. Always give actionable, accurate, offbeat travel advice with Markdown styling.",
+        systemInstruction: "You are ExploreX, an authentic, helpful travel guide. If asked general pleasantries like 'how are you', respond warmly and naturally. If asked about travel, give detailed actionable advice.",
         temperature: 0.7,
       }
     });
 
-    const text = response.text || "No response generated.";
+    const text = response.text || "Hello! I am your ExploreX Travel Assistant. How can I help you explore today?";
 
     return res.json({
       answer: text,
@@ -246,7 +247,14 @@ Provide a detailed, helpful, beautifully structured markdown response with clear
     });
   } catch (error: any) {
     console.error("Error in /api/ai/chat:", error);
-    const userPrompt = (req.body?.message || '').replace(/"/g, '');
+    const userPrompt = (req.body?.message || '').replace(/"/g, '').trim();
+    const isGreeting = /^(hi|hello|hey|how are you|how r u|what's up|who are you|good morning|good evening)/i.test(userPrompt);
+    if (isGreeting) {
+      return res.json({
+        answer: "Hello! I'm ExploreX AI Guide, full of wanderlust and ready for adventure! How can I help you plan a trip or discover hidden destinations today?",
+        retrieved_context: []
+      });
+    }
     return res.json({
       answer: `🧭 **ExploreX AI Travel Guide**\n\nHere are curated recommendations for **${userPrompt || 'your journey'}**:\n\n` +
         `• **Must-See Highlights**: Explore the top historic landmarks, tranquil gardens, and scenic viewpoints during golden hour.\n` +
