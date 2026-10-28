@@ -17,6 +17,7 @@ import {
 import { Place } from '../types';
 import { generateWorldwidePlacesWithAi } from '../utils/aiTravelEngine';
 import { formatCurrency } from '../utils/currencyUtils';
+import { RealPlaceImage } from './RealPlaceImage';
 
 interface ExplorePlacesViewProps {
   places: Place[];
@@ -301,10 +302,13 @@ export const ExplorePlacesView: React.FC<ExplorePlacesViewProps> = ({
             >
               <div className="space-y-3">
                 <div className="relative h-48 bg-slate-100 dark:bg-slate-800 overflow-hidden cursor-pointer" onClick={() => onSelectPlace(place)}>
-                  <img
-                    src={place.imageUrl}
+                  <RealPlaceImage
+                    placeName={place.name}
+                    region={place.region}
+                    originalUrl={place.imageUrl}
                     alt={place.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    showBadge={true}
                   />
                   <div className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/90 backdrop-blur text-blue-600 dark:text-blue-400 text-[10px] font-extrabold px-3 py-1 rounded-full border border-blue-200 dark:border-blue-800 shadow-xs">
                     {place.crowdLevel}% Crowd Traffic
@@ -390,11 +394,15 @@ export const ExplorePlacesView: React.FC<ExplorePlacesViewProps> = ({
               onClick={() => onSelectPlace(place)}
               className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-400 rounded-2xl p-4 transition flex flex-col sm:flex-row items-center gap-4 cursor-pointer shadow-2xs group"
             >
-              <img
-                src={place.imageUrl}
-                alt={place.name}
-                className="w-full sm:w-36 h-28 object-cover rounded-xl shrink-0"
-              />
+              <div className="w-full sm:w-36 h-28 shrink-0 overflow-hidden rounded-xl">
+                <RealPlaceImage
+                  placeName={place.name}
+                  region={place.region}
+                  originalUrl={place.imageUrl}
+                  alt={place.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <div className="flex-1 space-y-1.5 text-left w-full">
                 <div className="flex items-center justify-between">
                   <h3 className="font-extrabold text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition">

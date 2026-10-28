@@ -46,7 +46,7 @@ function getCoverImageForDestination(dest: string): string {
 export function generateTripFromDetails(opts: GenerateTripOptions): Trip {
   const { destination, budget, durationDays, travelStyle, interests, transportMode, originLocation, startDate } = opts;
   const destName = destination.trim() || 'Coimbatore & Valparai';
-  const duration = Math.max(1, Math.min(durationDays || 3, 10));
+  const duration = Math.max(1, Math.min(typeof durationDays === 'number' ? durationDays : 3, 10));
   const totalBudget = typeof budget === 'number' && !isNaN(budget) && budget >= 0 ? budget : 0;
   const origin = originLocation || 'India';
   const startD = startDate || new Date().toISOString().split('T')[0];

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Place } from '../types';
 import { formatCurrency } from '../utils/currencyUtils';
+import { RealPlaceImage } from './RealPlaceImage';
 
 interface PlaceDetailModalProps {
   place: Place | null;
@@ -34,8 +35,15 @@ export const PlaceDetailModal: React.FC<PlaceDetailModalProps> = ({
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto my-auto shadow-2xl space-y-5 text-slate-900 dark:text-slate-100 transition-colors">
         {/* Cover Image */}
         <div className="relative h-64 bg-slate-100 dark:bg-slate-800">
-          <img src={place.imageUrl} alt={place.name} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent" />
+          <RealPlaceImage
+            placeName={place.name}
+            region={place.region}
+            originalUrl={place.imageUrl}
+            alt={place.name}
+            className="w-full h-full object-cover"
+            showBadge={true}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent pointer-events-none" />
 
           <button
             onClick={onClose}

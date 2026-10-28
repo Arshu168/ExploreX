@@ -24,7 +24,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "06:00 AM - 10:00 AM (Early mist)",
     estimatedCost: 350,
     rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/SAN_BIRDS_48.jpg/1280px-SAN_BIRDS_48.jpg",
     tags: ["Shola Forest", "Mist Trail", "Wildlife", "Photography"],
     localTips: [
       "Requires Forest Department permit obtained at Pollaachi checkpoint before 8 AM.",
@@ -58,7 +58,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "02:00 PM - 05:00 PM",
     estimatedCost: 0,
     rating: 4.8,
-    imageUrl: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Tea_Estates_in_Valparai.jpg/1280px-Tea_Estates_in_Valparai.jpg",
     tags: ["Secret Waterfall", "Rock Bathing", "Bamboo Canopy"],
     localTips: [
       "Ask the local tea stall near Kadamparai power station for the unpaved forest foot-trail path.",
@@ -85,7 +85,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "04:30 PM - 06:15 PM",
     estimatedCost: 50,
     rating: 4.7,
-    imageUrl: "https://images.unsplash.com/photo-1511884642898-4c92249e20b6?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Valparai_tea_plantations.jpg/1280px-Valparai_tea_plantations.jpg",
     tags: ["Tea Garden Cliff", "Golden Hour", "Valley View"],
     localTips: [
       "Walk 800m through the estate path instead of taking the auto shortcut for better photography angles.",
@@ -112,7 +112,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "11:00 AM - 04:00 PM",
     estimatedCost: 250,
     rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Valparai_tea_plantations.jpg/1280px-Valparai_tea_plantations.jpg",
     tags: ["Artisan Coffee", "Wifi & Coworking", "Organic Farm"],
     localTips: [
       "Try their cold brew steeped with estate-grown cardamom and local eucalyptus honey.",
@@ -139,7 +139,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "08:30 AM - 12:00 PM",
     estimatedCost: 100,
     rating: 4.8,
-    imageUrl: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Pambar_Falls_Kodaikanal.jpg/1280px-Pambar_Falls_Kodaikanal.jpg",
     tags: ["Sandalwood Trail", "Crystal Water", "Birdwatching"],
     localTips: [
       "Wear sturdy trail shoes; the forest leaf mold path can be slippery.",
@@ -166,7 +166,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "07:00 AM - 11:00 AM",
     estimatedCost: 120,
     rating: 4.8,
-    imageUrl: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Siruvani_Falls_above_bathing_area.jpg/1280px-Siruvani_Falls_above_bathing_area.jpg",
     tags: ["Reservoir View", "Western Ghats", "Untouched Nature"],
     localTips: [
       "Access limited; check Forest Department entry times at Sadivayal gate.",
@@ -193,7 +193,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "07:30 AM - 11:30 AM",
     estimatedCost: 0,
     rating: 4.7,
-    imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Strobilanthes_kunthiana_Kurinji.jpg/1280px-Strobilanthes_kunthiana_Kurinji.jpg",
     tags: ["Heritage Arch", "Coffee Country", "River Trail"],
     localTips: [
       "Park near the old estate gate and walk down the mossy cobblestone track.",
@@ -220,7 +220,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "08:00 AM - 01:00 PM",
     estimatedCost: 150,
     rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Meenmutty_Falls%2C_Wayanad.jpg/1280px-Meenmutty_Falls%2C_Wayanad.jpg",
     tags: ["Trek", "Rock Cavern", "Tiered Falls"],
     localTips: [
       "Rope climb required for Tier 2; wear shoes with strong rubber grip.",
@@ -292,7 +292,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "06:30 AM - 08:30 AM (Before crowds)",
     estimatedCost: 500,
     rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Arashiyama_Bamboo_Grove_Kyoto.jpg/1280px-Arashiyama_Bamboo_Grove_Kyoto.jpg",
     tags: ["Bamboo Forest", "Moss Sanctuary", "Zen Temple", "Japan Travel"],
     localTips: [
       "Visit Giouji moss garden at 8:00 AM right as gates open for pristine dew photography.",
@@ -321,7 +321,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "08:00 AM - 11:30 AM",
     estimatedCost: 0,
     rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Amalfi_sea_view_Italy.JPG/1280px-Amalfi_sea_view_Italy.JPG",
     tags: ["Amalfi Coast", "Cliff Hike", "Mediterranean", "Italy Travel"],
     localTips: [
       "Hike from Bomerano downhill to Nocelle to avoid steep uphill stairs.",
@@ -350,7 +350,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "08:30 AM - 11:00 AM",
     estimatedCost: 3200,
     rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Grindelwald_First_Cliff_Walk_Alps.jpg/1280px-Grindelwald_First_Cliff_Walk_Alps.jpg",
     tags: ["Swiss Alps", "Glacial Lake", "Cliff Catwalk", "Switzerland"],
     localTips: [
       "Swiss Travel Pass gives 50% discount on the Grindelwald First gondola ride.",
@@ -379,7 +379,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "07:00 AM - 10:30 AM",
     estimatedCost: 150,
     rating: 4.8,
-    imageUrl: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Munduk_Waterfall_Bali.jpg/1280px-Munduk_Waterfall_Bali.jpg",
     tags: ["Bali Highlands", "Jungle Waterfalls", "Cloves & Spice"],
     localTips: [
       "Combine Munduk Waterfall, Melanting, and Golden Valley into a single 3-hour loop trek.",
@@ -408,7 +408,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "07:00 AM - 10:00 AM",
     estimatedCost: 0,
     rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Emerald_Lake%2C_Yoho_National_Park.jpg/1280px-Emerald_Lake%2C_Yoho_National_Park.jpg",
     tags: ["Canadian Rockies", "Glacial Turquoise Lake", "Canoeing", "Canada"],
     localTips: [
       "Rent a hand-crafted cedar canoe at 8 AM before winds ripple the water mirror.",
@@ -437,7 +437,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "09:00 AM - 01:00 PM",
     estimatedCost: 4500,
     rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Mitre_Peak%2C_Milford_Sound.jpg/1280px-Mitre_Peak%2C_Milford_Sound.jpg",
     tags: ["Fiordland", "Waterfall Cruise", "Mitre Peak", "New Zealand"],
     localTips: [
       "Rainy days create hundreds of temporary waterfalls cascading off vertical cliffs!",
@@ -466,7 +466,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "07:00 AM - 11:30 AM",
     estimatedCost: 350,
     rating: 4.8,
-    imageUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Table_Mountain_Cape_Town_South_Africa.jpg/1280px-Table_Mountain_Cape_Town_South_Africa.jpg",
     tags: ["Table Mountain", "Fynbos Flora", "Cape Town", "South Africa"],
     localTips: [
       "Start early inside Kirstenbosch gardens; ladder sections require good footwear.",
@@ -495,7 +495,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "04:30 PM - 07:00 PM (Sunset)",
     estimatedCost: 0,
     rating: 4.7,
-    imageUrl: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Al_Qudra_Lakes_Dubai.jpg/1280px-Al_Qudra_Lakes_Dubai.jpg",
     tags: ["Desert Dunes", "Arabian Oryx", "Golden Sunset", "Dubai"],
     localTips: [
       "Best accessed with a 4WD vehicle or SUV; deflate tire pressure for soft sand.",
@@ -524,7 +524,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "07:30 AM - 11:00 AM",
     estimatedCost: 150,
     rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Avalanche_lake_ooty_1.jpg/1280px-Avalanche_lake_ooty_1.jpg",
     tags: ["Ooty", "Avalanche Lake", "Shola Forest", "Nilgiris", "Nature"],
     localTips: [
       "Take the eco-safari vehicle from the forest checkpost for best wildlife sightings.",
@@ -553,7 +553,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "06:30 AM - 09:30 AM (Sunrise)",
     estimatedCost: 0,
     rating: 4.8,
-    imageUrl: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Emerald_Lake%2C_Ooty.jpg/1280px-Emerald_Lake%2C_Ooty.jpg",
     tags: ["Ooty", "Emerald Lake", "Sunrise View", "Nilgiris"],
     localTips: [
       "Best visited at sunrise when golden rays illuminate the misty tea slopes.",
@@ -582,7 +582,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "04:30 PM - 06:15 PM (Sunset)",
     estimatedCost: 30,
     rating: 4.8,
-    imageUrl: "https://images.unsplash.com/photo-1511884642898-4c92249e20b6?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Needle_Rock_View_Point_IMG_20250630_1539102.jpg/1280px-Needle_Rock_View_Point_IMG_20250630_1539102.jpg",
     tags: ["Ooty", "Needle Rock", "Sunset Edge", "Gudalur Valley"],
     localTips: [
       "Carry binoculars to spot elephant corridors in the valley below during twilight.",
@@ -611,7 +611,7 @@ export const DUMMY_PLACES: Place[] = [
     bestTime: "08:00 AM - 12:00 PM",
     estimatedCost: 50,
     rating: 4.7,
-    imageUrl: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Pykara_Lake_in_Ooty.jpg/1280px-Pykara_Lake_in_Ooty.jpg",
     tags: ["Ooty", "Pykara Falls", "Pine Forest", "Rapids"],
     localTips: [
       "Walk past the main boat jetty for 600m along the pine trail to reach the quiet stream bank."

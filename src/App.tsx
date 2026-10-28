@@ -21,6 +21,7 @@ import { FloatingAiAssistant } from './components/FloatingAiAssistant';
 import { PlaceDetailModal } from './components/PlaceDetailModal';
 import { SettingsModal } from './components/SettingsModal';
 import { LocalBackendGuideModal } from './components/LocalBackendGuideModal';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import { 
   INITIAL_USER_PROFILE, 
@@ -578,8 +579,9 @@ export default function App() {
           onOpenBackendGuide={() => setShowBackendGuideModal(true)}
         />
 
-        {/* View Viewport */}
+        {/* View Viewport Protected by View-Level Error Shield */}
         <main className="flex-1 p-3 sm:p-4 lg:p-6 overflow-y-auto max-w-7xl mx-auto w-full">
+          <ErrorBoundary sectionName={`View (${currentView})`} key={currentView}>
           {currentView === 'dashboard' && (
             <DashboardView
               userProfile={userProfile}
@@ -712,6 +714,7 @@ export default function App() {
               onReturnDashboard={() => setCurrentView('dashboard')}
             />
           )}
+          </ErrorBoundary>
         </main>
       </div>
 

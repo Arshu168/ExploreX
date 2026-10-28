@@ -24,6 +24,7 @@ import {
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Place, Trip, PlaceCategory } from '../types';
+import { getRealPlaceImageSync } from '../utils/realImageService';
 import { 
   getLocationCoordinates, 
   getNearestAirport, 
@@ -154,7 +155,7 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
           bestTime: act.time || 'Morning',
           estimatedCost: act.cost,
           rating: 4.9,
-          imageUrl: existingMatch?.imageUrl || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
+          imageUrl: existingMatch?.imageUrl || getRealPlaceImageSync(act.title, act.locationName || activeTrip.region),
           tags: [activeTrip.region, `Day ${day.dayNumber}`, act.time, act.isHiddenGem ? 'Hidden Gem' : 'Top Spot'],
           localTips: [`Day ${day.dayNumber} activity at ${act.time}`],
           ragSources: [],
@@ -452,10 +453,10 @@ export const InteractiveMapView: React.FC<InteractiveMapViewProps> = ({
         if (place.category === 'waterfall') {
           markerBg = '#06b6d4';
           markerIcon = '🌊';
-        } else if (place.category === 'cafe' || place.category === 'dining') {
+        } else if (place.category === 'cafe' || (place.category as string) === 'dining') {
           markerBg = '#8b5cf6';
           markerIcon = '☕';
-        } else if (place.category === 'temple' || place.category === 'heritage') {
+        } else if ((place.category as string) === 'temple' || (place.category as string) === 'heritage') {
           markerBg = '#d97706';
           markerIcon = '⛩️';
         } else if (place.category === 'sunset' || place.category === 'viewpoint') {

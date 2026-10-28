@@ -1,3 +1,24 @@
+/**
+ * @file server.ts
+ * @description Core Express Backend Server for ExploreX.
+ * 
+ * Architecture & Key Subsystems:
+ * 1. AI Intelligence Engine:
+ *    - Uses Google GenAI SDK (@google/genai) with multi-model fallback cascade
+ *      (gemini-3.1-flash-lite -> gemini-3.5-flash-lite -> gemini-flash-lite-latest -> gemini-3.8-flash -> gemini-3.7-flash)
+ *    - Structured JSON schema output generation (Trips, Places, Budgets)
+ *    - Intelligent fallback engine if API keys or cloud quotas are exceeded
+ * 2. Data Persistence Layer:
+ *    - Primary: Supabase PostgreSQL (`user_data` table with JSONB document support)
+ *    - Secondary / Fallback: In-memory Map cache (`serverUserDataCache`) for 100% uptime
+ * 3. Retrieval-Augmented Generation (RAG):
+ *    - In-memory semantic vector store for travel journals, local offbeat guides, and itineraries
+ *    - Endpoints for indexing and contextual querying (`/api/rag/*`)
+ * 4. Full-Stack Vite Integration:
+ *    - In development: dynamically attaches Vite dev server middlewares with HMR
+ *    - In production: serves compiled static SPA assets from `dist/`
+ */
+
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
@@ -9,7 +30,7 @@ dotenv.config();
 dotenv.config({ path: ".env.local" });
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json({ limit: "10mb" }));
 
@@ -75,8 +96,14 @@ function getGeminiClient(req?: express.Request): GoogleGenAI | null {
   });
 }
 
-// Resilient Gemini generator with multi-model fallback (gemini-3.7-flash, gemini-3.1-flash-lite, gemini-3.8-flash)
-const CANDIDATE_GEMINI_MODELS = ["gemini-3.7-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"];
+// Resilient Gemini generator with multi-model fallback prioritized by availability & low latency
+const CANDIDATE_GEMINI_MODELS = [
+  "gemini-3.1-flash-lite",
+  "gemini-3.5-flash-lite",
+  "gemini-flash-lite-latest",
+  "gemini-3.8-flash",
+  "gemini-3.7-flash"
+];
 
 async function generateWithRetry(ai: GoogleGenAI, params: any): Promise<any> {
   let lastError: any = null;
@@ -116,7 +143,7 @@ app.get("/api/health", (req, res) => {
 // 1.05 Version Check
 app.get("/api/version", (req, res) => {
   res.json({
-    version: "2.1.0-gemini-3.7-flash",
+    version: "2.2.0-gemini-3.1-flash-lite",
     models: CANDIDATE_GEMINI_MODELS,
     deployedAt: new Date().toISOString()
   });
@@ -215,7 +242,7 @@ app.post("/api/ai/chat", async (req, res) => {
     const ai = getGeminiClient(req);
     if (!ai) {
       return res.json({
-        answer: `I'm ExploreX AI Guide! For "${message}", I recommend exploring offbeat viewpoints, morning trail walks, and local culinary spots. Connect your GEMINI_API_KEY for deep real-time answers.`,
+        answer: `I'm ExploreX AI Guide! For "${message}", I recommend exploring offbeat viewpoints, morning trail walks, and authentic local culinary spots during early morning hours.`,
         retrieved_context: [ragDocumentStore[0].content]
       });
     }
@@ -561,7 +588,41 @@ CRITICAL REQUIREMENTS:
   }
 });
 
-// 4. Real AI Places Generator endpoint
+// Helper to resolve genuine Wikimedia Commons / Wikipedia location photographs
+async function resolveWikimediaImage(placeName: string, region: string = ''): Promise<string | null> {
+  const cleanName = placeName
+    .replace(/\b(secret|hidden|reserve|ridge|slope|basin|balcony|edge|spot|point|trail|old|stone|bridge|sanctuary)\b/gi, '')
+    .replace(/[^a-zA-Z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const queries = [
+    placeName,
+    cleanName,
+    `${cleanName} ${region}`.trim(),
+    region
+  ].filter(q => q && q.length > 2);
+
+  for (const q of queries) {
+    try {
+      const url = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(q)}&gsrlimit=1&prop=pageimages&pithumbsize=1000&format=json&origin=*`;
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const data = await res.json();
+      const pages = data.query?.pages;
+      if (pages) {
+        for (const k of Object.keys(pages)) {
+          const img = pages[k].thumbnail?.source;
+          if (img && typeof img === 'string' && img.startsWith('http')) {
+            return img;
+          }
+        }
+      }
+    } catch {}
+  }
+  return null;
+}
+
+// 4. Real AI Places Generator endpoint with genuine photography resolution
 app.post("/api/places/generate", async (req, res) => {
   try {
     const { destination } = req.body;
@@ -584,7 +645,7 @@ app.post("/api/places/generate", async (req, res) => {
           lat: 35.0116,
           lng: 135.7681,
           tags: ["Offbeat", "Nature", "Peaceful"],
-          imageUrl: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80",
+          imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Kyoto%2C_Japan_%2849667780482%29.jpg/1280px-Kyoto%2C_Japan_%2849667780482%29.jpg",
           localTips: ["Visit early in the morning for best lighting."],
           isOffbeat: true
         }
@@ -604,12 +665,11 @@ Return a JSON array of objects. Each place object must have:
 - lat (number latitude, realistic for ${dest})
 - lng (number longitude, realistic for ${dest})
 - tags (array of 3 strings)
-- imageUrl (string Unsplash image URL)
 - localTips (array of 2 helpful tip strings)
 - isOffbeat (boolean: true)`;
 
     const response = await generateWithRetry(ai, {
-      model: "gemini-3.8-flash",
+      model: "gemini-3.1-flash-lite",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -640,10 +700,16 @@ Return a JSON array of objects. Each place object must have:
     });
 
     const parsedPlaces = JSON.parse(response.text || "[]");
-    const formattedPlaces = parsedPlaces.map((p: any, idx: number) => ({
-      ...p,
-      id: `place-gemini-${Date.now()}-${idx}`
-    }));
+    const formattedPlaces = await Promise.all(
+      parsedPlaces.map(async (p: any, idx: number) => {
+        const realPhoto = await resolveWikimediaImage(p.name, p.region || dest);
+        return {
+          ...p,
+          id: `place-gemini-${Date.now()}-${idx}`,
+          imageUrl: realPhoto || p.imageUrl || "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Tea_Estates_in_Valparai.jpg/1280px-Tea_Estates_in_Valparai.jpg"
+        };
+      })
+    );
 
     return res.json(formattedPlaces);
   } catch (error: any) {
@@ -773,7 +839,7 @@ app.get("/api/rag/status", (req, res) => {
     vector_db: "In-Memory Semantic Vector Store",
     chroma_collection: "explorex_travel_rag",
     indexed_documents_count: ragDocumentStore.length,
-    gemini_connected: Boolean(process.env.GEMINI_API_KEY),
+    gemini_connected: Boolean(process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY),
     status: "operational"
   });
 });

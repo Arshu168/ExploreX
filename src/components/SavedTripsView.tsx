@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Trip, Place } from '../types';
 import { formatCurrency } from '../utils/currencyUtils';
+import { RealPlaceImage } from './RealPlaceImage';
 
 interface SavedTripsViewProps {
   trips: Trip[];
@@ -204,7 +205,14 @@ export const SavedTripsView: React.FC<SavedTripsViewProps> = ({
               >
                 <div className="space-y-3">
                   <div className="relative h-32 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden">
-                    <img src={place.imageUrl} alt={place.name} className="w-full h-full object-cover" />
+                    <RealPlaceImage
+                      placeName={place.name}
+                      region={place.region}
+                      originalUrl={place.imageUrl}
+                      alt={place.name}
+                      className="w-full h-full object-cover"
+                      showBadge={true}
+                    />
                     {onToggleBookmark && (
                       <button
                         onClick={(e) => {

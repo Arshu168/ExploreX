@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Place, Trip, UserProfile, Memory } from '../types';
 import { formatCurrency } from '../utils/currencyUtils';
+import { RealPlaceImage } from './RealPlaceImage';
 
 interface DashboardViewProps {
   userProfile: UserProfile;
@@ -294,10 +295,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div className="space-y-3">
                 {/* Photo container */}
                 <div className="relative h-44 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
-                  <img
-                    src={place.imageUrl}
+                  <RealPlaceImage
+                    placeName={place.name}
+                    region={place.region}
+                    originalUrl={place.imageUrl}
                     alt={place.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    showBadge={true}
                   />
 
                   {/* Rating pill on top right */}

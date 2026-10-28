@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { sendAiChatRequest, generatePlacesFromBackend, getStoredGeminiKey } from './apiClient';
 import { DUMMY_PLACES } from '../data/dummyData';
 import { Place, RagSource } from '../types';
+import { enhancePlacesWithRealImages } from './realImageService';
 
 export interface AiResponseResult {
   text: string;
@@ -48,7 +49,7 @@ export async function generateWorldwidePlacesWithAi(destination: string): Promis
   try {
     const backendPlaces = await generatePlacesFromBackend(query);
     if (backendPlaces && Array.isArray(backendPlaces) && backendPlaces.length > 0) {
-      return backendPlaces.map((p: any, idx: number) => ({
+      const mapped = backendPlaces.map((p: any, idx: number) => ({
         id: p.id || `ai-place-real-${Date.now()}-${idx}`,
         name: p.name || `${query} Attraction`,
         category: p.category || "viewpoint",
@@ -59,7 +60,7 @@ export async function generateWorldwidePlacesWithAi(destination: string): Promis
         bestTime: p.bestTime || "07:00 AM - 10:00 AM",
         estimatedCost: p.estimatedCost || 250,
         coordinates: [p.lat || 10.33, p.lng || 76.95] as [number, number],
-        imageUrl: p.imageUrl || "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+        imageUrl: p.imageUrl || "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Tea_Estates_in_Valparai.jpg/1280px-Tea_Estates_in_Valparai.jpg",
         tags: p.tags || [query, "AI Verified"],
         localTips: p.localTips || ["Visit during early morning hours for quiet surroundings."],
         isOffbeat: p.isOffbeat ?? true,
@@ -68,6 +69,7 @@ export async function generateWorldwidePlacesWithAi(destination: string): Promis
         country: query,
         continent: "Global"
       }));
+      return await enhancePlacesWithRealImages(mapped);
     }
   } catch (err) {
     console.warn("Backend places generation skipped, trying client AI:", err);
@@ -98,7 +100,7 @@ Return ONLY a valid JSON array of 4 objects with:
 ]`;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.8-flash",
+        model: "gemini-3.1-flash-lite",
         contents: prompt,
         config: {
           systemInstruction: "You are an expert global travel curator. Generate realistic coordinates, captivating descriptions, and practical travel advice in clean JSON.",
@@ -108,7 +110,7 @@ Return ONLY a valid JSON array of 4 objects with:
 
       const parsed = JSON.parse(response.text || "[]");
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed.map((p: any, idx: number) => ({
+        const clientPlaces = parsed.map((p: any, idx: number) => ({
           id: `ai-gemini-client-${Date.now()}-${idx}`,
           name: p.name || `${query} Hidden Gem`,
           category: p.category || "viewpoint",
@@ -119,7 +121,7 @@ Return ONLY a valid JSON array of 4 objects with:
           bestTime: p.bestTime || "07:00 AM - 10:00 AM",
           estimatedCost: p.estimatedCost || 200,
           coordinates: [p.lat || 20.0, p.lng || 77.0] as [number, number],
-          imageUrl: p.imageUrl || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80",
+          imageUrl: p.imageUrl || "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Tea_Estates_in_Valparai.jpg/1280px-Tea_Estates_in_Valparai.jpg",
           tags: p.tags || [query, "AI Curated"],
           localTips: p.localTips || ["Visit early morning for peaceful atmosphere."],
           isOffbeat: true,
@@ -128,6 +130,7 @@ Return ONLY a valid JSON array of 4 objects with:
           country: query,
           continent: "Global"
         }));
+        return await enhancePlacesWithRealImages(clientPlaces);
       }
     } catch (e) {
       console.warn("Client Gemini place generation fallback:", e);
@@ -212,7 +215,13 @@ export async function processAiTravelQuery(query: string, availablePlaces: Place
   // 2. Try Direct Client-Side Gemini AI
   const ai = getClientGeminiInstance();
   if (ai) {
-    const candidateModels = ["gemini-3.7-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"];
+    const candidateModels = [
+      "gemini-3.1-flash-lite",
+      "gemini-3.5-flash-lite",
+      "gemini-flash-lite-latest",
+      "gemini-3.8-flash",
+      "gemini-3.7-flash"
+    ];
     for (const modelName of candidateModels) {
       try {
         const prompt = `You are ExploreX AI, an enthusiastic, knowledgeable worldwide travel assistant.
